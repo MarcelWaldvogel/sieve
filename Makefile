@@ -14,7 +14,7 @@ divisors.o: divisors.c wheel.o
 sieve.o: sieve.c wheel.o
 	$(CC) $(C_FLAGS) -o $@ $^
 
-numprimes.sh: sieve.o
+numprimes.sh:
 	chmod +x $@
 
 clean:
