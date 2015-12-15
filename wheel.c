@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           wheel.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-06
+UPDATED:        2015-12-15
 DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 *******************************************************************************/
 
