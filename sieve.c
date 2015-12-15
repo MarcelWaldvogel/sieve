@@ -45,15 +45,24 @@ void sieve(unsigned long num) {
         }
     }
 
-    /* Step 3 -- Sieve out the remaining primes using wheel factorization */
+    /* Step 3 -- Create the wheel for wheel factorization */
     wheel = newWheel(basePrimes, numBasePrimes);
     nextp(wheel); /* Ignore 1 */
-    while ((prime = nextp(wheel)) <= num) {
+
+    /* Step 4 -- Sieve the remaining primes <= sqrt(num) */
+    for (prime = nextp(wheel); prime * prime <= num; prime = nextp(wheel)) {
         if (isPrime[prime]) {
             printf("%lu\n", prime);
             for (comp = prime * prime; comp <= num; comp += 2 * prime) {
                 isPrime[comp] = FALSE;
             }
+        }
+    }
+
+    /* Step 5 -- Sieve the remaining primes > sqrt(num) */
+    for (; prime <= num; prime = nextp(wheel)) {
+        if (isPrime[prime]) {
+            printf("%lu\n", prime);
         }
     }
 
