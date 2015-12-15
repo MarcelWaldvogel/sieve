@@ -66,7 +66,7 @@ void sieve(unsigned long num) {
         }
     }
 
-    /* Step 5 -- Clean up */
+    /* Step 6 -- Clean up */
     free(isPrime);
     deleteWheel(&wheel);
 }
