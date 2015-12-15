@@ -193,9 +193,8 @@ RETURNS:        TRUE if the number if coprime to each base prime,
 *******************************************************************************/
 unsigned char isCoprime(const unsigned long num,
     const unsigned long *basePrimes, const unsigned long numBasePrimes) {
-    unsigned long index = 0;    /* The loop index */
     /* Loop through each base prime, checking if it divides num */
-    while (index++ < numBasePrimes)
+    for (unsigned long i = 0; i < numBasePrimes; i++)
         if (num % *basePrimes++ == 0)
             return FALSE;
     return TRUE;
