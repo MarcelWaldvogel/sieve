@@ -6,7 +6,7 @@
 # DESCRIPTION:  Uses sieve.o to compute the number of primes less than or equal
 #               to a specified positive integer.
 
-if [ "$#" -eq 1 ]; then
+if [ $# -eq 1 ]; then
   make --quiet sieve.o
   ./sieve.o $1 | wc -l | sed -e 's/^[ ]*//'
 else
