@@ -173,8 +173,9 @@ RETURNS:        The next prime candidate computed by the wheel.
 unsigned long nextp(Wheel *wheel) {
     if (wheel->lastPrimeCandidate == 0)
         return wheel->lastPrimeCandidate = 1;
-    wheel->lastPrimeCandidate += wheel->spoke->next->num - wheel->spoke->num;
+    wheel->lastPrimeCandidate -= wheel->spoke->num;
     advanceWheel(wheel);
+    wheel->lastPrimeCandidate += wheel->spoke->num;
     return wheel->lastPrimeCandidate;
 }
 
