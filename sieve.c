@@ -22,12 +22,13 @@ DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
-void sieve(unsigned long num) {
+unsigned long sieve(unsigned long num, FILE *stream) {
     /* Step 0 -- Local variable declarations */
     unsigned char *isPrime; /* Array of T/F values */
     Wheel *wheel;           /* The wheel used in the sieve */
     unsigned long prime;    /* A prime candidate */
     unsigned long comp;     /* A necessarily composite number */
+    unsigned long count;    /* The number of primes */
 
     /* Step 1 -- Create the sieving array */
     isPrime = (unsigned char *) malloc((num + 1) * sizeof(unsigned char));
@@ -35,11 +36,13 @@ void sieve(unsigned long num) {
     isPrime[0] = isPrime[1] = FALSE;
 
     /* Step 2 -- Sieve out the base primes */
+    count = 0;
     for (unsigned long i = 0; i < numBasePrimes; i++) {
         prime = basePrimes[i];
         if (prime > num)
             break;
-        printf("%lu\n", prime);
+        count++;
+        fprintf(stream, "%lu\n", prime);
         for (comp = prime * prime; comp <= num; comp += prime) {
             isPrime[comp] = FALSE;
         }
@@ -52,7 +55,8 @@ void sieve(unsigned long num) {
     /* Step 4 -- Sieve the remaining primes <= sqrt(num) */
     for (prime = nextp(wheel); prime * prime <= num; prime = nextp(wheel)) {
         if (isPrime[prime]) {
-            printf("%lu\n", prime);
+            count++;
+            fprintf(stream, "%lu\n", prime);
             for (comp = prime * prime; comp <= num; comp += 2 * prime) {
                 isPrime[comp] = FALSE;
             }
@@ -62,22 +66,64 @@ void sieve(unsigned long num) {
     /* Step 5 -- Sieve the remaining primes > sqrt(num) */
     for (; prime <= num; prime = nextp(wheel)) {
         if (isPrime[prime]) {
-            printf("%lu\n", prime);
+            count++;
+            fprintf(stream, "%lu\n", prime);
         }
     }
 
-    /* Step 6 -- Clean up */
+    /* Step 6 -- Clean up and return */
     free(isPrime);
     deleteWheel(&wheel);
+    return count;
 }
 
 int main(int argc, const char **argv) {
-    if (argc == 1) {
+    const char *name = argv[0];         /* The program name */
+    unsigned char opt_count = FALSE;    /* The count flag */
+    unsigned long count;                /* The number of primes */
+    FILE *stream = stdout;              /* Where to print the primes */
+    char c;                             /* A command line argument char */
+
+    /* Process command-line options */
+    while (--argc > 0 && **++argv == '-') {
+        while ((c = *++*argv)) {
+            switch (c) {
+                case 'n':
+                    opt_count = TRUE;
+                    stream = fopen("/dev/null", "w");
+                    if (!stream) {
+                        fprintf(stderr,
+                            "Could not open /dev/null for writing\n");
+                        return 1;
+                    }
+                    break;
+                default:
+                    fprintf(stderr, "sieve: illegal option '%c'\n", c);
+                    return 1;
+            }
+        }
+    }
+
+    /* There should be one command-line argument remaining */
+    /* If not, print a usage message */
+    if (argc != 1) {
         fprintf(stderr,
-            "Usage: Enter a positive integer: e.g.\n%s 12345\n", argv[0]);
+            "Print all the primes up to a specified positive integer.\n");
+        fprintf(stderr,
+            "Usage:\n%s number\n", name);
+        fprintf(stderr, "Flags:\n");
+        fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
         return 1;
     }
 
-    sieve(strtoul(*(++argv), NULL, 10));
+    /* Perform the sieving */
+    count = sieve(strtoul(*argv, NULL, 10), stream);
+
+    /* Print the number of primes if the count flag is on */
+    if (opt_count) {
+        printf("%lu\n", count);
+        fclose(stream);
+    }
+
     return 0;
 }
