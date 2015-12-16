@@ -109,8 +109,9 @@ int main(int argc, const char **argv) {
     if (argc != 1) {
         fprintf(stderr,
             "Print all the primes up to a specified positive integer.\n");
-        fprintf(stderr,
-            "Usage:\n%s number\n", name);
+        fprintf(stderr, "Usage:\n");
+        fprintf(stderr, "\t%s N\n", name);
+        fprintf(stderr, "\twhere N is a positive integer.\n");
         fprintf(stderr, "Flags:\n");
         fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
         return 1;
