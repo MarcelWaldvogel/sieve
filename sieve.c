@@ -22,7 +22,7 @@ DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
-unsigned long sieve(unsigned long num, FILE *stream) {
+unsigned long sieve(unsigned long max, FILE *stream) {
     /* Step 0 -- Local variable declarations */
     unsigned char *isPrime; /* Array of T/F values */
     Wheel *wheel;           /* The wheel used in the sieve */
@@ -31,19 +31,19 @@ unsigned long sieve(unsigned long num, FILE *stream) {
     unsigned long count;    /* The number of primes */
 
     /* Step 1 -- Create the sieving array */
-    isPrime = (unsigned char *) malloc((num + 1) * sizeof(unsigned char));
-    memset(isPrime, TRUE, (num + 1) * sizeof(unsigned char));
+    isPrime = (unsigned char *) malloc((max + 1) * sizeof(unsigned char));
+    memset(isPrime, TRUE, (max + 1) * sizeof(unsigned char));
     isPrime[0] = isPrime[1] = FALSE;
 
     /* Step 2 -- Sieve out the base primes */
     count = 0;
     for (unsigned long i = 0; i < numBasePrimes; i++) {
         prime = basePrimes[i];
-        if (prime > num)
+        if (prime > max)
             break;
         count++;
         fprintf(stream, "%lu\n", prime);
-        for (comp = prime * prime; comp <= num; comp += prime) {
+        for (comp = prime * prime; comp <= max; comp += prime) {
             isPrime[comp] = FALSE;
         }
     }
@@ -52,19 +52,19 @@ unsigned long sieve(unsigned long num, FILE *stream) {
     wheel = newWheel(basePrimes, numBasePrimes);
     nextp(wheel); /* Ignore 1 */
 
-    /* Step 4 -- Sieve the remaining primes <= sqrt(num) */
-    for (prime = nextp(wheel); prime * prime <= num; prime = nextp(wheel)) {
+    /* Step 4 -- Sieve the remaining primes <= sqrt(max) */
+    for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
         if (isPrime[prime]) {
             count++;
             fprintf(stream, "%lu\n", prime);
-            for (comp = prime * prime; comp <= num; comp += 2 * prime) {
+            for (comp = prime * prime; comp <= max; comp += 2 * prime) {
                 isPrime[comp] = FALSE;
             }
         }
     }
 
-    /* Step 5 -- Sieve the remaining primes > sqrt(num) */
-    for (; prime <= num; prime = nextp(wheel)) {
+    /* Step 5 -- Sieve the remaining primes > sqrt(max) */
+    for (; prime <= max; prime = nextp(wheel)) {
         if (isPrime[prime]) {
             count++;
             fprintf(stream, "%lu\n", prime);
