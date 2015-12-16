@@ -9,4 +9,4 @@ In the terminal:
     cd c-primes
     make
 
-This creates two executables: `divisors.o` and `sieve.o`.
+This creates two executables: `divisors` and `sieve`.

@@ -1,3 +1,7 @@
+# Executables
+divisors
+sieve
+
 # Object files
 *.o
 *.ko
