@@ -129,8 +129,9 @@ int main(int argc, const char **argv) {
     /* Print the number of primes if the count flag is on */
     if (opt_count) {
         printf("%lu\n", count);
-        fclose(stream);
     }
 
+    /* Clean up and return */
+    fclose(stream);
     return 0;
 }
