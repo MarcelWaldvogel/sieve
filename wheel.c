@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           wheel.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-15
+UPDATED:        2015-12-16
 DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 *******************************************************************************/
 
@@ -59,9 +59,9 @@ struct Spoke {
 
 
 /* "Private" function declarations -- not declared in wheel.h */
-unsigned char isCoprime(const unsigned long, const unsigned long *,
+static unsigned char isCoprime(const unsigned long, const unsigned long *,
     const unsigned long);
-void advanceWheel(Wheel *);
+static void advanceWheel(Wheel *);
 
 
 /*******************************************************************************
@@ -191,7 +191,7 @@ PARAMETERS:     num (const unsigned long): The number whose coprimeness will be
 RETURNS:        TRUE if the number if coprime to each base prime,
                 FALSE otherwise.
 *******************************************************************************/
-unsigned char isCoprime(const unsigned long num,
+static unsigned char isCoprime(const unsigned long num,
     const unsigned long *basePrimes, const unsigned long numBasePrimes) {
     /* Loop through each base prime, checking if it divides num */
     for (unsigned long i = 0; i < numBasePrimes; i++)
@@ -209,7 +209,7 @@ PARAMETERS:     wheel (Wheel *): A pointer to the wheel being used. No error
                 checking is performed to ensure that this is not a NULL pointer.
 RETURNS:        Nothing.
 *******************************************************************************/
-void advanceWheel(Wheel *wheel) {
+static void advanceWheel(Wheel *wheel) {
     /* Increment the number stored in the current spoke */
     wheel->spoke->num += wheel->circumference;
     /* Move to the next spoke in the wheel */
