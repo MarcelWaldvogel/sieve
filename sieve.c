@@ -43,9 +43,8 @@ unsigned long sieve(unsigned long max, FILE *stream) {
             break;
         count++;
         fprintf(stream, "%lu\n", prime);
-        for (comp = prime * prime; comp <= max; comp += prime) {
+        for (comp = prime * prime; comp <= max; comp += prime)
             isPrime[comp] = FALSE;
-        }
     }
 
     /* Step 3 -- Create the wheel for wheel factorization */
@@ -57,9 +56,8 @@ unsigned long sieve(unsigned long max, FILE *stream) {
         if (isPrime[prime]) {
             count++;
             fprintf(stream, "%lu\n", prime);
-            for (comp = prime * prime; comp <= max; comp += 2 * prime) {
+            for (comp = prime * prime; comp <= max; comp += 2 * prime)
                 isPrime[comp] = FALSE;
-            }
         }
     }
 
@@ -127,9 +125,7 @@ int main(int argc, const char **argv) {
     count = sieve(strtoul(*argv, NULL, 10), stream);
 
     /* Print the number of primes if the count flag is on */
-    if (opt_count) {
-        printf("%lu\n", count);
-    }
+    if (opt_count) printf("%lu\n", count);
 
     /* Clean up and return */
     fclose(stream);
