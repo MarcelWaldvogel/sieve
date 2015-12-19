@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           sieve.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-16
+UPDATED:        2015-12-19
 DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
                 factorization.
 *******************************************************************************/
@@ -120,15 +120,15 @@ int main(int argc, const char **argv) {
         fprintf(stderr, "sieve: expected argument.\n");
         fprintf(stderr, "For help, run %s -h\n", name);
         return 1;
+    } else {
+        /* Perform the sieving */
+        count = sieve(strtoul(*argv, NULL, 10), stream);
+
+        /* Print the number of primes if the count flag is on */
+        if (opt_count) printf("%lu\n", count);
+
+        /* Clean up and return */
+        fclose(stream);
+        return 0;
     }
-
-    /* Perform the sieving */
-    count = sieve(strtoul(*argv, NULL, 10), stream);
-
-    /* Print the number of primes if the count flag is on */
-    if (opt_count) printf("%lu\n", count);
-
-    /* Clean up and return */
-    fclose(stream);
-    return 0;
 }
