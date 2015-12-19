@@ -10,3 +10,16 @@ In the terminal:
     make
 
 This creates two executables: `divisors` and `sieve`.
+
+### `divisors`
+
+List the prime divisors of a positive integer.
+
+![divisors screenshot](images/divisors_example.png)
+
+### `sieve`
+
+List the prime numbers less than or equal to a positive integer.
+Optionally, list only the number of such primes.
+
+![divisors screenshot](images/sieve_example.png)
