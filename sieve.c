@@ -29,6 +29,7 @@ unsigned long sieve(unsigned long max, FILE *stream) {
     unsigned long prime;    /* A prime candidate */
     unsigned long comp;     /* A necessarily composite number */
     unsigned long count;    /* The number of primes */
+    unsigned long index;    /* Track position in loops */
 
     /* Step 1 -- Create the sieving array */
     isPrime = (unsigned char *) malloc((max + 1) * sizeof(unsigned char));
@@ -37,8 +38,8 @@ unsigned long sieve(unsigned long max, FILE *stream) {
 
     /* Step 2 -- Sieve out the base primes */
     count = 0;
-    for (unsigned long i = 0; i < numBasePrimes; i++) {
-        prime = basePrimes[i];
+    for (index = 0; index < numBasePrimes; index++) {
+        prime = basePrimes[index];
         if (prime > max)
             break;
         count++;
