@@ -119,16 +119,17 @@ int main(int argc, const char **argv) {
     if (argc != 1) {
         fprintf(stderr, "sieve: expected argument.\n");
         fprintf(stderr, "For help, run %s -h\n", name);
-        return 1;
-    } else {
-        /* Perform the sieving */
-        count = sieve(strtoul(*argv, NULL, 10), stream);
-
-        /* Print the number of primes if the count flag is on */
-        if (opt_count) printf("%lu\n", count);
-
-        /* Clean up and return */
         fclose(stream);
-        return 0;
+        return 1;
     }
+
+    /* Perform the sieving */
+    count = sieve(strtoul(*argv, NULL, 10), stream);
+
+    /* Print the number of primes if the count flag is on */
+    if (opt_count) printf("%lu\n", count);
+
+    /* Clean up and return */
+    fclose(stream);
+    return 0;
 }
