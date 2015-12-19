@@ -97,6 +97,7 @@ int main(int argc, const char **argv) {
                     fprintf(stderr, "Flags:\n");
                     fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
                     fprintf(stderr, "\t-h\tShow usage information.\n");
+                    fclose(stream);
                     return 0;
                 case 'n':
                     opt_count = TRUE;
@@ -104,11 +105,13 @@ int main(int argc, const char **argv) {
                     if (!stream) {
                         fprintf(stderr,
                             "Could not open /dev/null for writing\n");
+                        fclose(stream);
                         return 1;
                     }
                     break;
                 default:
                     fprintf(stderr, "sieve: illegal option '%c'\n", c);
+                    fclose(stream);
                     return 1;
             }
         }
