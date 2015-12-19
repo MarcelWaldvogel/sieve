@@ -20,6 +20,6 @@ List the prime divisors of a positive integer.
 ### `sieve`
 
 List the prime numbers less than or equal to a positive integer.
-Optionally, list only the number of such primes.
+Optionally, use the `-n` flag to show only the number of such primes.
 
 ![divisors screenshot](images/sieve_example.png)
