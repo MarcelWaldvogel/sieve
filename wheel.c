@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           wheel.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-16
+UPDATED:        2015-12-19
 DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 *******************************************************************************/
 
@@ -194,7 +194,8 @@ RETURNS:        TRUE if the number if coprime to each base prime,
 static unsigned char isCoprime(const unsigned long num,
     const unsigned long *basePrimes, const unsigned long numBasePrimes) {
     /* Loop through each base prime, checking if it divides num */
-    for (unsigned long i = 0; i < numBasePrimes; i++)
+    unsigned long i;
+    for (i = 0; i < numBasePrimes; i++)
         if (num % *basePrimes++ == 0)
             return FALSE;
     return TRUE;
