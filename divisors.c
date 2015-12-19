@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           divisors.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-13
+UPDATED:        2015-12-18
 DESCRIPTION:    Prints out the prime divisors of a given positive integer.
                 Prime divisors are computed using trial division with wheel
                 factorization.
@@ -15,7 +15,6 @@ const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
 void print_divisors(unsigned long num) {
-    printf("Prime divisors of %lu:\n", num);
     if (num > 1) {
         unsigned long prime;
         /* Divide by the base primes */
@@ -50,8 +49,9 @@ void print_divisors(unsigned long num) {
 int main(int argc, const char **argv) {
     if (argc == 1) {
         /* If there are no command line arguments, print usage message */
-        fprintf(stderr,
-            "Usage: Enter a positive integer: e.g.\n%s 12345\n", argv[0]);
+        fprintf(stderr, "divisors: expected argument.\n");
+        fprintf(stderr, "Usage: to list the prime divisors of N:\n");
+        fprintf(stderr, "\t%s N\n", argv[0]);
         /* Exit with failure */
         return 1;
     }
