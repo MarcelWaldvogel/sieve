@@ -31,12 +31,23 @@ unsigned long sieve(unsigned long max, FILE *stream) {
     unsigned long count;    /* The number of primes */
     unsigned long index;    /* Track position in loops */
 
-    /* Step 1 -- Create the sieving array */
+    /* Step 1 -- Deal with easy cases */
+    if (max < 2) {
+        return 0;
+    }
+    fprintf(stream, "2\n");
+    count = 1;
+    if (max == 2) {
+        return 1;
+    }
+    /* Now max is guaranteed to be at least 3 */
+
+    /* Step 2 -- Create the sieving array */
     isPrime = malloc((max + 1) * sizeof(unsigned char));
     memset(isPrime, TRUE, (max + 1) * sizeof(unsigned char));
     isPrime[0] = isPrime[1] = FALSE;
 
-    /* Step 2 -- Sieve out the base primes */
+    /* Step 3 -- Sieve out the base primes */
     count = 0;
     for (index = 0; index < numBasePrimes; index++) {
         prime = basePrimes[index];
@@ -48,11 +59,11 @@ unsigned long sieve(unsigned long max, FILE *stream) {
             isPrime[comp] = FALSE;
     }
 
-    /* Step 3 -- Create the wheel for wheel factorization */
+    /* Step 4 -- Create the wheel for wheel factorization */
     wheel = newWheel(basePrimes, numBasePrimes);
     nextp(wheel); /* Ignore 1 */
 
-    /* Step 4 -- Sieve the remaining primes <= sqrt(max) */
+    /* Step 5 -- Sieve the remaining primes <= sqrt(max) */
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
         if (isPrime[prime]) {
             count++;
@@ -62,7 +73,7 @@ unsigned long sieve(unsigned long max, FILE *stream) {
         }
     }
 
-    /* Step 5 -- Sieve the remaining primes > sqrt(max) */
+    /* Step 6 -- Sieve the remaining primes > sqrt(max) */
     for (; prime <= max; prime = nextp(wheel)) {
         if (isPrime[prime]) {
             count++;
@@ -70,7 +81,7 @@ unsigned long sieve(unsigned long max, FILE *stream) {
         }
     }
 
-    /* Step 6 -- Clean up and return */
+    /* Step 7 -- Clean up and return */
     free(isPrime);
     deleteWheel(&wheel);
     return count;
