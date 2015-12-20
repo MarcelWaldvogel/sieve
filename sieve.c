@@ -32,7 +32,7 @@ unsigned long sieve(unsigned long max, FILE *stream) {
     unsigned long index;    /* Track position in loops */
 
     /* Step 1 -- Create the sieving array */
-    isPrime = (unsigned char *) malloc((max + 1) * sizeof(unsigned char));
+    isPrime = malloc((max + 1) * sizeof(unsigned char));
     memset(isPrime, TRUE, (max + 1) * sizeof(unsigned char));
     isPrime[0] = isPrime[1] = FALSE;
 
