@@ -24,6 +24,7 @@ const unsigned long numBasePrimes = 6;
 
 unsigned long sieve(unsigned long max, FILE *stream) {
     /* Step 0 -- Local variable declarations */
+    unsigned long size;     /* The size of the isPrime array */
     unsigned char *isPrime; /* Array of T/F values */
     Wheel *wheel;           /* The wheel used in the sieve */
     unsigned long prime;    /* A prime candidate */
@@ -43,20 +44,23 @@ unsigned long sieve(unsigned long max, FILE *stream) {
     /* Now max is guaranteed to be at least 3 */
 
     /* Step 2 -- Create the sieving array */
-    isPrime = malloc((max + 1) * sizeof(unsigned char));
-    memset(isPrime, TRUE, (max + 1) * sizeof(unsigned char));
-    isPrime[0] = isPrime[1] = FALSE;
+    /* To save space we only store the primality of odd integers */
+    /* isPrime[i] represents the primality of 2*i+1 */
+    /* Similarly, the primality of an odd N is stored in isPrime[N/2] */
+    size = (max - 1) / 2 + 1;
+    isPrime = malloc(size * sizeof(unsigned char));
+    memset(isPrime, TRUE, size * sizeof(unsigned char));
+    isPrime[0] = FALSE; /* 1 is not prime */
 
-    /* Step 3 -- Sieve out the base primes */
-    count = 0;
-    for (index = 0; index < numBasePrimes; index++) {
+    /* Step 3 -- Sieve out the odd base primes */
+    for (index = 1; index < numBasePrimes; index++) {
         prime = basePrimes[index];
         if (prime > max)
             break;
         count++;
         fprintf(stream, "%lu\n", prime);
-        for (comp = prime * prime; comp <= max; comp += prime)
-            isPrime[comp] = FALSE;
+        for (comp = prime * prime; comp <= max; comp += 2 * prime)
+            isPrime[comp / 2] = FALSE;
     }
 
     /* Step 4 -- Create the wheel for wheel factorization */
@@ -65,17 +69,17 @@ unsigned long sieve(unsigned long max, FILE *stream) {
 
     /* Step 5 -- Sieve the remaining primes <= sqrt(max) */
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
-        if (isPrime[prime]) {
+        if (isPrime[(prime / 2)]) {
             count++;
             fprintf(stream, "%lu\n", prime);
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
-                isPrime[comp] = FALSE;
+                isPrime[comp / 2] = FALSE;
         }
     }
 
     /* Step 6 -- Sieve the remaining primes > sqrt(max) */
     for (; prime <= max; prime = nextp(wheel)) {
-        if (isPrime[prime]) {
+        if (isPrime[prime / 2]) {
             count++;
             fprintf(stream, "%lu\n", prime);
         }
