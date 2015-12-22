@@ -25,10 +25,6 @@ static const unsigned long numBasePrimes = 6;
 /* We use bit arrays to store primality information */
 #define NUMBITS (8 * sizeof(int)) /* # of bits in each element of a BitArray */
 typedef int * BitArray;
-static BitArray newBitArray(const unsigned long);
-static void setAllBits(BitArray, const unsigned long);
-inline static void clearBit(BitArray, const unsigned long);
-inline static unsigned char getBit(BitArray, const unsigned long);
 
 /*******************************************************************************
 FUNCTION NAME:  newBitArray
