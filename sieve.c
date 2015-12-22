@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           sieve.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-20
+UPDATED:        2015-12-21
 DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
                 factorization.
 *******************************************************************************/
@@ -110,7 +110,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     if (max < 2) {
         return 0;
     }
-    fprintf(stream, "2\n");
+    if (stream) fprintf(stream, "2\n");
     count = 1;
     if (max == 2) {
         return 1;
@@ -135,7 +135,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
         if (prime > max)
             break;
         count++;
-        fprintf(stream, "%lu\n", prime);
+        if (stream) fprintf(stream, "%lu\n", prime);
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
             clearBit(isPrime, comp / 2);
     }
@@ -144,7 +144,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
         if (getBit(isPrime, prime / 2)) {
             count++;
-            fprintf(stream, "%lu\n", prime);
+            if (stream) fprintf(stream, "%lu\n", prime);
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
                 clearBit(isPrime, comp / 2);
         }
@@ -154,7 +154,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     for (; prime <= max; prime = nextp(wheel)) {
         if (getBit(isPrime, prime / 2)) {
             count++;
-            fprintf(stream, "%lu\n", prime);
+            if (stream) fprintf(stream, "%lu\n", prime);
         }
     }
 
@@ -168,8 +168,6 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
 int main(int argc, const char **argv) {
     const char *name = argv[0];         /* The program name */
     unsigned char opt_count = FALSE;    /* The count flag */
-    unsigned long count;                /* The number of primes */
-    FILE *stream = stdout;              /* Where to print the primes */
     char c;                             /* A command line argument char */
 
     /* Process command-line options */
@@ -186,21 +184,12 @@ int main(int argc, const char **argv) {
                     fprintf(stderr, "Flags:\n");
                     fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
                     fprintf(stderr, "\t-h\tShow usage information.\n");
-                    fclose(stream);
                     return 0;
                 case 'n':
                     opt_count = TRUE;
-                    stream = fopen("/dev/null", "w");
-                    if (!stream) {
-                        fprintf(stderr,
-                            "Could not open /dev/null for writing\n");
-                        fclose(stream);
-                        return 1;
-                    }
                     break;
                 default:
                     fprintf(stderr, "sieve: illegal option '%c'\n", c);
-                    fclose(stream);
                     return 1;
             }
         }
@@ -211,17 +200,14 @@ int main(int argc, const char **argv) {
     if (argc != 1) {
         fprintf(stderr, "sieve: expected argument.\n");
         fprintf(stderr, "For help, run %s -h\n", name);
-        fclose(stream);
         return 1;
     }
 
-    /* Perform the sieving */
-    count = sieve(strtoul(*argv, NULL, 10), stream);
-
-    /* Print the number of primes if the count flag is on */
-    if (opt_count) printf("%lu\n", count);
+    if (opt_count)
+        printf("%lu\n", sieve(strtoul(*argv, NULL, 10), NULL));
+    else
+        sieve(strtoul(*argv, NULL, 10), stdout);
 
     /* Clean up and return */
-    fclose(stream);
     return 0;
 }
