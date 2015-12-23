@@ -11,14 +11,6 @@ DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
 #include <string.h>
 #include "wheel.h"
 
-#ifndef TRUE
-#define TRUE 1
-#endif
-
-#ifndef FALSE
-#define FALSE 0
-#endif
-
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
 
@@ -121,7 +113,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
         fprintf(stderr, "sieve: could not allocate bit array memory.\n");
         return 0;
     }
-    setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to TRUE */
+    setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
     clearBit(isPrime, 0); /* 1 is not prime */
     wheel = newWheel(basePrimes, numBasePrimes);
 
@@ -165,7 +157,7 @@ static void helpmessage(const char *);
 
 int main(int argc, const char **argv) {
     const char *name = argv[0];         /* The program name */
-    unsigned char opt_count = FALSE;    /* The count flag */
+    unsigned char opt_count = 0;    /* The count flag */
     char c;                             /* A command line argument char */
 
     /* Process command-line options */
@@ -176,7 +168,7 @@ int main(int argc, const char **argv) {
                     helpmessage(name);
                     return 0;
                 case 'n':
-                    opt_count = TRUE;
+                    opt_count = 1;
                     break;
                 default:
                     fprintf(stderr, "sieve: illegal option '%c'\n", c);
