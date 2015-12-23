@@ -1,21 +1,34 @@
 CC=gcc
-C_FLAGS=-Wall -Wextra -Werror -pedantic -Os
+C_FLAGS=-Wall -Wextra -Werror -pedantic
+OPTIMIZE=-O2
+DEBUG=-g
 
-.PHONY: clean default sieve_speed_test
+.PHONY: clean debug default force sieve_speed_test
 
 default: wheel_test.o factor sieve
 
 wheel.o: wheel.c wheel.h
-	$(CC) $(C_FLAGS) -o $@ -c $<
+	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ -c $<
 
 wheel_test.o: wheel_test.c wheel.o
-	$(CC) $(C_FLAGS) -o $@ $^
+	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ $^
 
 factor: factor.c wheel.o
-	$(CC) $(C_FLAGS) -o $@ $^
+	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ $^
 
 sieve: sieve.c wheel.o
-	$(CC) $(C_FLAGS) -o $@ $^
+	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ $^
+
+force:
+	@make clean
+	@make default
+
+debug:
+	@make clean
+	$(CC) $(DEBUG) -o wheel.o -c wheel.c
+	$(CC) $(DEBUG) -o wheel_test.o wheel_test.c wheel.o
+	$(CC) $(DEBUG) -o factor factor.c wheel.o
+	$(CC) $(DEBUG) -o sieve sieve.c wheel.o
 
 sieve_speed_test: sieve
 	@echo "1 million"
@@ -32,6 +45,6 @@ sieve_speed_test: sieve
 	time ./sieve -n 100000000000
 
 clean:
-	rm -f divisors sieve
+	rm -f factor sieve
 	rm -f *.o
 	rm -rf *.dSYM
