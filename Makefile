@@ -3,7 +3,7 @@ C_FLAGS=-Wall -Wextra -Werror -pedantic -Os
 
 .PHONY: clean default sieve_speed_test
 
-default: wheel_test.o divisors sieve
+default: wheel_test.o factor sieve
 
 wheel.o: wheel.c wheel.h
 	$(CC) $(C_FLAGS) -o $@ -c $<
@@ -11,7 +11,7 @@ wheel.o: wheel.c wheel.h
 wheel_test.o: wheel_test.c wheel.o
 	$(CC) $(C_FLAGS) -o $@ $^
 
-divisors: divisors.c wheel.o
+factor: factor.c wheel.o
 	$(CC) $(C_FLAGS) -o $@ $^
 
 sieve: sieve.c wheel.o

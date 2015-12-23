@@ -1,9 +1,9 @@
 /*******************************************************************************
-FILE:           divisors.c
+FILE:           factor.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-18
-DESCRIPTION:    Prints out the prime divisors of a given positive integer.
-                Prime divisors are computed using trial division with wheel
+UPDATED:        2015-12-22
+DESCRIPTION:    Prints out the prime factors of a given positive integer.
+                Prime factors are computed using trial division with wheel
                 factorization.
 *******************************************************************************/
 
@@ -14,14 +14,14 @@ DESCRIPTION:    Prints out the prime divisors of a given positive integer.
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
-void print_divisors(unsigned long num) {
-    Wheel *wheel;         /* The wheel to be used in the algorithm */
-    unsigned long index;  /* Track position in loops */
+void factor(unsigned long num) {
+    Wheel *wheel;           /* The wheel to be used in the algorithm */
+    unsigned long i;        /* Track position in loops */
     if (num > 1) {
         unsigned long prime;
         /* Divide by the base primes */
-        for (index = 0; index < numBasePrimes; index++) {
-            prime = basePrimes[index];
+        for (i = 0; i < numBasePrimes; i++) {
+            prime = basePrimes[i];
             while (num % prime == 0) {
                 printf("%lu\n", prime);
                 num /= prime;
@@ -59,7 +59,7 @@ int main(int argc, const char **argv) {
     }
 
     while (*(++argv)) {
-        print_divisors(strtoul(*argv, NULL, 10));
+        factor(strtoul(*argv, NULL, 10));
     }
     return 0;
 }

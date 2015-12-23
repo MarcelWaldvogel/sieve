@@ -9,12 +9,11 @@ In the terminal:
     cd c-primes
     make
 
-This creates two executables: `divisors` and `sieve`.
+This creates two executables: `factor` and `sieve`.
 
-### `divisors`
+### `factor`
 
-List the prime divisors of a positive integer.
-![divisors screenshot](images/divisors_example.png)
+List the prime factors of a positive integer.
 
 ### `sieve`
 
