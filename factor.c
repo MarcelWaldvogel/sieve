@@ -14,17 +14,28 @@ DESCRIPTION:    Prints out the prime factors of a given positive integer.
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
-void factor(unsigned long num) {
-    Wheel *wheel;           /* The wheel to be used in the algorithm */
-    unsigned long i;        /* Track position in loops */
+unsigned long factor(unsigned long num, unsigned char unique, FILE *stream) {
+    Wheel *wheel;               /* The wheel used in the algorithm */
+    unsigned long i;            /* Track position in loops */
+    unsigned long count = 0;    /* The number of divisors */
+
     if (num > 1) {
         unsigned long prime;
         /* Divide by the base primes */
         for (i = 0; i < numBasePrimes; i++) {
             prime = basePrimes[i];
-            while (num % prime == 0) {
-                printf("%lu\n", prime);
-                num /= prime;
+            if (unique) {
+                if (num % prime == 0) {
+                    if (stream) fprintf(stream, "%lu\n", prime);
+                    count++;
+                    for (num /= prime; num % prime == 0; num /= prime);
+                }
+            } else {
+                while (num % prime == 0) {
+                    if (stream) fprintf(stream, "%lu\n", prime);
+                    num /= prime;
+                    count++;
+                }
             }
         }
 
@@ -35,17 +46,30 @@ void factor(unsigned long num) {
         while (num > 1) {
             prime = nextp(wheel);
             if (prime * prime > num) {
-                printf("%lu\n", num);
+                if (stream) fprintf(stream, "%lu\n", num);
+                count++;
                 break;
             }
-            while (num % prime == 0) {
-                printf("%lu\n", prime);
-                num /= prime;
+            if (unique) {
+                if (num % prime == 0) {
+                    if (stream) fprintf(stream, "%lu\n", prime);
+                    count++;
+                    for (num /= prime; num % prime == 0; num /= prime);
+                }
+            } else {
+                while (num % prime == 0) {
+                    if (stream) fprintf(stream, "%lu\n", prime);
+                    num /= prime;
+                    count++;
+                }
             }
         }
-        /* Deallocate the memory associated with the wheel */
+
+        /* Deallocate memory associated with the wheel */
         deleteWheel(&wheel);
     }
+
+    return count;
 }
 
 int main(int argc, const char **argv) {
@@ -59,7 +83,7 @@ int main(int argc, const char **argv) {
     }
 
     while (*(++argv)) {
-        factor(strtoul(*argv, NULL, 10));
+        factor(strtoul(*argv, NULL, 10), 0, stdout);
     }
     return 0;
 }
