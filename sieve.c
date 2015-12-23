@@ -161,6 +161,8 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
 }
 
 
+void helpmessage(const char *);
+
 int main(int argc, const char **argv) {
     const char *name = argv[0];         /* The program name */
     unsigned char opt_count = FALSE;    /* The count flag */
@@ -171,15 +173,7 @@ int main(int argc, const char **argv) {
         while ((c = *++*argv)) {
             switch (c) {
                 case 'h':
-                    fprintf(stderr, "Print all the primes up to a given ");
-                    fprintf(stderr, "positive integer.\n");
-                    fprintf(stderr, "Usage:\n");
-                    fprintf(stderr, "\t%s N\n", name);
-                    fprintf(stderr, "\t%s [flags] N\n", name);
-                    fprintf(stderr, "\twhere N is a positive integer.\n");
-                    fprintf(stderr, "Flags:\n");
-                    fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
-                    fprintf(stderr, "\t-h\tShow usage information.\n");
+                    helpmessage(name);
                     return 0;
                 case 'n':
                     opt_count = TRUE;
@@ -206,4 +200,15 @@ int main(int argc, const char **argv) {
 
     /* Clean up and return */
     return 0;
+}
+
+void helpmessage(const char *name) {
+    fprintf(stderr, "Print all the primes up to a given positive integer.\n");
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr, "\t%s N\n", name);
+    fprintf(stderr, "\t%s [flags] N\n", name);
+    fprintf(stderr, "\twhere N is a positive integer.\n");
+    fprintf(stderr, "Flags:\n");
+    fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
+    fprintf(stderr, "\t-h\tShow usage information.\n");
 }
