@@ -23,6 +23,5 @@ prime factors.
 ### `sieve`
 
 List the prime numbers less than or equal to a positive integer.
-![sieve screenshot](images/sieve_example.png)
 Optionally, use the `-n` flag to show only the number of primes.
-![sieve performance](images/sieve_performance.png)
+![sieve screenshot](images/sieve_example.png)
