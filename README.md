@@ -1,5 +1,5 @@
 # c-primes
-Prime number-related programs written in C.
+Prime number sieve and integer factorization programs written in C.
 
 ## Usage
 
