@@ -161,7 +161,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
 }
 
 
-void helpmessage(const char *);
+static void helpmessage(const char *);
 
 int main(int argc, const char **argv) {
     const char *name = argv[0];         /* The program name */
@@ -202,7 +202,7 @@ int main(int argc, const char **argv) {
     return 0;
 }
 
-void helpmessage(const char *name) {
+static void helpmessage(const char *name) {
     fprintf(stderr, "Print all the primes up to a given positive integer.\n");
     fprintf(stderr, "Usage:\n");
     fprintf(stderr, "\t%s N\n", name);
