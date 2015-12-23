@@ -81,7 +81,7 @@ DESCRIPTION:    Sieve of Eratosthenes algorithm implementation using wheel
                 sieved, and their multiples are marked as composite in the bit
                 array. Finally, the remaining primes between sqrt(max) and max
                 are sieved.
-PARAMETERS:     max (const unsigned long): the maximum number to sieve.
+PARAMETERS:     max (const unsigned long): the upper bound for the sieve.
                 stream (FILE *): where to print the primes.
 RETURNS:        The number of primes less than or equal to max.
 *******************************************************************************/
@@ -156,9 +156,10 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
 static void helpmessage(const char *);
 
 int main(int argc, const char **argv) {
-    const char *name = argv[0];         /* The program name */
-    unsigned char opt_count = 0;    /* The count flag */
-    char c;                             /* A command line argument char */
+    const char *name = argv[0];     /* The program name */
+    unsigned long max;              /* The upper bound for the sieve */
+    unsigned char opt_count = 0;    /* Whether to print the number of primes */
+    char c;                         /* A command line argument char */
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == '-') {
@@ -185,10 +186,11 @@ int main(int argc, const char **argv) {
         return 1;
     }
 
+    max = strtoul(*argv, NULL, 10);
     if (opt_count)
-        printf("%lu\n", sieve(strtoul(*argv, NULL, 10), NULL));
+        printf("%lu\n", sieve(max, NULL));
     else
-        sieve(strtoul(*argv, NULL, 10), stdout);
+        sieve(max, stdout);
 
     /* Clean up and return */
     return 0;
