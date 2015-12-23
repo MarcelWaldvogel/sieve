@@ -12,6 +12,11 @@ DESCRIPTION:    Tests the wheel implementation.
 #define MAX 20 /* Number of prime candidates to print */
 
 int main(const int argc, const char **argv) {
+    int i;
+    Wheel *wheel;
+    unsigned long numBasePrimes;
+    unsigned long *basePrimes;
+
     if (argc == 1) {
         /* If there are no command line arguments, print usage message */
         fprintf(stderr,
@@ -21,24 +26,23 @@ int main(const int argc, const char **argv) {
     }
 
     /* Allocate memory for the base primes */
-    unsigned long numBasePrimes = (unsigned long) argc - 1;
-    unsigned long *basePrimes
-        = (unsigned long *) malloc(numBasePrimes * sizeof(unsigned long));
+    numBasePrimes = (unsigned long) argc - 1;
+    basePrimes = malloc(numBasePrimes * sizeof(unsigned long));
 
     printf("The %lu base primes:\n", numBasePrimes);
 
-    for (int i = 1; i < argc; i++) {
+    for (i = 1; i < argc; i++) {
         /* Parse command line args as unsigned longs (no error checking!!) */
         basePrimes[i - 1] = strtoul(argv[i], NULL, 0);
         printf("Base prime      #%i:\t%3ld\n", i, basePrimes[i - 1]);
     }
 
     /* Create the wheel to be tested */
-    Wheel *wheel = newWheel(basePrimes, numBasePrimes);
+    wheel = newWheel(basePrimes, numBasePrimes);
 
     /* Print the prime candidates */
     printf("The first %i prime candidates:\n", MAX);
-    for (int i = 1; i <= MAX; i++) {
+    for (i = 1; i <= MAX; i++) {
         unsigned long p = nextp(wheel);
         printf("Prime candidate #%i:\t%3ld\n", i, p);
     }
