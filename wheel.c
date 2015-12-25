@@ -70,8 +70,8 @@ DESCRIPTION:    Creates a new wheel for identifying prime number candidates. The
                 deleteWheel function.
 PARAMETERS:     basePrimes (const unsigned long *): A list of a few known prime
                 numbers used to create the wheel (e.g., 2, 3, 5, 7). The numbers
-                are only assumed to be prime, and no check is made to ensure
-                that they actually are prime.
+                are assumed to be distinct primes, but no check is made to
+                ensure that they either prime or distinct.
                 numBasePrimes (const unsigned long): The number of base primes.
 RETURNS:        A pointer to the new wheel.
 *******************************************************************************/
