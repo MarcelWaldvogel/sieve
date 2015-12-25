@@ -9,14 +9,6 @@ DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 #include <string.h>
 #include "wheel.h"
 
-#ifndef TRUE
-#define TRUE 1
-#endif
-
-#ifndef FALSE
-#define FALSE 0
-#endif
-
 typedef struct Spoke Spoke;
 
 
@@ -59,7 +51,7 @@ struct Spoke {
 
 
 /* "Private" function declarations -- not declared in wheel.h */
-static unsigned char isCoprime(const unsigned long, const unsigned long *,
+static int isCoprime(const unsigned long, const unsigned long *,
     const unsigned long);
 
 
@@ -189,12 +181,12 @@ PARAMETERS:     num (const unsigned long): The number whose coprimeness will be
 RETURNS:        TRUE if the number if coprime to each base prime,
                 FALSE otherwise.
 *******************************************************************************/
-static unsigned char isCoprime(const unsigned long num,
+static int isCoprime(const unsigned long num,
     const unsigned long *basePrimes, const unsigned long numBasePrimes) {
     /* Loop through each base prime, checking if it divides num */
     unsigned long i;
     for (i = 0; i < numBasePrimes; i++)
         if (num % *basePrimes++ == 0)
-            return FALSE;
-    return TRUE;
+            return 0;
+    return 1;
 }

@@ -14,7 +14,7 @@ DESCRIPTION:    Prints out the prime factors of a given positive integer.
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
-unsigned long factor(unsigned long num, unsigned char unique, FILE *stream) {
+unsigned long factor(unsigned long num, int unique, FILE *stream) {
     Wheel *wheel;               /* The wheel used in the algorithm */
     unsigned long i;            /* Track position in loops */
     unsigned long count = 0;    /* The number of divisors */
@@ -75,8 +75,8 @@ void helpmessage(const char *);
 
 int main(int argc, const char **argv) {
     const char *name = argv[0];     /* The program name */
-    unsigned char opt_count = 0;    /* Flag to print the number of factors */
-    unsigned char opt_unique = 0;   /* Flag to ignore multiplicity */
+    int opt_count = 0;              /* Flag to print the number of factors */
+    int opt_unique = 0;             /* Flag to ignore multiplicity */
     unsigned long num;              /* The number to be factored */
     char c;                         /* A command line argument char */
 

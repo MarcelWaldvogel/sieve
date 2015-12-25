@@ -61,7 +61,7 @@ PARAMETERS:     bits (BitArray): the bit array to operate on.
                 k (const unsigned long): the position of the bit to return
 RETURNS:        The bit at position k.
 *******************************************************************************/
-inline static unsigned char getBit(BitArray bits, const unsigned long k) {
+inline static int getBit(BitArray bits, const unsigned long k) {
     return (bits[k / NUMBITS] & (1 << (k % NUMBITS))) != 0;
 }
 
@@ -158,7 +158,7 @@ static void helpmessage(const char *);
 int main(int argc, const char **argv) {
     const char *name = argv[0];     /* The program name */
     unsigned long max;              /* The upper bound for the sieve */
-    unsigned char opt_count = 0;    /* Whether to print the number of primes */
+    int opt_count = 0;              /* Whether to print the number of primes */
     char c;                         /* A command line argument char */
 
     /* Process command-line options */
