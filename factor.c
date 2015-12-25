@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           factor.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-22
+UPDATED:        2015-12-25
 DESCRIPTION:    Prints out the prime factors of a given positive integer.
                 Prime factors are computed using trial division with wheel
                 factorization.
@@ -41,7 +41,6 @@ unsigned long factor(unsigned long num, unsigned char unique, FILE *stream) {
 
         /* Create the wheel for wheel factorization */
         wheel = newWheel(basePrimes, numBasePrimes);
-        nextp(wheel); /* Ignore 1 */
         /* Divide by the prime candiates computed by the wheel */
         while (num > 1) {
             prime = nextp(wheel);
