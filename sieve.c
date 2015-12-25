@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           sieve.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-21
+UPDATED:        2015-12-25
 DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
                 factorization.
 *******************************************************************************/
@@ -152,9 +152,19 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     return count;
 }
 
+/* Print a usage message to the user */
+static void helpmessage(const char *name) {
+    fprintf(stderr, "Print all the primes up to a given positive integer.\n");
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr, "\t%s N\n", name);
+    fprintf(stderr, "\t%s [flags] N\n", name);
+    fprintf(stderr, "\twhere N is a positive integer.\n");
+    fprintf(stderr, "Flags:\n");
+    fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
+    fprintf(stderr, "\t-h\tShow usage information.\n");
+}
 
-static void helpmessage(const char *);
-
+/* Run the program */
 int main(int argc, const char **argv) {
     const char *name = argv[0];     /* The program name */
     unsigned long max;              /* The upper bound for the sieve */
@@ -194,15 +204,4 @@ int main(int argc, const char **argv) {
 
     /* Clean up and return */
     return 0;
-}
-
-static void helpmessage(const char *name) {
-    fprintf(stderr, "Print all the primes up to a given positive integer.\n");
-    fprintf(stderr, "Usage:\n");
-    fprintf(stderr, "\t%s N\n", name);
-    fprintf(stderr, "\t%s [flags] N\n", name);
-    fprintf(stderr, "\twhere N is a positive integer.\n");
-    fprintf(stderr, "Flags:\n");
-    fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
-    fprintf(stderr, "\t-h\tShow usage information.\n");
 }
