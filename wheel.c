@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           wheel.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-19
+UPDATED:        2015-12-25
 DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 *******************************************************************************/
 
@@ -31,15 +31,15 @@ FIELDS:         circumference (unsigned long): The product of the base primes.
                 numSpokes (unsigned long): The number of spokes in the wheel,
                 which is the number of integers between 1 and circumference
                 which are coprime to circumference.
-                lastPrimeCandidate (long): The biggest positive integer coprime
+                primeCandidate (long): The biggest positive integer coprime
                 to each base prime computed so far.
                 spoke (Spoke *): Pointer to the next spoke in the wheel.
 *******************************************************************************/
 struct Wheel {
-    unsigned long circumference;        /* The product of the base primes */
-    unsigned long numSpokes;            /* The number of spokes in the wheel */
-    unsigned long lastPrimeCandidate;   /* The last prime candidate computed */
-    Spoke *spoke;                       /* The next spoke in the wheel */
+    unsigned long circumference;    /* The product of the base primes */
+    unsigned long numSpokes;        /* The number of spokes in the wheel */
+    unsigned long primeCandidate;   /* The last prime candidate computed */
+    Spoke *spoke;                   /* The next spoke in the wheel */
 };
 
 
@@ -61,7 +61,6 @@ struct Spoke {
 /* "Private" function declarations -- not declared in wheel.h */
 static unsigned char isCoprime(const unsigned long, const unsigned long *,
     const unsigned long);
-static void advanceWheel(Wheel *);
 
 
 /*******************************************************************************
@@ -113,7 +112,7 @@ Wheel * newWheel(const unsigned long *basePrimes,
     wheel = (Wheel *) malloc(sizeof(Wheel));
     wheel->circumference = circumference;
     wheel->numSpokes = numSpokes;
-    wheel->lastPrimeCandidate = 0;
+    wheel->primeCandidate = 1;
     wheel->spoke = NULL;
     /* Create all the spokes in the wheel */
     for (index = 0; index < numSpokes; index++) {
@@ -165,18 +164,17 @@ void deleteWheel(Wheel **wpp) {
 /*******************************************************************************
 FUNCTION NAME:  nextp
 DESCRIPTION:    Get the next prime candidate from the wheel. The first prime
-                candidate is 1, the next is necessarily the smallest prime
-                number not included in the base primes used to create the wheel.
+                candidate is necessarily the smallest prime number not included
+                in the base primes used to create the wheel.
 PARAMETERS:     wheel (Wheel *): A pointer to the wheel being used.
 RETURNS:        The next prime candidate computed by the wheel.
 *******************************************************************************/
 unsigned long nextp(Wheel *wheel) {
-    if (wheel->lastPrimeCandidate == 0)
-        return wheel->lastPrimeCandidate = 1;
-    wheel->lastPrimeCandidate -= wheel->spoke->num;
-    advanceWheel(wheel);
-    wheel->lastPrimeCandidate += wheel->spoke->num;
-    return wheel->lastPrimeCandidate;
+    wheel->primeCandidate -= wheel->spoke->num;
+    wheel->spoke->num += wheel->circumference;    /* Increment current spoke */
+    wheel->spoke = wheel->spoke->next;            /* Move to the next spoke */
+    wheel->primeCandidate += wheel->spoke->num;
+    return wheel->primeCandidate;
 }
 
 
@@ -199,20 +197,4 @@ static unsigned char isCoprime(const unsigned long num,
         if (num % *basePrimes++ == 0)
             return FALSE;
     return TRUE;
-}
-
-
-/*******************************************************************************
-FUNCTION NAME:  advanceWheel ("private": not declared in wheel.h)
-DESCRIPTION:    "Roll" the wheel, incrementing the number stored in the current
-                spoke and advancing to the next spoke.
-PARAMETERS:     wheel (Wheel *): A pointer to the wheel being used. No error
-                checking is performed to ensure that this is not a NULL pointer.
-RETURNS:        Nothing.
-*******************************************************************************/
-static void advanceWheel(Wheel *wheel) {
-    /* Increment the number stored in the current spoke */
-    wheel->spoke->num += wheel->circumference;
-    /* Move to the next spoke in the wheel */
-    wheel->spoke = wheel->spoke->next;
 }
