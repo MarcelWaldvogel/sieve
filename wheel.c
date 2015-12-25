@@ -101,7 +101,7 @@ Wheel * newWheel(const unsigned long *basePrimes,
     }
 
     /* Step 2 -- Create the list of integers coprime to the base primes */
-    coprimes = (unsigned long *) malloc(numSpokes * sizeof(unsigned long));
+    coprimes = malloc(numSpokes * sizeof(unsigned long));
     index = 0;
     for (num = 1; num <= circumference; num++)
         if (isCoprime(num, basePrimes, numBasePrimes))
@@ -109,7 +109,7 @@ Wheel * newWheel(const unsigned long *basePrimes,
 
     /* Step 3 -- Construct the wheel */
     /* Allocate memory for the wheel and initialize all the fields */
-    wheel = (Wheel *) malloc(sizeof(Wheel));
+    wheel = malloc(sizeof(Wheel));
     wheel->circumference = circumference;
     wheel->numSpokes = numSpokes;
     wheel->primeCandidate = 1;
@@ -117,7 +117,7 @@ Wheel * newWheel(const unsigned long *basePrimes,
     /* Create all the spokes in the wheel */
     for (index = 0; index < numSpokes; index++) {
         /* Allocate memory for the spoke and initialize all the fields */
-        Spoke *spoke = (Spoke *) malloc(sizeof(Spoke));
+        Spoke *spoke = malloc(sizeof(Spoke));
         spoke->num = coprimes[index];
         if (!wheel->spoke) {
             /* The current spoke is the first spoke, so link it to itself */
