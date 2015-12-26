@@ -50,11 +50,6 @@ struct Spoke {
 };
 
 
-/* "Private" function declarations -- not declared in wheel.h */
-static int isCoprime(const unsigned long, const unsigned long *,
-    const unsigned long);
-
-
 /*******************************************************************************
 FUNCTION NAME:  newWheel
 DESCRIPTION:    Creates a new wheel for identifying prime number candidates. The
@@ -95,9 +90,16 @@ Wheel * newWheel(const unsigned long *basePrimes,
     /* Step 2 -- Create the list of integers coprime to the base primes */
     coprimes = malloc(numSpokes * sizeof(unsigned long));
     index = 0;
-    for (num = 1; num <= circumference; num++)
-        if (isCoprime(num, basePrimes, numBasePrimes))
-            coprimes[index++] = num;
+    for (num = 1; num <= circumference / 2; num++) {
+        for (unsigned long i = 0; i < numBasePrimes; i++)
+            if (num % basePrimes[i] == 0)
+              goto end;
+        coprimes[index] = num;
+        coprimes[numSpokes - 1 - index] = circumference - num;
+        index++;
+        end:
+        continue;
+    }
 
     /* Step 3 -- Construct the wheel */
     /* Allocate memory for the wheel and initialize all the fields */
@@ -167,26 +169,4 @@ unsigned long nextp(Wheel *wheel) {
     wheel->spoke = wheel->spoke->next;            /* Move to the next spoke */
     wheel->primeCandidate += wheel->spoke->num;
     return wheel->primeCandidate;
-}
-
-
-/*******************************************************************************
-FUNCTION NAME:  isCoprime ("private": not declared in wheel.h)
-DESCRIPTION:    Check whether a given integer is coprime to each base prime.
-PARAMETERS:     num (const unsigned long): The number whose coprimeness will be
-                checked.
-                basePrimes (const long *): The base primes. No error checking is
-                performed to ensure that this pointer is not NULL.
-                numBasePrimes (const long): The number of base primes.
-RETURNS:        TRUE if the number if coprime to each base prime,
-                FALSE otherwise.
-*******************************************************************************/
-static int isCoprime(const unsigned long num,
-    const unsigned long *basePrimes, const unsigned long numBasePrimes) {
-    /* Loop through each base prime, checking if it divides num */
-    unsigned long i;
-    for (i = 0; i < numBasePrimes; i++)
-        if (num % *basePrimes++ == 0)
-            return 0;
-    return 1;
 }
