@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           wheel.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-25
+UPDATED:        2015-12-26
 DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 *******************************************************************************/
 
@@ -30,7 +30,6 @@ FIELDS:         circumference (unsigned long): The product of the base primes.
 struct Wheel {
     unsigned long circumference;    /* The product of the base primes */
     unsigned long numSpokes;        /* The number of spokes in the wheel */
-    unsigned long primeCandidate;   /* The last prime candidate computed */
     Spoke *spoke;                   /* The next spoke in the wheel */
 };
 
@@ -83,7 +82,6 @@ Wheel * newWheel(const unsigned long *basePrimes,
     wheel = malloc(sizeof(Wheel));
     wheel->circumference = circumference;
     wheel->numSpokes = 0;
-    wheel->primeCandidate = 1;
     wheel->spoke = NULL;
     /* Create all the spokes in the wheel */
     for (num = 1; num < circumference; num++) {
@@ -145,15 +143,15 @@ void deleteWheel(Wheel **wpp) {
 /*******************************************************************************
 FUNCTION NAME:  nextp
 DESCRIPTION:    Get the next prime candidate from the wheel. The first prime
-                candidate is necessarily the smallest prime number not included
-                in the base primes used to create the wheel.
+                candidate is necessarily 1 (so it can be ignored). The second
+                prime candidate is necessarily the smallest prime number not 
+                included in the list of base primes used to create the wheel.
 PARAMETERS:     wheel (Wheel *): A pointer to the wheel being used.
 RETURNS:        The next prime candidate computed by the wheel.
 *******************************************************************************/
 unsigned long nextp(Wheel *wheel) {
-    wheel->primeCandidate -= wheel->spoke->num;
+    unsigned long p = wheel->spoke->num;          /* Next prime candidate */
     wheel->spoke->num += wheel->circumference;    /* Increment current spoke */
     wheel->spoke = wheel->spoke->next;            /* Move to the next spoke */
-    wheel->primeCandidate += wheel->spoke->num;
-    return wheel->primeCandidate;
+    return p;
 }
