@@ -129,9 +129,9 @@ void deleteWheel(Wheel **wpp) {
     if (wpp && *wpp) {
         /* Deallocate all the spokes in the wheel */
         while ((*wpp)->numSpokes-- > 0) {
-            Spoke *current = (*wpp)->spoke;
+            Spoke *spoke = (*wpp)->spoke;
             (*wpp)->spoke = (*wpp)->spoke->next;
-            free(current);
+            free(spoke);
         }
         /* Deallocate the wheel and make the pointer to it NULL */
         free(*wpp);
