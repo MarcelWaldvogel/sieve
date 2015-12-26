@@ -66,69 +66,56 @@ Wheel * newWheel(const unsigned long *basePrimes,
     const unsigned long numBasePrimes) {
     /* Step 0 -- Local variable declarations */
     unsigned long circumference;    /* The product of the base primes */
-    unsigned long numSpokes;        /* The number of spokes in the wheel */
-    unsigned long *coprimes;        /* Integers coprime to the base primes */
     unsigned long num;              /* To be checked for coprimeness */
     unsigned long index;            /* Used to track position inside lists */
     Wheel *wheel;                   /* The wheel being created */
 
     /* Step 1 -- Compute the circumference and the number of spokes.
      * The circumference of the wheel is the product of the base primes used to
-     * create the wheel. The number of spokes is the number of coprime integers
-     * 1 <= k <= circumference which are coprime to circumference. This number
-     * is the Euler totient function phi(circumference). Since the
-     * circumference is a product of distinct primes p_1, p_2, ..., p_n, we have
-     * phi(circumference) = (p_1-1)(p_2-1)...(p_n-1).
+     * create the wheel.
      */
     circumference = 1;
-    numSpokes = 1;
-    for (index = 0; index < numBasePrimes; index++) {
+    for (index = 0; index < numBasePrimes; index++)
         circumference *= basePrimes[index];
-        numSpokes *= basePrimes[index] - 1;
-    }
 
-    /* Step 2 -- Create the list of integers coprime to the base primes */
-    coprimes = malloc(numSpokes * sizeof(unsigned long));
-    index = 0;
-    for (num = 1; num <= circumference / 2; num++) {
-        for (unsigned long i = 0; i < numBasePrimes; i++)
-            if (num % basePrimes[i] == 0)
-              goto end;
-        coprimes[index] = num;
-        coprimes[numSpokes - 1 - index] = circumference - num;
-        index++;
-        end:
-        continue;
-    }
-
-    /* Step 3 -- Construct the wheel */
+    /* Step 2 -- Construct the wheel */
     /* Allocate memory for the wheel and initialize all the fields */
     wheel = malloc(sizeof(Wheel));
     wheel->circumference = circumference;
-    wheel->numSpokes = numSpokes;
+    wheel->numSpokes = 0;
     wheel->primeCandidate = 1;
     wheel->spoke = NULL;
     /* Create all the spokes in the wheel */
-    for (index = 0; index < numSpokes; index++) {
-        /* Allocate memory for the spoke and initialize all the fields */
-        Spoke *spoke = malloc(sizeof(Spoke));
-        spoke->num = coprimes[index];
-        if (!wheel->spoke) {
-            /* The current spoke is the first spoke, so link it to itself */
-            spoke->next = spoke;
-        } else {
-            /* Link this spoke to the last spoke in the wheel */
-            spoke->next = wheel->spoke->next;
-            wheel->spoke->next = spoke;
+    for (num = 1; num < circumference; num++) {
+        /* Check if the current number is coprime to all the base primes */
+        int isCoprime = 1;
+        for (index = 0; index < numBasePrimes; index++) {
+            if (num % basePrimes[index] == 0) {
+                isCoprime = 0;
+                break;
+            }
         }
-        /* Add the spoke to the end of the wheel */
-        wheel->spoke = spoke;
+        if (isCoprime) {
+            /* Allocate memory for the spoke and initialize all the fields */
+            Spoke *spoke = malloc(sizeof(Spoke));
+            spoke->num = num;
+            /* Insert the spoke into the wheel */
+            if (!wheel->spoke) {
+                /* The current spoke is the first spoke, link it to itself */
+                spoke->next = spoke;
+            } else {
+                /* Link this spoke to the last spoke in the wheel */
+                spoke->next = wheel->spoke->next;
+                wheel->spoke->next = spoke;
+            }
+            /* Add the spoke to the end of the wheel */
+            wheel->spoke = spoke;
+            wheel->numSpokes++;
+        }
     }
     /* Go to the first spoke in the wheel */
     wheel->spoke = wheel->spoke->next;
 
-    /* Step 4 -- Clean up and return */
-    free(coprimes);
     return wheel;
 }
 
