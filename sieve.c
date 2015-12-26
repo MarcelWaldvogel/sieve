@@ -116,6 +116,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
     clearBit(isPrime, 0); /* 1 is not prime */
     wheel = newWheel(basePrimes, numBasePrimes);
+    nextp(wheel); /* Ignore 1 */
 
     /* Step 3 -- Sieve out the odd base primes */
     for (index = 1; index < numBasePrimes; index++) {
