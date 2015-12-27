@@ -2,8 +2,9 @@ CC=gcc
 C_FLAGS=-Wall -Wextra -Werror -pedantic
 OPTIMIZE=-O2
 DEBUG=-g
+ASSEMBLY=-S -fverbose-asm -masm=intel
 
-.PHONY: clean debug default force sieve_speed_test
+.PHONY: assembly clean debug default force sieve_speed_test
 
 default: wheel_test.o factor sieve
 
@@ -24,27 +25,19 @@ force:
 	@make default
 
 debug:
-	@make clean
 	$(CC) $(DEBUG) -o wheel.o -c wheel.c
 	$(CC) $(DEBUG) -o wheel_test.o wheel_test.c wheel.o
 	$(CC) $(DEBUG) -o factor factor.c wheel.o
 	$(CC) $(DEBUG) -o sieve sieve.c wheel.o
 
-sieve_speed_test: sieve
-	@echo "1 million"
-	time ./sieve -n 1000000
-	@echo "10 million"
-	time ./sieve -n 10000000
-	@echo "100 million"
-	time ./sieve -n 100000000
-	@echo "1 billion"
-	time ./sieve -n 1000000000
-	@echo "10 billion"
-	time ./sieve -n 10000000000
-	@echo "100 billion"
-	time ./sieve -n 100000000000
+assembly:
+	$(CC) $(OPTIMIZE) $(ASSEMBLY) wheel.c
+	$(CC) $(OPTIMIZE) $(ASSEMBLY) wheel_test.c
+	$(CC) $(OPTIMIZE) $(ASSEMBLY) factor.c
+	$(CC) $(OPTIMIZE) $(ASSEMBLY) sieve.c
 
 clean:
 	rm -f factor sieve
 	rm -f *.o
 	rm -rf *.dSYM
+	rm -f *.s
