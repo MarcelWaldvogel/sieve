@@ -6,13 +6,10 @@ ASSEMBLY=-S -fverbose-asm -masm=intel
 
 .PHONY: assembly clean debug default force sieve_speed_test
 
-default: wheel_test.o factor sieve
+default: factor sieve
 
 wheel.o: wheel.c wheel.h
 	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ -c $<
-
-wheel_test.o: wheel_test.c wheel.o
-	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ $^
 
 factor: factor.c wheel.o
 	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ $^
@@ -26,13 +23,11 @@ force:
 
 debug:
 	$(CC) $(DEBUG) -o wheel.o -c wheel.c
-	$(CC) $(DEBUG) -o wheel_test.o wheel_test.c wheel.o
 	$(CC) $(DEBUG) -o factor factor.c wheel.o
 	$(CC) $(DEBUG) -o sieve sieve.c wheel.o
 
 assembly:
 	$(CC) $(OPTIMIZE) $(ASSEMBLY) wheel.c
-	$(CC) $(OPTIMIZE) $(ASSEMBLY) wheel_test.c
 	$(CC) $(OPTIMIZE) $(ASSEMBLY) factor.c
 	$(CC) $(OPTIMIZE) $(ASSEMBLY) sieve.c
 
