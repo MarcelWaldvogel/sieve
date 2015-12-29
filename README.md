@@ -1,15 +1,19 @@
-# c-primes
+# WheelSieve
+
 Prime number sieve and integer factorization programs written in C.
+A Python3 clone of the sieve is
+[PySieve](https://github.com/artemmavrin/pysieve).
 
 ## Usage
 
 In the terminal:
 
-    git clone https://github.com/artemmavrin/c-primes.git
-    cd c-primes
+    git clone https://github.com/artemmavrin/wheelsieve.git
+    cd wheelsieve
     make
 
-This creates two executables: `factor` and `sieve`.
+This creates the `bin` directory and two executables: `bin/factor` and
+`bin/sieve`.
 
 ### `factor`
 
