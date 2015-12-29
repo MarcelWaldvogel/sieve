@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           wheel.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-26
+UPDATED:        2015-12-27
 DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 *******************************************************************************/
 
@@ -10,7 +10,6 @@ DESCRIPTION:    Implementation of wheels for wheel factorization algorithms.
 #include "wheel.h"
 
 typedef struct Spoke Spoke;
-
 
 /*******************************************************************************
 STRUCT NAME:    Wheel
@@ -33,7 +32,6 @@ struct Wheel {
     Spoke *spoke;                   /* The next spoke in the wheel */
 };
 
-
 /*******************************************************************************
 STRUCT NAME:    Spoke
 DESCRIPTION:    Container for numbers coprime to the base primes used to create
@@ -47,7 +45,6 @@ struct Spoke {
     unsigned long num;      /* A number coprime to the base primes */
     struct Spoke *next;     /* The next spoke in the wheel */
 };
-
 
 /*******************************************************************************
 FUNCTION NAME:  newWheel
@@ -63,28 +60,22 @@ RETURNS:        A pointer to the new wheel.
 *******************************************************************************/
 Wheel * newWheel(const unsigned long *basePrimes,
     const unsigned long numBasePrimes) {
-    /* Step 0 -- Local variable declarations */
-    unsigned long circumference;    /* The product of the base primes */
-    unsigned long num;              /* To be checked for coprimeness */
-    unsigned long index;            /* Used to track position inside lists */
-    Wheel *wheel;                   /* The wheel being created */
+    unsigned long num;    /* To be checked for coprimeness */
+    unsigned long index;  /* Used to track position in the base primes list */
+    Wheel *wheel;         /* The wheel being created */
 
-    /* Step 1 -- Compute the circumference and the number of spokes.
-     * The circumference of the wheel is the product of the base primes used to
-     * create the wheel.
-     */
-    circumference = 1;
-    for (index = 0; index < numBasePrimes; index++)
-        circumference *= basePrimes[index];
-
-    /* Step 2 -- Construct the wheel */
     /* Allocate memory for the wheel and initialize all the fields */
     wheel = malloc(sizeof(Wheel));
-    wheel->circumference = circumference;
+    wheel->circumference = 1;
     wheel->numSpokes = 0;
     wheel->spoke = NULL;
+
+    /* Compute the circumference (product of base primes) of the wheel */
+    for (index = 0; index < numBasePrimes; index++)
+        wheel->circumference *= basePrimes[index];
+
     /* Create all the spokes in the wheel */
-    for (num = 1; num < circumference; num++) {
+    for (num = 1; num < wheel->circumference; num++) {
         /* Check if the current number is coprime to all the base primes */
         int isCoprime = 1;
         for (index = 0; index < numBasePrimes; index++) {
@@ -94,7 +85,7 @@ Wheel * newWheel(const unsigned long *basePrimes,
             }
         }
         if (isCoprime) {
-            /* Allocate memory for the spoke and initialize all the fields */
+            /* Create a spoke for the current coprime number */
             Spoke *spoke = malloc(sizeof(Spoke));
             spoke->num = num;
             /* Insert the spoke into the wheel */
@@ -117,7 +108,6 @@ Wheel * newWheel(const unsigned long *basePrimes,
     return wheel;
 }
 
-
 /*******************************************************************************
 FUNCTION NAME:  deleteWheel
 DESCRIPTION:    Deallocates all memory associated with a wheel.
@@ -139,19 +129,16 @@ void deleteWheel(Wheel **wpp) {
     }
 }
 
-
 /*******************************************************************************
 FUNCTION NAME:  nextp
 DESCRIPTION:    Get the next prime candidate from the wheel. The first prime
-                candidate is necessarily 1 (so it can be ignored). The second
-                prime candidate is necessarily the smallest prime number not 
-                included in the list of base primes used to create the wheel.
+                candidate is necessarily the smallest prime number not included
+                in the list of base primes used to create the wheel.
 PARAMETERS:     wheel (Wheel *): A pointer to the wheel being used.
 RETURNS:        The next prime candidate computed by the wheel.
 *******************************************************************************/
 unsigned long nextp(Wheel *wheel) {
-    unsigned long p = wheel->spoke->num;          /* Next prime candidate */
     wheel->spoke->num += wheel->circumference;    /* Increment current spoke */
     wheel->spoke = wheel->spoke->next;            /* Move to the next spoke */
-    return p;
+    return wheel->spoke->num;
 }

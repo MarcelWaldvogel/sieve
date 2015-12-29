@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           sieve.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-25
+UPDATED:        2015-12-27
 DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
                 factorization.
 *******************************************************************************/
@@ -14,7 +14,6 @@ DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
 
-/* We use bit arrays to store primality information */
 #define NUMBITS (8 * sizeof(int)) /* # of bits in each element of a BitArray */
 typedef int * BitArray;
 
@@ -65,7 +64,6 @@ inline static int getBit(BitArray bits, const unsigned long k) {
     return (bits[k / NUMBITS] & (1 << (k % NUMBITS))) != 0;
 }
 
-
 /*******************************************************************************
 FUNCTION NAME:  sieve
 DESCRIPTION:    Sieve of Eratosthenes algorithm implementation using wheel
@@ -86,7 +84,6 @@ PARAMETERS:     max (const unsigned long): the upper bound for the sieve.
 RETURNS:        The number of primes less than or equal to max.
 *******************************************************************************/
 static unsigned long sieve(const unsigned long max, FILE *stream) {
-    /* Step 0 -- Local variable declarations */
     BitArray isPrime;       /* Bit array of T/F values */
     Wheel *wheel;           /* The wheel used in the sieve */
     unsigned long prime;    /* A prime candidate */
@@ -94,7 +91,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     unsigned long count;    /* The number of primes */
     unsigned long index;    /* Track position in loops */
 
-    /* Step 1 -- Deal with easy cases */
+    /* Deal with easy cases first */
     if (max < 2) {
         return 0;
     }
@@ -105,9 +102,9 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     }
     /* Now max is guaranteed to be at least 3 */
 
-    /* Step 2 -- Create the sieving array and the wheel */
-    /* To save space we only store the primality of odd integers, starting */
-    /* with 1 in position 0, 3 in position 1, etc. */
+    /* Create the sieving array and the wheel. To save space we only store */
+    /* the primality of odd integers, starting with 1 in position 0, 3 in */
+    /* position 1, etc. */
     isPrime = newBitArray((max + 1) / 2);
     if (!isPrime) {
         fprintf(stderr, "sieve: could not allocate bit array memory.\n");
@@ -116,30 +113,31 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
     clearBit(isPrime, 0); /* 1 is not prime */
     wheel = newWheel(basePrimes, numBasePrimes);
-    nextp(wheel); /* Ignore 1 */
 
-    /* Step 3 -- Sieve out the odd base primes */
+    /* Sieve the odd base primes */
     for (index = 1; index < numBasePrimes; index++) {
         prime = basePrimes[index];
         if (prime > max)
             break;
         count++;
         if (stream) fprintf(stream, "%lu\n", prime);
+        /* Cross off multiples of the current prime */
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
             clearBit(isPrime, comp / 2);
     }
 
-    /* Step 4 -- Sieve the remaining primes <= sqrt(max) */
+    /* Sieve the remaining primes <= sqrt(max) */
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
         if (getBit(isPrime, prime / 2)) {
             count++;
             if (stream) fprintf(stream, "%lu\n", prime);
+            /* Cross off multiples of the current prime */
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
                 clearBit(isPrime, comp / 2);
         }
     }
 
-    /* Step 5 -- Sieve the remaining primes > sqrt(max) */
+    /* Sieve the remaining primes > sqrt(max) */
     for (; prime <= max; prime = nextp(wheel)) {
         if (getBit(isPrime, prime / 2)) {
             count++;
@@ -147,7 +145,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
         }
     }
 
-    /* Step 6 -- Clean up and return */
+    /* Clean up and return */
     free(isPrime);
     deleteWheel(&wheel);
     return count;
