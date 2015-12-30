@@ -1,38 +1,49 @@
+# Directories
+BIN=bin
+OBJ=obj
+SRC=src
+
+# Compiler options
 CC=gcc
-C_FLAGS=-Wall -Wextra -Werror -pedantic
-OPTIMIZE=-O2
+CFLAGS=-Wall -Wextra -Werror -pedantic
+OPTIMIZE=-O3
 DEBUG=-g
 ASSEMBLY=-S -fverbose-asm -masm=intel
 
-.PHONY: assembly clean debug default force sieve_speed_test
+.PHONY: all assembly clean debug directories force
 
-default: factor sieve
+all: directories ${BIN}/factor ${BIN}/sieve
 
-wheel.o: wheel.c wheel.h
-	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ -c $<
+${OBJ}/%.o: ${SRC}/%.c ${SRC}/%.h
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
-factor: factor.c wheel.o
-	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ $^
+${BIN}/factor: ${SRC}/factor.c ${OBJ}/wheel.o
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
 
-sieve: sieve.c wheel.o
-	$(CC) $(C_FLAGS) $(OPTIMIZE) -o $@ $^
+${BIN}/sieve: ${SRC}/sieve.c ${OBJ}/wheel.o
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
 
-force:
-	@make clean
-	@make default
+force: clean all
 
 debug:
-	$(CC) $(DEBUG) -o wheel.o -c wheel.c
-	$(CC) $(DEBUG) -o factor factor.c wheel.o
-	$(CC) $(DEBUG) -o sieve sieve.c wheel.o
+	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
+	${CC} ${DEBUG} -o ${BIN}/factor ${SRC}/factor.c ${OBJ}/wheel.o
+	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/sieve.c ${OBJ}/wheel.o
 
 assembly:
-	$(CC) $(OPTIMIZE) $(ASSEMBLY) wheel.c
-	$(CC) $(OPTIMIZE) $(ASSEMBLY) factor.c
-	$(CC) $(OPTIMIZE) $(ASSEMBLY) sieve.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/wheel.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/factor.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/sieve.c
+
+directories:
+	@for dir in ${BIN} ${OBJ}; do \
+		if [ ! -d $$dir ]; then \
+			echo "Creating $$dir directory ..."; \
+			mkdir $$dir; \
+		fi; \
+	done;
 
 clean:
-	rm -f factor sieve
-	rm -f *.o
-	rm -rf *.dSYM
+	rm -rf ${BIN}/*
+	rm -rf ${OBJ}/*
 	rm -f *.s
