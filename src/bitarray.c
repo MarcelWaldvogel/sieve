@@ -24,6 +24,13 @@ BitArray * newBitArray(const unsigned long n) {
     return bits; /* Could be NULL if malloc fails */
 }
 
+/*******************************************************************************
+FUNCTION NAME:  deleteBitArray
+DESCRIPTION:    Deallocate memory associated with a bit array
+PARAMETERS:     bpp (BitArray **) Pointer to a pointer to the bit array to
+                delete.
+RETURNS:        Nothing.
+*******************************************************************************/
 void deleteBitArray(BitArray **bpp) {
     if (bpp && *bpp) {
         free(*bpp);
