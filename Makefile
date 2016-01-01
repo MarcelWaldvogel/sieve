@@ -20,7 +20,7 @@ ${OBJ}/%.o: ${SRC}/%.c ${SRC}/%.h
 ${BIN}/factor: ${SRC}/factor.c ${OBJ}/wheel.o
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
 
-${BIN}/sieve: ${SRC}/sieve.c ${OBJ}/wheel.o
+${BIN}/sieve: ${SRC}/sieve.c ${OBJ}/wheel.o ${OBJ}/bitarray.o
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
 
 force: clean all

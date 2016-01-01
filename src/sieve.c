@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           sieve.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-27
+UPDATED:        2015-12-31
 DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
                 factorization.
 *******************************************************************************/
@@ -9,60 +9,11 @@ DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "bitarray.h"
 #include "wheel.h"
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
-
-#define NUMBITS (8 * sizeof(int)) /* # of bits in each element of a BitArray */
-typedef int * BitArray;
-
-/*******************************************************************************
-FUNCTION NAME:  newBitArray
-DESCRIPTION:    Allocates memory for a new bit array holding at least the
-                specified number of bits.
-PARAMETERS:     n (const unsigned long): the number of bits to store.
-RETURNS:        A new bit array with at least n bits.
-*******************************************************************************/
-static BitArray newBitArray(const unsigned long n) {
-    unsigned long size = (n + sizeof(int) - 1) / sizeof(int);
-    BitArray bits = malloc(size);
-    return bits; /* Could be NULL if malloc fails */
-}
-
-/*******************************************************************************
-FUNCTION NAME:  setAllBits
-DESCRIPTION:    Sets all bits in the bit array to 1.
-PARAMETERS:     bits (BitArray): the bit array to operate on.
-                n (const unsigned long): the number of bits in the bit array.
-RETURNS:        Nothing.
-*******************************************************************************/
-static void setAllBits(BitArray bits, const unsigned long n) {
-    unsigned long size = (n + sizeof(int) - 1) / sizeof(int);
-    memset(bits, 0xff, size); /* 0xff is a byte of 1s */
-}
-
-/*******************************************************************************
-FUNCTION NAME:  clearBit
-DESCRIPTION:    Sets the bit at position k to 0.
-PARAMETERS:     bits (BitArray): the bit array to operate on.
-                k (const unsigned long): the position of the bit to turn off.
-RETURNS:        Nothing.
-*******************************************************************************/
-inline static void clearBit(BitArray bits, const unsigned long k) {
-    bits[k / NUMBITS] &= ~(1 << (k % NUMBITS));
-}
-
-/*******************************************************************************
-FUNCTION NAME:  getBit
-DESCRIPTION:    Returns the bit at position k
-PARAMETERS:     bits (BitArray): the bit array to operate on.
-                k (const unsigned long): the position of the bit to return
-RETURNS:        The bit at position k.
-*******************************************************************************/
-inline static int getBit(BitArray bits, const unsigned long k) {
-    return (bits[k / NUMBITS] & (1 << (k % NUMBITS))) != 0;
-}
 
 /*******************************************************************************
 FUNCTION NAME:  sieve
@@ -84,7 +35,7 @@ PARAMETERS:     max (const unsigned long): the upper bound for the sieve.
 RETURNS:        The number of primes less than or equal to max.
 *******************************************************************************/
 static unsigned long sieve(const unsigned long max, FILE *stream) {
-    BitArray isPrime;       /* Bit array of T/F values */
+    BitArray *isPrime;      /* Bit array of T/F values */
     Wheel *wheel;           /* The wheel used in the sieve */
     unsigned long prime;    /* A prime candidate */
     unsigned long comp;     /* A necessarily composite number */
@@ -146,7 +97,7 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     }
 
     /* Clean up and return */
-    free(isPrime);
+    deleteBitArray(&isPrime);
     deleteWheel(&wheel);
     return count;
 }
