@@ -27,11 +27,13 @@ force: clean all
 
 debug:
 	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
+	${CC} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
 	${CC} ${DEBUG} -o ${BIN}/factor ${SRC}/factor.c ${OBJ}/wheel.o
-	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/sieve.c ${OBJ}/wheel.o
+	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/sieve.c ${OBJ}/wheel.o ${OBJ}/bitarray.o
 
 assembly:
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/wheel.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/bitarray.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/factor.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/sieve.c
 
