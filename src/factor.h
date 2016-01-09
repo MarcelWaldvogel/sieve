@@ -1,7 +1,7 @@
 /*
  * FILE:        factor.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-08
+ * UPDATED:     2016-01-09
  * DESCRIPTION: Factorization function prototype.
  */
 

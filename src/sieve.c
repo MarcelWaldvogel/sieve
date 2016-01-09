@@ -1,10 +1,10 @@
-/*******************************************************************************
-FILE:           sieve.c
-AUTHOR:         Artem Mavrin
-UPDATED:        2016-01-09
-DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
-                factorization.
-*******************************************************************************/
+/* 
+ * FILE:        sieve.c
+ * AUTHOR:      Artem Mavrin
+ * UPDATED:     2016-01-09
+ * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
+ *              factorization.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,25 +16,25 @@ DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
 
-/*******************************************************************************
-FUNCTION NAME:  sieve
-DESCRIPTION:    Sieve of Eratosthenes algorithm implementation using wheel
-                factorization. All the prime numbers less than or equal to a
-                specified nonnegative integer `max' are found and printed to a
-                file stream, and the number of such primes is returned. First,
-                the even prime 2 is sieved if max >= 2. Then, a bit array is
-                created, with one bit for every odd integer between 0 and max.
-                The bit represents whether the odd integer is prime (1) or
-                composite (0). The list of base primes is sieved first, and
-                their multiples are marked as composite in the bit array. Then
-                the remaining odd primes less than or equal to sqrt(max) are
-                sieved, and their multiples are marked as composite in the bit
-                array. Finally, the remaining primes between sqrt(max) and max
-                are sieved.
-PARAMETERS:     max (const unsigned long): the upper bound for the sieve.
-                stream (FILE *): where to print the primes.
-RETURNS:        The number of primes less than or equal to max.
-*******************************************************************************/
+/*
+ * FUNCTION:    sieve
+ * DESCRIPTION: Sieve of Eratosthenes algorithm implementation using wheel
+ *              factorization. All the prime numbers less than or equal to a
+ *              specified nonnegative integer `max' are found and printed to a
+ *              file stream, and the number of such primes is returned. First,
+ *              the even prime 2 is sieved if max >= 2. Then, a bit array is
+ *              created, with one bit for every odd integer between 0 and max.
+ *              The bit represents whether the odd integer is prime (1) or
+ *              composite (0). The list of base primes is sieved first, and
+ *              their multiples are marked as composite in the bit array. Then
+ *              the remaining odd primes less than or equal to sqrt(max) are
+ *              sieved, and their multiples are marked as composite in the bit
+ *              array. Finally, the remaining primes between sqrt(max) and max
+ *              are sieved.
+ * PARAMETERS:  max (const unsigned long): The upper bound for the sieve.
+ *              stream (FILE *): Where to print the primes.
+ * RETURNS:     The number of primes less than or equal to max.
+ */
 unsigned long sieve(const unsigned long max, FILE *stream) {
     BitArray *isPrime;      /* Bit array of T/F values */
     Wheel *wheel;           /* The wheel used in the sieve */

@@ -1,9 +1,9 @@
-/*******************************************************************************
-FILE:           bitarray.h
-AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-31
-DESCRIPTION:    Interface for bit arrays.
-*******************************************************************************/
+/*
+ * FILE:        bitarray.h
+ * AUTHOR:      Artem Mavrin
+ * UPDATED:     2016-01-09
+ * DESCRIPTION: Prototypes for bit array manipulation functions..
+ */
 
 #ifndef BITARRAY_H
 #define BITARRAY_H
