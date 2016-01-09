@@ -32,16 +32,18 @@ ${OBJ}/factor.o: ${SRC}/factor.c ${SRC}/factor.h ${SRC}/wheel.h
 force: clean all
 
 debug:
-	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
 	${CC} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
-	${CC} ${DEBUG} -o ${BIN}/factor ${SRC}/factor.c ${OBJ}/wheel.o
-	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/sieve.c ${OBJ}/wheel.o ${OBJ}/bitarray.o
+	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
+	${CC} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
+	${CC} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
+	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ}/bitarray.o ${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
 
 assembly:
-	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/wheel.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/bitarray.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/wheel.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/factor.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/sieve.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/main.c
 
 directories:
 	@for dir in ${BIN} ${OBJ}; do \
@@ -54,4 +56,6 @@ directories:
 clean:
 	rm -rf ${BIN}/*
 	rm -rf ${OBJ}/*
+	rm -f ${SRC}/*.swp
+	rm -f *.swp
 	rm -f *.s
