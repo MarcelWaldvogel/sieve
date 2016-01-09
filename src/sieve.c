@@ -1,7 +1,7 @@
 /*******************************************************************************
 FILE:           sieve.c
 AUTHOR:         Artem Mavrin
-UPDATED:        2015-12-31
+UPDATED:        2016-01-09
 DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
                 factorization.
 *******************************************************************************/
@@ -11,6 +11,7 @@ DESCRIPTION:    Implementation of the sieve of Eratosthenes with wheel
 #include <string.h>
 #include "bitarray.h"
 #include "wheel.h"
+#include "sieve.h"
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
@@ -34,7 +35,7 @@ PARAMETERS:     max (const unsigned long): the upper bound for the sieve.
                 stream (FILE *): where to print the primes.
 RETURNS:        The number of primes less than or equal to max.
 *******************************************************************************/
-static unsigned long sieve(const unsigned long max, FILE *stream) {
+unsigned long sieve(const unsigned long max, FILE *stream) {
     BitArray *isPrime;      /* Bit array of T/F values */
     Wheel *wheel;           /* The wheel used in the sieve */
     unsigned long prime;    /* A prime candidate */
@@ -100,58 +101,4 @@ static unsigned long sieve(const unsigned long max, FILE *stream) {
     deleteBitArray(&isPrime);
     deleteWheel(&wheel);
     return count;
-}
-
-/* Print a usage message to the user */
-static void helpmessage(const char *name) {
-    fprintf(stderr, "Print all the primes up to a given positive integer.\n");
-    fprintf(stderr, "Usage:\n");
-    fprintf(stderr, "\t%s N\n", name);
-    fprintf(stderr, "\t%s [flags] N\n", name);
-    fprintf(stderr, "\twhere N is a positive integer.\n");
-    fprintf(stderr, "Flags:\n");
-    fprintf(stderr, "\t-n\tPrint only the number of primes.\n");
-    fprintf(stderr, "\t-h\tShow usage information.\n");
-}
-
-/* Run the program */
-int main(int argc, const char **argv) {
-    const char *name = argv[0];     /* The program name */
-    unsigned long max;              /* The upper bound for the sieve */
-    int opt_count = 0;              /* Whether to print the number of primes */
-    char c;                         /* A command line argument char */
-
-    /* Process command-line options */
-    while (--argc > 0 && **++argv == '-') {
-        while ((c = *++*argv)) {
-            switch (c) {
-                case 'h':
-                    helpmessage(name);
-                    return 0;
-                case 'n':
-                    opt_count = 1;
-                    break;
-                default:
-                    fprintf(stderr, "sieve: illegal option '%c'\n", c);
-                    return 1;
-            }
-        }
-    }
-
-    /* There should be one command-line argument remaining */
-    /* If not, print a usage message */
-    if (argc != 1) {
-        fprintf(stderr, "sieve: expected argument.\n");
-        fprintf(stderr, "For help, run %s -h\n", name);
-        return 1;
-    }
-
-    max = strtoul(*argv, NULL, 10);
-    if (opt_count)
-        printf("%lu\n", sieve(max, NULL));
-    else
-        sieve(max, stdout);
-
-    /* Clean up and return */
-    return 0;
 }

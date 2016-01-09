@@ -12,16 +12,22 @@ ASSEMBLY=-S -fverbose-asm -masm=intel
 
 .PHONY: all assembly clean debug directories force
 
-all: directories ${BIN}/factor ${BIN}/sieve
+all: directories ${BIN}/sieve
 
-${OBJ}/%.o: ${SRC}/%.c ${SRC}/%.h
+${BIN}/sieve: ${SRC}/main.c ${OBJ}/bitarray.o ${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
+
+${OBJ}/bitarray.o: ${SRC}/bitarray.c ${SRC}/bitarray.h
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
-${BIN}/factor: ${SRC}/factor.c ${OBJ}/wheel.o
-	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
+${OBJ}/wheel.o: ${SRC}/wheel.c ${SRC}/wheel.h
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
-${BIN}/sieve: ${SRC}/sieve.c ${OBJ}/wheel.o ${OBJ}/bitarray.o
-	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
+${OBJ}/sieve.o: ${SRC}/sieve.c ${SRC}/sieve.h ${SRC}/bitarray.h ${SRC}/wheel.h
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
+
+${OBJ}/factor.o: ${SRC}/factor.c ${SRC}/factor.h ${SRC}/wheel.h
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
 force: clean all
 
