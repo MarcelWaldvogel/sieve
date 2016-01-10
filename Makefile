@@ -44,6 +44,7 @@ debug:
 	${CC} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
 	${CC} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
 	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ}/bitarray.o ${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
+	${CC} ${DEBUG} -o ${TEST}/wheel_test ${SRC}/${TEST}/wheel_test.c ${OBJ}/wheel.o
 
 assembly:
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/bitarray.c
@@ -51,6 +52,7 @@ assembly:
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/factor.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/sieve.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/main.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/${TEST}/wheel_test.c
 
 directories:
 	@for dir in ${BIN} ${OBJ} ${TEST}; do \
@@ -61,9 +63,7 @@ directories:
 	done;
 
 clean:
-	rm -rf ${BIN}/*
-	rm -rf ${OBJ}/*
-	rm -rf ${TEST}/*
+	rm -rf ${BIN} ${OBJ} ${TEST}
 	rm -f ${SRC}/*.swp
 	rm -f *.swp
 	rm -f *.s
