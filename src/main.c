@@ -48,7 +48,7 @@ int main(int argc, const char **argv) {
     int opt_factor = 0;         /* Option: factor number instead of sieving */
     int opt_count = 0;          /* Option: print only the number of primes */
     int opt_unique = 0;         /* Option: ignore divisor multiplicity */
-    char c;			            /* Command-line argument character */
+    char c;                     /* Command-line argument character */
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == '-') {
