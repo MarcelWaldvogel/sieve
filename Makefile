@@ -56,10 +56,10 @@ assembly:
 
 directories:
 	@for dir in ${BIN} ${OBJ} ${TEST}; do \
-		if [ ! -d $$dir ]; then \
-			echo "Creating $$dir directory ..."; \
-			mkdir $$dir; \
-		fi; \
+	    if [ ! -d $$dir ]; then \
+	        echo "Creating $$dir directory ..."; \
+	        mkdir $$dir; \
+	    fi; \
 	done;
 
 clean:
