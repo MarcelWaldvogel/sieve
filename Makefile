@@ -2,6 +2,7 @@
 BIN=bin
 OBJ=obj
 SRC=src
+TEST=test
 
 # Compiler options
 CC=gcc
@@ -10,7 +11,7 @@ OPTIMIZE=-O3
 DEBUG=-g
 ASSEMBLY=-S -fverbose-asm -masm=intel
 
-.PHONY: all assembly clean debug directories force
+.PHONY: all assembly clean debug directories force test
 
 all: directories ${BIN}/sieve
 
@@ -31,6 +32,12 @@ ${OBJ}/factor.o: ${SRC}/factor.c ${SRC}/factor.h ${SRC}/wheel.h
 
 force: clean all
 
+test: directories ${TEST}/wheel_test
+
+${TEST}/wheel_test: ${SRC}/${TEST}/wheel_test.c ${SRC}/wheel.c
+	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
+	${CC} ${CFLAGS} ${DEBUG} -o $@ $< ${OBJ}/wheel.o
+
 debug:
 	${CC} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
 	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
@@ -46,7 +53,7 @@ assembly:
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/main.c
 
 directories:
-	@for dir in ${BIN} ${OBJ}; do \
+	@for dir in ${BIN} ${OBJ} ${TEST}; do \
 		if [ ! -d $$dir ]; then \
 			echo "Creating $$dir directory ..."; \
 			mkdir $$dir; \
@@ -56,6 +63,7 @@ directories:
 clean:
 	rm -rf ${BIN}/*
 	rm -rf ${OBJ}/*
+	rm -rf ${TEST}/*
 	rm -f ${SRC}/*.swp
 	rm -f *.swp
 	rm -f *.s

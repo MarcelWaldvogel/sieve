@@ -1,6 +1,9 @@
 # Executables
 bin/*
 
+# Test executables
+test/*
+
 # Object files
 obj/*
 
