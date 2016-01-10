@@ -38,7 +38,7 @@ ${TEST}/wheel_test: ${SRC}/${TEST}/wheel_test.c ${SRC}/wheel.c
 	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
 	${CC} ${CFLAGS} ${DEBUG} -o $@ $< ${OBJ}/wheel.o
 
-debug:
+debug: directories
 	${CC} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
 	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
 	${CC} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
