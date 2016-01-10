@@ -11,11 +11,35 @@
 #include "factor.h"
 
 #define ERR_ILLEGAL_OPTION  "sieve: illegal option `%c'\n"
-#define ERR_USAGE           "sieve: expected argument.\nFor help, run %s -h\n"
+#define ERR_EXPECTED_ARG    "sieve: expected argument.\n"
+#define ERR_U_WITHOUT_F     "sieve: the -u option cannot be used without -f\n"
+#define ERR_USAGE_HELP      "For help, run %s -h\n"
+
+#define HELP_PROG_NAME      "WheelSieve"
+#define HELP_DESCRIPTION    "\tSieve of Eratosthenes and prime factorization\n"
+#define HELP_USAGE          "Usage:\n\t%s [-f] [-n] [-u] <positive integer>\n"
+#define HELP_OPTIONS        "Options:\n"
+#define HELP_OPT_N          "\t-n\tShow only the number of primes\n"
+#define HELP_OPT_F          "\t-f\tFactor the given integer. Off by default\n"
+#define HELP_OPT_U          "\t-u\tWhen using -f option, ignore multiplicity\n"
 
 /*
- * FUNCTION NAME:   main
- * DESCRIPTION:     Driver for the sieve program.
+ * FUNCTION:    print_help
+ * DESCRIPTION: Print a help message for the user
+ */
+void print_help(const char *name) {
+    fprintf(stdout, HELP_PROG_NAME);
+    fprintf(stdout, HELP_DESCRIPTION);
+    fprintf(stdout, HELP_USAGE, name);
+    fprintf(stdout, HELP_OPTIONS);
+    fprintf(stdout, HELP_OPT_N);
+    fprintf(stdout, HELP_OPT_F);
+    fprintf(stdout, HELP_OPT_U);
+}
+
+/*
+ * FUNCTION:    main
+ * DESCRIPTION: Driver for the sieve program.
  */
 int main(int argc, const char **argv) {
     const char *name = *argv;   /* The program name */
@@ -30,7 +54,7 @@ int main(int argc, const char **argv) {
         while ((c = *++*argv)) {
             switch (c) {
                 case 'h':
-                    /*TODO: create help message */
+                    print_help(name);
                     return EXIT_SUCCESS;
                 case 'f':
                     opt_factor = !opt_factor;
@@ -47,13 +71,19 @@ int main(int argc, const char **argv) {
             }
         }
     }
+    /* The -u option shouldn't be used without the -f option */
+    if (opt_unique && !opt_factor) {
+        fprintf(stderr, ERR_U_WITHOUT_F);
+        return EXIT_FAILURE;
+    }
 
     /*
      * There should be one command-line argument remaining. If not, print a
      * usage message and exit with failure.
      */
     if (argc != 1) {
-        fprintf(stderr, ERR_USAGE, name);
+        fprintf(stderr, ERR_EXPECTED_ARG);
+        fprintf(stderr, ERR_USAGE_HELP, name);
         return EXIT_FAILURE;
     }
 
