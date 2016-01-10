@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-08
+ * UPDATED:     2016-01-10
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -12,6 +12,7 @@
 
 #define ERR_ILLEGAL_OPTION  "sieve: illegal option `%c'\n"
 #define ERR_EXPECTED_ARG    "sieve: expected argument.\n"
+#define ERR_TOO_MANY_ARGS   "sieve: too many arguments.\n"
 #define ERR_U_WITHOUT_F     "sieve: the -u option cannot be used without -f\n"
 #define ERR_USAGE_HELP      "For help, run %s -h\n"
 
@@ -47,7 +48,7 @@ int main(int argc, const char **argv) {
     int opt_factor = 0;         /* Option: factor number instead of sieving */
     int opt_count = 0;          /* Option: print only the number of primes */
     int opt_unique = 0;         /* Option: ignore divisor multiplicity */
-    char c;			/* Command-line argument character */
+    char c;			            /* Command-line argument character */
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == '-') {
@@ -67,13 +68,16 @@ int main(int argc, const char **argv) {
                     break;
                 default:
                     fprintf(stderr, ERR_ILLEGAL_OPTION, c);
+                    fprintf(stderr, ERR_USAGE_HELP, name);
                     return EXIT_FAILURE;
             }
         }
     }
+
     /* The -u option shouldn't be used without the -f option */
     if (opt_unique && !opt_factor) {
         fprintf(stderr, ERR_U_WITHOUT_F);
+        fprintf(stderr, ERR_USAGE_HELP, name);
         return EXIT_FAILURE;
     }
 
@@ -81,8 +85,12 @@ int main(int argc, const char **argv) {
      * There should be one command-line argument remaining. If not, print a
      * usage message and exit with failure.
      */
-    if (argc != 1) {
+    if (argc < 1) {
         fprintf(stderr, ERR_EXPECTED_ARG);
+        fprintf(stderr, ERR_USAGE_HELP, name);
+        return EXIT_FAILURE;
+    } else if (argc > 1) {
+        fprintf(stderr, ERR_TOO_MANY_ARGS);
         fprintf(stderr, ERR_USAGE_HELP, name);
         return EXIT_FAILURE;
     }
