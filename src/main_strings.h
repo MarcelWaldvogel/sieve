@@ -15,7 +15,7 @@
 #define ERR_USAGE_HELP      "For help, run %s -h\n"
 
 #define HELP_MESSAGE        "WheelSieve\t\
-Sieve of Eratosthenes and prime factorization\n\n\
+Wheel-based Sieve of Eratosthenes and prime factorization\n\n\
 Usage:\n\t%s [-f] [-n] [-u] <positive integer>\n\n\
 Without any options, this will list all the prime numbers less than or equal\n\
 to the specified positive integer.\n\n\
