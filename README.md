@@ -1,6 +1,6 @@
 # WheelSieve
 
-Prime number sieve and integer factorization program written in C.
+Wheel-based prime number sieve and integer factorization program written in C.
 A Python 3 clone of the sieve is
 [PySieve](https://github.com/artemmavrin/pysieve).
 
