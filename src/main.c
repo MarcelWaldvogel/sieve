@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-10
+ * UPDATED:     2016-01-16
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -9,34 +9,7 @@
 #include <stdlib.h>
 #include "sieve.h"
 #include "factor.h"
-
-#define ERR_ILLEGAL_OPTION  "sieve: illegal option `%c'\n"
-#define ERR_EXPECTED_ARG    "sieve: expected argument.\n"
-#define ERR_TOO_MANY_ARGS   "sieve: too many arguments.\n"
-#define ERR_U_WITHOUT_F     "sieve: the -u option cannot be used without -f\n"
-#define ERR_USAGE_HELP      "For help, run %s -h\n"
-
-#define HELP_PROG_NAME      "WheelSieve"
-#define HELP_DESCRIPTION    "\tSieve of Eratosthenes and prime factorization\n"
-#define HELP_USAGE          "Usage:\n\t%s [-f] [-n] [-u] <positive integer>\n"
-#define HELP_OPTIONS        "Options:\n"
-#define HELP_OPT_N          "\t-n\tShow only the number of primes\n"
-#define HELP_OPT_F          "\t-f\tFactor the given integer. Off by default\n"
-#define HELP_OPT_U          "\t-u\tWhen using -f option, ignore multiplicity\n"
-
-/*
- * FUNCTION:    print_help
- * DESCRIPTION: Print a help message for the user
- */
-void print_help(const char *name) {
-    fprintf(stdout, HELP_PROG_NAME);
-    fprintf(stdout, HELP_DESCRIPTION);
-    fprintf(stdout, HELP_USAGE, name);
-    fprintf(stdout, HELP_OPTIONS);
-    fprintf(stdout, HELP_OPT_N);
-    fprintf(stdout, HELP_OPT_F);
-    fprintf(stdout, HELP_OPT_U);
-}
+#include "main_strings.h"
 
 /*
  * FUNCTION:    main
@@ -55,7 +28,7 @@ int main(int argc, const char **argv) {
         while ((c = *++*argv)) {
             switch (c) {
                 case 'h':
-                    print_help(name);
+                    printf(HELP_MESSAGE, name);
                     return EXIT_SUCCESS;
                 case 'f':
                     opt_factor = !opt_factor;

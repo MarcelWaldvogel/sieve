@@ -11,12 +11,17 @@ OPTIMIZE=-O3
 DEBUG=-g
 ASSEMBLY=-S -fverbose-asm -masm=intel
 
+# Object files
+OBJ_FILES=${OBJ}/bitarray.o ${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
+
+
 .PHONY: all assembly clean debug directories force test
 
 all: directories ${BIN}/sieve
 
-${BIN}/sieve: ${SRC}/main.c ${OBJ}/bitarray.o ${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
-	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ $^
+${BIN}/sieve: ${SRC}/main.c ${SRC}/main_strings.h ${OBJ_FILES}
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ ${SRC}/main.c ${OBJ_FILES}
+
 
 ${OBJ}/bitarray.o: ${SRC}/bitarray.c ${SRC}/bitarray.h
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
@@ -43,7 +48,7 @@ debug: directories
 	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
 	${CC} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
 	${CC} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
-	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ}/bitarray.o ${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
+	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ_FILES}
 	${CC} ${DEBUG} -o ${TEST}/wheel_test ${SRC}/${TEST}/wheel_test.c ${OBJ}/wheel.o
 
 assembly:
