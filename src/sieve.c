@@ -1,7 +1,7 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-09
+ * UPDATED:     2016-01-16
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -12,6 +12,8 @@
 #include "bitarray.h"
 #include "wheel.h"
 #include "sieve.h"
+
+#define ERR_BIT_ALLOCATE    "sieve: could not allocate bit array memory.\n"
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
@@ -59,7 +61,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     /* position 1, etc. */
     isPrime = newBitArray((max + 1) / 2);
     if (!isPrime) {
-        fprintf(stderr, "sieve: could not allocate bit array memory.\n");
+        fprintf(stderr, ERR_BIT_ALLOCATE);
         return 0;
     }
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
