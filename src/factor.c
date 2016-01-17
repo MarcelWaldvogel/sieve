@@ -1,14 +1,13 @@
 /*
  * FILE:        factor.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-09
+ * UPDATED:     2016-01-16
  * DESCRIPTION: Prints out the prime factors of a given positive integer.
  *              Prime factors are computed using trial division with wheel
  *              factorization.
  */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include "wheel.h"
 
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};

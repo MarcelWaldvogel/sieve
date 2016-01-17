@@ -7,13 +7,12 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "bitarray.h"
 #include "wheel.h"
 #include "sieve.h"
 
 #define ERR_BIT_ALLOCATE    "sieve: could not allocate bit array memory.\n"
+#define PRIME_FORMAT        "%lu\n"
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
@@ -49,7 +48,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     if (max < 2) {
         return 0;
     }
-    if (stream) fprintf(stream, "2\n");
+    if (stream) fprintf(stream, PRIME_FORMAT, (unsigned long) 2);
     count = 1;
     if (max == 2) {
         return 1;
@@ -74,7 +73,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         if (prime > max)
             break;
         count++;
-        if (stream) fprintf(stream, "%lu\n", prime);
+        if (stream) fprintf(stream, PRIME_FORMAT, prime);
         /* Cross off multiples of the current prime */
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
             clearBit(isPrime, comp / 2);
@@ -84,7 +83,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
         if (getBit(isPrime, prime / 2)) {
             count++;
-            if (stream) fprintf(stream, "%lu\n", prime);
+            if (stream) fprintf(stream, PRIME_FORMAT, prime);
             /* Cross off multiples of the current prime */
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
                 clearBit(isPrime, comp / 2);
@@ -95,7 +94,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     for (; prime <= max; prime = nextp(wheel)) {
         if (getBit(isPrime, prime / 2)) {
             count++;
-            if (stream) fprintf(stream, "%lu\n", prime);
+            if (stream) fprintf(stream, PRIME_FORMAT, prime);
         }
     }
 

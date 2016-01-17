@@ -1,12 +1,11 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-09
+ * UPDATED:     2016-01-16
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
 #include <stdlib.h>
-#include <string.h>
 #include "wheel.h"
 
 typedef struct Spoke Spoke;
