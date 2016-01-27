@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-16
+ * UPDATED:     2016-01-27
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -22,6 +22,7 @@ int main(int argc, const char **argv) {
     int opt_count = 0;          /* Option: print only the number of primes */
     int opt_unique = 0;         /* Option: ignore divisor multiplicity */
     char c;                     /* Command-line argument character */
+    char *endptr;               /* For stroul's error checking */
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == '-') {
@@ -69,7 +70,13 @@ int main(int argc, const char **argv) {
     }
 
     /* Convert the command-line number to an unsigned long */
-    num = strtoul(*argv, NULL, 10);
+    num = strtoul(*argv, &endptr, 10);
+
+    /* Check if the argument was successfully converted */
+    if (*endptr) {
+        fprintf(stderr, ERR_CONVERT, *argv);
+        return EXIT_FAILURE;
+    }
 
     if (!opt_factor) {
         /* Sieve the primes up to the specified number */

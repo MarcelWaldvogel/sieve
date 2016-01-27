@@ -1,7 +1,7 @@
 /*
  * FILE:        main_strings.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-16
+ * UPDATED:     2016-01-27
  * DESCRIPTION: Defines string constants to be used in main.c.
  */
 
@@ -12,6 +12,7 @@
 #define ERR_EXPECTED_ARG    "sieve: expected argument.\n"
 #define ERR_TOO_MANY_ARGS   "sieve: too many arguments.\n"
 #define ERR_U_WITHOUT_F     "sieve: the -u option cannot be used without -f\n"
+#define ERR_CONVERT         "sieve: '%s' is not a positive integer.\n"
 #define ERR_USAGE_HELP      "For help, run %s -h\n"
 
 #define HELP_MESSAGE        "WheelSieve\t\
