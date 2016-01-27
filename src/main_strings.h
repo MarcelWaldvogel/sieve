@@ -12,7 +12,7 @@
 #define ERR_EXPECTED_ARG    "sieve: expected argument.\n"
 #define ERR_TOO_MANY_ARGS   "sieve: too many arguments.\n"
 #define ERR_U_WITHOUT_F     "sieve: the -u option cannot be used without -f\n"
-#define ERR_CONVERT         "sieve: '%s' is not a positive integer.\n"
+#define ERR_CONVERT         "sieve: '%s' is not a positive decimal integer.\n"
 #define ERR_TOO_LARGE       "sieve: %s is too large.\n"
 #define ERR_USAGE_HELP      "For help, run %s -%c\n"
 
