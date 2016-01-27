@@ -11,6 +11,15 @@
 #include "factor.h"
 #include "main_strings.h"
 
+#define OPT_START   '-'     /* Command-line options start symbol */
+#define OPT_HELP    'h'     /* Option to print help message */
+#define OPT_FACTOR  'f'     /* Option to factor instead of sieve */
+#define OPT_COUNT   'n'     /* Option to print the number of primes */
+#define OPT_UNIQUE  'u'     /* Option to ignore multiplicity */
+#define NUM_ARGS    1       /* Expected number of command-line arguments */
+#define BASE        10      /* For stroul */
+#define COUNT_FMT   "%lu\n" /* Format of count output */
+
 /*
  * FUNCTION:    main
  * DESCRIPTION: Driver for the sieve program.
@@ -25,24 +34,25 @@ int main(int argc, const char **argv) {
     char *endptr;               /* For stroul's error checking */
 
     /* Process command-line options */
-    while (--argc > 0 && **++argv == '-') {
+    while (--argc > 0 && **++argv == OPT_START) {
         while ((c = *++*argv)) {
             switch (c) {
-                case 'h':
-                    printf(HELP_MESSAGE, name);
+                case OPT_HELP:
+                    printf(HELP_MESSAGE, name, OPT_COUNT, OPT_FACTOR,
+                            OPT_UNIQUE);
                     return EXIT_SUCCESS;
-                case 'f':
+                case OPT_FACTOR:
                     opt_factor = !opt_factor;
                     break;
-                case 'n':
+                case OPT_COUNT:
                     opt_count = !opt_count;
                     break;
-                case 'u':
+                case OPT_UNIQUE:
                     opt_unique = !opt_unique;
                     break;
                 default:
                     fprintf(stderr, ERR_ILLEGAL_OPTION, c);
-                    fprintf(stderr, ERR_USAGE_HELP, name);
+                    fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
                     return EXIT_FAILURE;
             }
         }
@@ -51,7 +61,7 @@ int main(int argc, const char **argv) {
     /* The -u option shouldn't be used without the -f option */
     if (opt_unique && !opt_factor) {
         fprintf(stderr, ERR_U_WITHOUT_F);
-        fprintf(stderr, ERR_USAGE_HELP, name);
+        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
     }
 
@@ -59,18 +69,18 @@ int main(int argc, const char **argv) {
      * There should be one command-line argument remaining. If not, print a
      * usage message and exit with failure.
      */
-    if (argc < 1) {
+    if (argc < NUM_ARGS) {
         fprintf(stderr, ERR_EXPECTED_ARG);
-        fprintf(stderr, ERR_USAGE_HELP, name);
+        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
-    } else if (argc > 1) {
+    } else if (argc > NUM_ARGS) {
         fprintf(stderr, ERR_TOO_MANY_ARGS);
-        fprintf(stderr, ERR_USAGE_HELP, name);
+        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
     }
 
     /* Convert the command-line number to an unsigned long */
-    num = strtoul(*argv, &endptr, 10);
+    num = strtoul(*argv, &endptr, BASE);
 
     /* Check if the argument was successfully converted */
     if (*endptr) {
@@ -81,13 +91,13 @@ int main(int argc, const char **argv) {
     if (!opt_factor) {
         /* Sieve the primes up to the specified number */
         if (opt_count)
-            printf("%lu\n", sieve(num, NULL));
+            printf(COUNT_FMT, sieve(num, NULL));
         else
             sieve(num, stdout);
     } else {
         /* Factor the specified number */
         if (opt_count)
-            printf("%lu\n", factor(num, opt_unique, NULL));
+            printf(COUNT_FMT, factor(num, opt_unique, NULL));
         else
             factor(num, opt_unique, stdout);
     }
