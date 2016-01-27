@@ -18,7 +18,7 @@
 #define OPT_COUNT   'n'     /* Option to print the number of primes */
 #define OPT_UNIQUE  'u'     /* Option to ignore multiplicity */
 #define NUM_ARGS    1       /* Expected number of command-line arguments */
-#define BASE        10      /* For stroul */
+#define BASE        0       /* For stroul - accept decimal, octal, and hex */
 #define COUNT_FMT   "%lu\n" /* Format of count output */
 
 /*
