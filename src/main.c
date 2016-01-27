@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include "sieve.h"
 #include "factor.h"
 #include "main_strings.h"
@@ -83,8 +84,11 @@ int main(int argc, const char **argv) {
     num = strtoul(*argv, &endptr, BASE);
 
     /* Check if the argument was successfully converted */
-    if (*endptr) {
+    if (endptr == *argv || *endptr) {
         fprintf(stderr, ERR_CONVERT, *argv);
+        return EXIT_FAILURE;
+    } else if (errno == ERANGE) {
+        fprintf(stderr, ERR_TOO_LARGE, *argv);
         return EXIT_FAILURE;
     }
 
