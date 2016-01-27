@@ -1,7 +1,7 @@
 /*
  * FILE:        factor.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-16
+ * UPDATED:     2016-01-27
  * DESCRIPTION: Prints out the prime factors of a given positive integer.
  *              Prime factors are computed using trial division with wheel
  *              factorization.
@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include "wheel.h"
+#include "factor.h"
 
 #define PRIME_FORMAT    "%lu\n"
 
