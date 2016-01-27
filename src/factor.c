@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include "wheel.h"
 
+#define PRIME_FORMAT    "%lu\n"
+
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
@@ -28,7 +30,7 @@ unsigned long factor(unsigned long num, int unique, FILE *stream) {
         prime = basePrimes[index];
         if (unique) {
             if (num % prime == 0) {
-                if (stream) fprintf(stream, "%lu\n", prime);
+                if (stream) fprintf(stream, PRIME_FORMAT, prime);
                 count++;
                 /* Divide num by prime as many times as possible */
                 for (num /= prime; num % prime == 0; num /= prime);
@@ -36,7 +38,7 @@ unsigned long factor(unsigned long num, int unique, FILE *stream) {
         } else {
             /* Divide num by prime as many times as possible */
             while (num % prime == 0) {
-                if (stream) fprintf(stream, "%lu\n", prime);
+                if (stream) fprintf(stream, PRIME_FORMAT, prime);
                 num /= prime;
                 count++;
             }
@@ -50,12 +52,12 @@ unsigned long factor(unsigned long num, int unique, FILE *stream) {
     while (num > 1) {
         prime = nextp(wheel);
         if (prime * prime > num) {
-            if (stream) fprintf(stream, "%lu\n", num);
+            if (stream) fprintf(stream, PRIME_FORMAT, num);
             count++;
             break;
         } else if (unique) {
             if (num % prime == 0) {
-                if (stream) fprintf(stream, "%lu\n", prime);
+                if (stream) fprintf(stream, PRIME_FORMAT, prime);
                 count++;
                 /* Divide num by prime as many times as possible */
                 for (num /= prime; num % prime == 0; num /= prime);
@@ -63,7 +65,7 @@ unsigned long factor(unsigned long num, int unique, FILE *stream) {
         } else {
             /* Divide num by prime as many times as possible */
             while (num % prime == 0) {
-                if (stream) fprintf(stream, "%lu\n", prime);
+                if (stream) fprintf(stream, PRIME_FORMAT, prime);
                 num /= prime;
                 count++;
             }
