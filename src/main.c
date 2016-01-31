@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-27
+ * UPDATED:     2016-01-31
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -31,6 +31,7 @@ int main(int argc, const char **argv) {
     int opt_factor = 0;         /* Option: factor number instead of sieving */
     int opt_count = 0;          /* Option: print only the number of primes */
     int opt_unique = 0;         /* Option: ignore divisor multiplicity */
+    int opt_help = 0;           /* Option: print help message */
     char c;                     /* Command-line argument character */
     char *endptr;               /* For stroul's error checking */
 
@@ -39,17 +40,16 @@ int main(int argc, const char **argv) {
         while ((c = *++*argv)) {
             switch (c) {
                 case OPT_HELP:
-                    printf(HELP_MESSAGE, name, OPT_COUNT, OPT_FACTOR,
-                            OPT_UNIQUE);
-                    return EXIT_SUCCESS;
+                    opt_help = 1;
+                    break;
                 case OPT_FACTOR:
-                    opt_factor = !opt_factor;
+                    opt_factor = 1;
                     break;
                 case OPT_COUNT:
-                    opt_count = !opt_count;
+                    opt_count = 1;
                     break;
                 case OPT_UNIQUE:
-                    opt_unique = !opt_unique;
+                    opt_unique = 1;
                     break;
                 default:
                     fprintf(stderr, ERR_ILLEGAL_OPTION, c);
@@ -66,10 +66,13 @@ int main(int argc, const char **argv) {
         return EXIT_FAILURE;
     }
 
-    /*
-     * There should be one command-line argument remaining. If not, print a
-     * usage message and exit with failure.
-     */
+    /* Print help message if necessary */
+    if (opt_help) {
+        printf(HELP_MESSAGE, name, OPT_COUNT, OPT_FACTOR, OPT_UNIQUE);
+        return EXIT_SUCCESS;
+    }
+
+    /* There should be one command-line argument remaining */
     if (argc < NUM_ARGS) {
         fprintf(stderr, ERR_EXPECTED_ARG);
         fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
