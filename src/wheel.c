@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-16
+ * UPDATED:     2016-03-24
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
@@ -55,6 +55,8 @@ struct Spoke {
  *              are assumed to be distinct primes, but no check is made to
  *              ensure that they either prime or distinct.
  *              numBasePrimes (const unsigned long): The number of base primes.
+ * ERRORS:      If memory could not be allocated for the wheel, a null pointer
+ *              is returned.
  * RETURNS:     A pointer to the new wheel.
  */
 Wheel * newWheel(const unsigned long *basePrimes,
@@ -63,8 +65,12 @@ Wheel * newWheel(const unsigned long *basePrimes,
     unsigned long index;  /* Used to track position in the base primes list */
     Wheel *wheel;         /* The wheel being created */
 
-    /* Allocate memory for the wheel and initialize all the fields */
+    /* Allocate memory for the wheel and check if malloc failed */
     wheel = malloc(sizeof(Wheel));
+    if (!wheel)
+        return NULL;
+
+    /* Initialize the fields of the wheel */
     wheel->circumference = 1;
     wheel->numSpokes = 0;
     wheel->spoke = NULL;
