@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-31
+ * UPDATED:     2016-03-24
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -63,6 +63,7 @@ int main(int argc, const char **argv) {
                     goto post_options;
                 case OPT_NULL:
                     fprintf(stderr, ERR_EXPECTED_OPT, OPT_START);
+                    fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
                     return EXIT_FAILURE;
                 default:
                     fprintf(stderr, ERR_ILLEGAL_OPTION, c);
@@ -103,6 +104,7 @@ post_options:
     for (str = *argv; *str; str++) {
         if (*str == MINUS) {
             fprintf(stderr, ERR_CONVERT, *argv);
+            fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
             return EXIT_FAILURE;
         }
     }
@@ -113,9 +115,11 @@ post_options:
     /* Check if the argument was successfully converted */
     if (endptr == *argv || *endptr) {
         fprintf(stderr, ERR_CONVERT, *argv);
+        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
     } else if (errno == ERANGE) {
         fprintf(stderr, ERR_TOO_LARGE, *argv);
+        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
     }
 
