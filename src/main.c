@@ -85,7 +85,11 @@ post_options:
         return EXIT_FAILURE;
     } else if (argc < NUM_ARGS) {
         /* There are no command-line arguments--read argument from stdin */
-        fgets(str, BUFSIZ, stdin);
+        if(!fgets(str, BUFSIZ, stdin)) {
+            /* If fgets failed, print error and exit */
+            fprintf(stderr, ERR_READ_STDIN);
+            return EXIT_FAILURE;
+        }
     } else {
         /* Otherwise, there is one command-line argument left--copy it to str */
         for (i = 0; i < BUFSIZ; i++) {
