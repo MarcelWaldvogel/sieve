@@ -56,18 +56,22 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     clearBit(isPrime, 0); /* 1 is not prime */
     wheel = newWheel(basePrimes, numBasePrimes);
 
+    /* Initialize variables */
+    count = 0;
+    prime = 2;
+
     /* Deal with easy cases first */
-    if (max < 2) {
+    if (max < prime) {
         deleteBitArray(&isPrime);
         deleteWheel(&wheel);
-        return 0;
-    }
-    if (stream) fprintf(stream, PRIME_FORMAT, (unsigned long) 2);
-    count = 1;
-    if (max == 2) {
+        return count;
+    } /* Now max is guaranteed to be at least 2 */
+    count++;
+    if (stream) fprintf(stream, PRIME_FORMAT, prime);
+    if (max == prime) {
         deleteBitArray(&isPrime);
         deleteWheel(&wheel);
-        return 1;
+        return count;
     } /* Now max is guaranteed to be at least 3 */
 
     /* Sieve the odd base primes */
