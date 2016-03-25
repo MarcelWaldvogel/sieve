@@ -1,7 +1,7 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-16
+ * UPDATED:     2016-03-24
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -44,17 +44,6 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     unsigned long count;    /* The number of primes */
     unsigned long index;    /* Track position in loops */
 
-    /* Deal with easy cases first */
-    if (max < 2) {
-        return 0;
-    }
-    if (stream) fprintf(stream, PRIME_FORMAT, (unsigned long) 2);
-    count = 1;
-    if (max == 2) {
-        return 1;
-    }
-    /* Now max is guaranteed to be at least 3 */
-
     /* Create the sieving array and the wheel. To save space we only store */
     /* the primality of odd integers, starting with 1 in position 0, 3 in */
     /* position 1, etc. */
@@ -66,6 +55,20 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
     clearBit(isPrime, 0); /* 1 is not prime */
     wheel = newWheel(basePrimes, numBasePrimes);
+
+    /* Deal with easy cases first */
+    if (max < 2) {
+        deleteBitArray(&isPrime);
+        deleteWheel(&wheel);
+        return 0;
+    }
+    if (stream) fprintf(stream, PRIME_FORMAT, (unsigned long) 2);
+    count = 1;
+    if (max == 2) {
+        deleteBitArray(&isPrime);
+        deleteWheel(&wheel);
+        return 1;
+    } /* Now max is guaranteed to be at least 3 */
 
     /* Sieve the odd base primes */
     for (index = 1; index < numBasePrimes; index++) {
