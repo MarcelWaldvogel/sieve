@@ -12,6 +12,7 @@
 #include "sieve.h"
 
 #define ERR_BIT_ALLOCATE    "sieve: could not allocate bit array memory.\n"
+#define ERR_WHEEL_ALLOCATE  "sieve: could not allocate wheel memory.\n"
 #define PRIME_FORMAT        "%lu\n"
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
@@ -55,6 +56,10 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
     clearBit(isPrime, 0); /* 1 is not prime */
     wheel = newWheel(basePrimes, numBasePrimes);
+    if (!wheel) {
+        fprintf(stderr, ERR_WHEEL_ALLOCATE);
+        return 0;
+    }
 
     /* Initialize variables */
     count = 0;
