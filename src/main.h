@@ -1,8 +1,8 @@
 /*
- * FILE:        main_strings.h
+ * FILE:        main.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-03-24
- * DESCRIPTION: Defines string constants to be used in main.c.
+ * UPDATED:     2016-03-25
+ * DESCRIPTION: Defines constants to be used in main.c.
  */
 
 #ifndef MAIN_STRINGS_H
@@ -27,5 +27,17 @@ Options:\n\
 \t-%c\tFactor the given integer. Off by default.\n\
 \t-%c\tWhen using the factor option, ignore multiplicity.\n\
 \t-%c\tSpecify end of program options.\n"
+
+#define OPT_START   '-'     /* Command-line options start symbol */
+#define OPT_END     '-'     /* Command-line options end symbol */
+#define OPT_HELP    'h'     /* Option to print help message */
+#define OPT_FACTOR  'f'     /* Option to factor instead of sieve */
+#define OPT_COUNT   'n'     /* Option to print the number of primes */
+#define OPT_UNIQUE  'u'     /* Option to ignore multiplicity */
+#define OPT_NULL    '\0'    /* Empty option */
+#define NUM_ARGS    1       /* Expected number of command-line arguments */
+#define BASE        0       /* For stroul - accept decimal, octal, and hex */
+#define COUNT_FMT   "%lu\n" /* Format of count output */
+#define MINUS       '-'     /* A minus sign -- used for validating input */
 
 #endif

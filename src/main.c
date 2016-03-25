@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-03-24
+ * UPDATED:     2016-03-25
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -11,19 +11,7 @@
 #include <limits.h>
 #include "sieve.h"
 #include "factor.h"
-#include "main_strings.h"
-
-#define OPT_START   '-'     /* Command-line options start symbol */
-#define OPT_END     '-'     /* Command-line options end symbol */
-#define OPT_HELP    'h'     /* Option to print help message */
-#define OPT_FACTOR  'f'     /* Option to factor instead of sieve */
-#define OPT_COUNT   'n'     /* Option to print the number of primes */
-#define OPT_UNIQUE  'u'     /* Option to ignore multiplicity */
-#define OPT_NULL    '\0'    /* Empty option */
-#define NUM_ARGS    1       /* Expected number of command-line arguments */
-#define BASE        0       /* For stroul - accept decimal, octal, and hex */
-#define COUNT_FMT   "%lu\n" /* Format of count output */
-#define MINUS       '-'     /* A minus sign -- used for validating input */
+#include "main.h"
 
 /*
  * FUNCTION:    main

@@ -18,7 +18,7 @@ OBJ_FILES=${OBJ}/bitarray.o ${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
 
 all: directories ${BIN}/sieve
 
-${BIN}/sieve: ${SRC}/main.c ${SRC}/main_strings.h ${OBJ_FILES}
+${BIN}/sieve: ${SRC}/main.c ${SRC}/main.h ${OBJ_FILES}
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ ${SRC}/main.c ${OBJ_FILES}
 
 ${OBJ}/bitarray.o: ${SRC}/bitarray.c ${SRC}/bitarray.h
