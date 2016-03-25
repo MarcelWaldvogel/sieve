@@ -26,7 +26,8 @@ int main(int argc, const char **argv) {
     int opt_help = 0;           /* Option: print help message */
     char c;                     /* Command-line argument character */
     char *endptr;               /* For stroul's error checking */
-    const char *str;            /* String used to check if argument has a '-' */
+    char str[BUFSIZ];           /* String to be used as the program argument */
+    int i;                      /* Loop index */
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == OPT_START) {
@@ -76,37 +77,51 @@ post_options:
         return EXIT_SUCCESS;
     }
 
-    /* There should be one command-line argument remaining */
-    if (argc < NUM_ARGS) {
-        fprintf(stderr, ERR_EXPECTED_ARG);
-        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-        return EXIT_FAILURE;
-    } else if (argc > NUM_ARGS) {
+    /* Check whether to get program argument from stdin or the command-line */
+    if (argc > NUM_ARGS) {
+        /* There are too many arguments -- show error and exit */
         fprintf(stderr, ERR_TOO_MANY_ARGS);
         fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
+    } else if (argc < NUM_ARGS) {
+        /* There are no command-line arguments--read argument from stdin */
+        fgets(str, BUFSIZ, stdin);
+    } else {
+        /* Otherwise, there is one command-line argument left--copy it to str */
+        for (i = 0; i < BUFSIZ; i++) {
+            str[i] = (*argv)[i];
+            if (!(*argv)[i])
+                break;
+        }
     }
 
-    /* Look for a minus sign in the command-line argument (apparently this isn't
-     * done by strtoul) */
-    for (str = *argv; *str; str++) {
-        if (*str == MINUS) {
-            fprintf(stderr, ERR_CONVERT, *argv);
+    /* Strip potential trailing newline */
+    for (i = 0; i < BUFSIZ && str[i]; i++) {
+        if (str[i] == '\n') {
+            str[i] = '\0';
+            break;
+        }
+    }
+
+    /* Look for a minus sign in the argument (this isn't done by strtoul) */
+    for (i = 0; i < BUFSIZ && str[i]; i++) {
+        if (str[i] == MINUS) {
+            fprintf(stderr, ERR_CONVERT, str);
             fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
             return EXIT_FAILURE;
         }
     }
 
     /* Convert the command-line number to an unsigned long */
-    num = strtoul(*argv, &endptr, BASE);
+    num = strtoul(str, &endptr, BASE);
 
     /* Check if the argument was successfully converted */
-    if (endptr == *argv || *endptr) {
-        fprintf(stderr, ERR_CONVERT, *argv);
+    if (endptr == str || *endptr) {
+        fprintf(stderr, ERR_CONVERT, str);
         fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
     } else if (errno == ERANGE) {
-        fprintf(stderr, ERR_TOO_LARGE, *argv);
+        fprintf(stderr, ERR_TOO_LARGE, str);
         fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
     }
