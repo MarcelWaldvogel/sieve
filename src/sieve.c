@@ -6,8 +6,9 @@
  *              factorization.
  */
 
+#include <stdlib.h>
 #include <stdio.h>
-#include "bitarray.h"
+#include <string.h>
 #include "wheel.h"
 #include "sieve.h"
 
@@ -17,6 +18,57 @@
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
+
+typedef int BitArray;
+
+/* Number of bits in an int */
+#define NBITS               (8 * sizeof(int))
+
+/* Clear the kth bit of a bit array */
+#define CLEARBIT(bits, k)   (bits)[(k) / NBITS] &= ~(1 << ((k) % NBITS))
+
+/* Get the kth bit of a bit array */
+#define GETBIT(bits, k)     ((bits)[(k) / NBITS] & (1 << ((k) % NBITS))) != 0
+
+/*
+ * FUNCTION:    newBitArray
+ * DESCRIPTION: Allocates memory for a new bit array holding at least the
+ *              specified number of bits.
+ * ERRORS:      If memory allocation fails, returns NULL.
+ * PARAMETERS:  n (const unsigned long): The number of bits to store.
+ * RETURNS:     A new bit array with at least n bits.
+ */
+static BitArray * newBitArray(const unsigned long n) {
+    unsigned long size = (n + sizeof(int) - 1) / sizeof(int);
+    BitArray *bits = malloc(size);
+    return bits; /* Could be NULL if malloc fails */
+}
+
+/*
+ * FUNCTION:    deleteBitArray
+ * DESCRIPTION: Deallocate memory associated with a bit array.
+ * PARAMETERS:  bpp (BitArray **): Pointer to a pointer to the bit array to
+ *              delete.
+ * RETURNS:     Nothing.
+ */
+static void deleteBitArray(BitArray **bpp) {
+    if (bpp && *bpp) {
+        free(*bpp);
+        *bpp = NULL;
+    }
+}
+
+/*
+ * FUNCTION:    setAllBits
+ * DESCRIPTION: Sets all bits in the bit array to 1.
+ * PARAMETERS:  bits (BitArray *): The bit array to operate on.
+ *              n (const unsigned long): The number of bits in the bit array.
+ * RETURNS:     Nothing.
+ */
+static void setAllBits(BitArray *bits, const unsigned long n) {
+    unsigned long size = (n + sizeof(int) - 1) / sizeof(int);
+    memset(bits, 0xff, size); /* 0xff is a byte of 1s */
+}
 
 /*
  * FUNCTION:    sieve
@@ -38,7 +90,7 @@ static const unsigned long numBasePrimes = 6;
  * RETURNS:     The number of primes less than or equal to max.
  */
 unsigned long sieve(const unsigned long max, FILE *stream) {
-    BitArray *isPrime;      /* Bit array of T/F values */
+    BitArray *isPrime;      /* Bit array of T/F values representing primality */
     Wheel *wheel;           /* The wheel used in the sieve */
     unsigned long prime;    /* A prime candidate */
     unsigned long comp;     /* A necessarily composite number */
@@ -53,7 +105,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         return 0;
     }
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
-    clearBit(isPrime, 0); /* 1 is not prime */
+    CLEARBIT(isPrime, 0);               /* 1 is not prime */
 
     /* Create the wheel */
     wheel = newWheel(basePrimes, numBasePrimes);
@@ -89,23 +141,23 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         if (stream) fprintf(stream, PRIME_FORMAT, prime);
         /* Cross off multiples of the current prime */
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
-            clearBit(isPrime, comp / 2);
+            CLEARBIT(isPrime, comp / 2);
     }
 
     /* Sieve the remaining primes <= sqrt(max) */
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
-        if (getBit(isPrime, prime / 2)) {
+        if (GETBIT(isPrime, prime / 2)) {
             count++;
             if (stream) fprintf(stream, PRIME_FORMAT, prime);
             /* Cross off multiples of the current prime */
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
-                clearBit(isPrime, comp / 2);
+                CLEARBIT(isPrime, comp / 2);
         }
     }
 
     /* Sieve the remaining primes > sqrt(max) */
     for (; prime <= max; prime = nextp(wheel)) {
-        if (getBit(isPrime, prime / 2)) {
+        if (GETBIT(isPrime, prime / 2)) {
             count++;
             if (stream) fprintf(stream, PRIME_FORMAT, prime);
         }
