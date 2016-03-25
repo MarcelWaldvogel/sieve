@@ -13,10 +13,12 @@
 #include "main_strings.h"
 
 #define OPT_START   '-'     /* Command-line options start symbol */
+#define OPT_END     '-'     /* Command-line options end symbol */
 #define OPT_HELP    'h'     /* Option to print help message */
 #define OPT_FACTOR  'f'     /* Option to factor instead of sieve */
 #define OPT_COUNT   'n'     /* Option to print the number of primes */
 #define OPT_UNIQUE  'u'     /* Option to ignore multiplicity */
+#define OPT_NULL    '\0'    /* Empty option */
 #define NUM_ARGS    1       /* Expected number of command-line arguments */
 #define BASE        0       /* For stroul - accept decimal, octal, and hex */
 #define COUNT_FMT   "%lu\n" /* Format of count output */
@@ -37,7 +39,8 @@ int main(int argc, const char **argv) {
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == OPT_START) {
-        while ((c = *++*argv)) {
+        c = *++*argv;   /* Read next character following OPT_START */
+        do {
             switch (c) {
                 case OPT_HELP:
                     opt_help = 1;
@@ -51,13 +54,22 @@ int main(int argc, const char **argv) {
                 case OPT_UNIQUE:
                     opt_unique = 1;
                     break;
+                case OPT_END:
+                    argv++;
+                    argc--;
+                    goto post_options;
+                case OPT_NULL:
+                    fprintf(stderr, ERR_EXPECTED_OPT, OPT_START);
+                    return EXIT_FAILURE;
                 default:
                     fprintf(stderr, ERR_ILLEGAL_OPTION, c);
                     fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
                     return EXIT_FAILURE;
             }
-        }
+        } while ((c = *++*argv));
     }
+
+post_options:
 
     /* The -u option shouldn't be used without the -f option */
     if (opt_unique && !opt_factor) {
@@ -68,7 +80,7 @@ int main(int argc, const char **argv) {
 
     /* Print help message if necessary */
     if (opt_help) {
-        printf(HELP_MESSAGE, name, OPT_COUNT, OPT_FACTOR, OPT_UNIQUE);
+        printf(HELP_MESSAGE, name, OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_END);
         return EXIT_SUCCESS;
     }
 
