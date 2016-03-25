@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <limits.h>
 #include "sieve.h"
 #include "factor.h"
 #include "main_strings.h"
@@ -22,6 +23,7 @@
 #define NUM_ARGS    1       /* Expected number of command-line arguments */
 #define BASE        0       /* For stroul - accept decimal, octal, and hex */
 #define COUNT_FMT   "%lu\n" /* Format of count output */
+#define MINUS       '-'     /* A minus sign -- used for validating input */
 
 /*
  * FUNCTION:    main
@@ -36,6 +38,7 @@ int main(int argc, const char **argv) {
     int opt_help = 0;           /* Option: print help message */
     char c;                     /* Command-line argument character */
     char *endptr;               /* For stroul's error checking */
+    const char *str;            /* String used to check if argument has a '-' */
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == OPT_START) {
@@ -93,6 +96,15 @@ post_options:
         fprintf(stderr, ERR_TOO_MANY_ARGS);
         fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
+    }
+
+    /* Look for a minus sign in the command-line argument (apparently this isn't
+     * done by strtoul) */
+    for (str = *argv; *str; str++) {
+        if (*str == MINUS) {
+            fprintf(stderr, ERR_CONVERT, *argv);
+            return EXIT_FAILURE;
+        }
     }
 
     /* Convert the command-line number to an unsigned long */
