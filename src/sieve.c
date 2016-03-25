@@ -45,9 +45,8 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     unsigned long count;    /* The number of primes */
     unsigned long index;    /* Track position in loops */
 
-    /* Create the sieving array and the wheel. To save space we only store */
-    /* the primality of odd integers, starting with 1 in position 0, 3 in */
-    /* position 1, etc. */
+    /* Create the sieving array. To save space we only store the primality of
+     * odd integers, starting with 1 in position 0, 3 in position 1, etc. */
     isPrime = newBitArray((max + 1) / 2);
     if (!isPrime) {
         fprintf(stderr, ERR_BIT_ALLOCATE);
@@ -55,6 +54,8 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     }
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
     clearBit(isPrime, 0); /* 1 is not prime */
+
+    /* Create the wheel */
     wheel = newWheel(basePrimes, numBasePrimes);
     if (!wheel) {
         fprintf(stderr, ERR_WHEEL_ALLOCATE);
