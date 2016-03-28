@@ -7,18 +7,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <errno.h>
 #include <limits.h>
 #include "sieve.h"
 #include "factor.h"
 #include "main.h"
 
+
+/* Print error message */
+static int sieve_error(const char *, ...);
+
+/* Name of the program */
+static const char *prog_name;
+
 /*
  * FUNCTION:    main
  * DESCRIPTION: Driver for the sieve program.
  */
 int main(int argc, const char **argv) {
-    const char *name = *argv;   /* The program name */
     unsigned long num;          /* Sieve upper bound OR number to factor */
     int opt_factor = 0;         /* Option: factor number instead of sieving */
     int opt_count = 0;          /* Option: print only the number of primes */
@@ -29,6 +36,9 @@ int main(int argc, const char **argv) {
     char *endptr;               /* For stroul's error checking */
     char str[BUFSIZ];           /* String to be used as the program argument */
     int i;                      /* Loop index */
+
+    /* Get the name of the program */
+    prog_name = *argv;
 
     /* Process command-line options */
     while (--argc > 0 && **++argv == OPT_START) {
@@ -55,13 +65,9 @@ int main(int argc, const char **argv) {
                     argc--;
                     goto post_options;
                 case OPT_NULL:
-                    fprintf(stderr, ERR_EXPECTED_OPT, OPT_START);
-                    fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-                    return EXIT_FAILURE;
+                    return sieve_error(ERR_EXPECTED_OPT, OPT_START);
                 default:
-                    fprintf(stderr, ERR_ILLEGAL_OPTION, c);
-                    fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-                    return EXIT_FAILURE;
+                    return sieve_error(ERR_ILLEGAL_OPTION, c);
             }
         } while ((c = *++*argv));
     }
@@ -69,15 +75,12 @@ int main(int argc, const char **argv) {
 post_options:
 
     /* The -u option shouldn't be used without the -f option */
-    if (opt_unique && !opt_factor) {
-        fprintf(stderr, ERR_U_WITHOUT_F);
-        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-        return EXIT_FAILURE;
-    }
+    if (opt_unique && !opt_factor)
+        return sieve_error(ERR_U_WITHOUT_F);
 
     /* Print help message if necessary */
     if (opt_help) {
-        printf(HELP_MESSAGE, name,
+        printf(HELP_MESSAGE, prog_name,
                 OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN, OPT_END);
         return EXIT_SUCCESS;
     }
@@ -85,24 +88,17 @@ post_options:
     /* Check whether to get program argument from stdin or the command-line */
     if ((argc > NUM_ARGS) || (argc > 0 && opt_stdin)) {
         /* There are too many arguments -- show error and exit */
-        fprintf(stderr, ERR_TOO_MANY_ARGS);
-        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-        return EXIT_FAILURE;
+        return sieve_error(ERR_TOO_MANY_ARGS);
     } else if (argc < NUM_ARGS) {
         /* There are no command-line arguments */
         if(opt_stdin) {
             /* Try reading from stdin */
-            if (!fgets(str, BUFSIZ, stdin)) {
+            if (!fgets(str, BUFSIZ, stdin))
                 /* If fgets fails, print error and exit */
-                fprintf(stderr, ERR_READ_STDIN);
-                fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-                return EXIT_FAILURE;
-            }
+                return sieve_error(ERR_READ_STDIN);
         } else {
             /* Not reading from stdin and no command-line arg */
-            fprintf(stderr, ERR_EXPECTED_ARG);
-            fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-            return EXIT_FAILURE;
+            return sieve_error(ERR_EXPECTED_ARG);
         }
     } else {
         /* Otherwise, there is one command-line argument left--copy it to str */
@@ -122,27 +118,18 @@ post_options:
     }
 
     /* Look for a minus sign in the argument (this isn't done by strtoul) */
-    for (i = 0; i < BUFSIZ && str[i]; i++) {
-        if (str[i] == MINUS) {
-            fprintf(stderr, ERR_CONVERT, str);
-            fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-            return EXIT_FAILURE;
-        }
-    }
+    for (i = 0; i < BUFSIZ && str[i]; i++)
+        if (str[i] == MINUS)
+            return sieve_error(ERR_CONVERT, str);
 
     /* Convert the command-line number to an unsigned long */
     num = strtoul(str, &endptr, BASE);
 
     /* Check if the argument was successfully converted */
-    if (endptr == str || *endptr) {
-        fprintf(stderr, ERR_CONVERT, str);
-        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-        return EXIT_FAILURE;
-    } else if (errno == ERANGE) {
-        fprintf(stderr, ERR_TOO_LARGE, str);
-        fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
-        return EXIT_FAILURE;
-    }
+    if (endptr == str || *endptr)
+        return sieve_error(ERR_CONVERT, str);
+    else if (errno == ERANGE)
+        return sieve_error(ERR_TOO_LARGE, str);
 
     if (!opt_factor) {
         /* Sieve the primes up to the specified number */
@@ -159,4 +146,19 @@ post_options:
     }
 
     return EXIT_SUCCESS;
+}
+
+
+/*
+ * FUNCTION:    sieve_error
+ * DESCRIPTION: Print a specialized error message followed by a generic help
+ *              message.
+ */
+static int sieve_error(const char *format, ...) {
+    va_list argptr;
+    va_start(argptr, format);
+    vfprintf(stderr, format, argptr);
+    va_end(argptr);
+    fprintf(stderr, ERR_USAGE_HELP, prog_name, OPT_HELP);
+    return EXIT_FAILURE;
 }
