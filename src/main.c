@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-03-25
+ * UPDATED:     2016-03-27
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -24,6 +24,7 @@ int main(int argc, const char **argv) {
     int opt_count = 0;          /* Option: print only the number of primes */
     int opt_unique = 0;         /* Option: ignore divisor multiplicity */
     int opt_help = 0;           /* Option: print help message */
+    int opt_stdin = 0;          /* Option: read argument from stdin */
     char c;                     /* Command-line argument character */
     char *endptr;               /* For stroul's error checking */
     char str[BUFSIZ];           /* String to be used as the program argument */
@@ -45,6 +46,9 @@ int main(int argc, const char **argv) {
                     break;
                 case OPT_UNIQUE:
                     opt_unique = 1;
+                    break;
+                case OPT_STDIN:
+                    opt_stdin = 1;
                     break;
                 case OPT_END:
                     argv++;
@@ -73,21 +77,31 @@ post_options:
 
     /* Print help message if necessary */
     if (opt_help) {
-        printf(HELP_MESSAGE, name, OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_END);
+        printf(HELP_MESSAGE, name,
+                OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN, OPT_END);
         return EXIT_SUCCESS;
     }
 
     /* Check whether to get program argument from stdin or the command-line */
-    if (argc > NUM_ARGS) {
+    if ((argc > NUM_ARGS) || (argc > 0 && opt_stdin)) {
         /* There are too many arguments -- show error and exit */
         fprintf(stderr, ERR_TOO_MANY_ARGS);
         fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
         return EXIT_FAILURE;
     } else if (argc < NUM_ARGS) {
-        /* There are no command-line arguments--read argument from stdin */
-        if(!fgets(str, BUFSIZ, stdin)) {
-            /* If fgets failed, print error and exit */
-            fprintf(stderr, ERR_READ_STDIN);
+        /* There are no command-line arguments */
+        if(opt_stdin) {
+            /* Try reading from stdin */
+            if (!fgets(str, BUFSIZ, stdin)) {
+                /* If fgets fails, print error and exit */
+                fprintf(stderr, ERR_READ_STDIN);
+                fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
+                return EXIT_FAILURE;
+            }
+        } else {
+            /* Not reading from stdin and no command-line arg */
+            fprintf(stderr, ERR_EXPECTED_ARG);
+            fprintf(stderr, ERR_USAGE_HELP, name, OPT_HELP);
             return EXIT_FAILURE;
         }
     } else {
