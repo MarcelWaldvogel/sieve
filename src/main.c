@@ -15,14 +15,16 @@
 #include "main.h"
 
 /* Command-line option processing results */
-#define OP_FAIL 0
-#define OP_SUCC 1
+#define OP_FAILURE  0
+#define OP_SUCCESS  1
 
 /* Static function prototypes */
-static int process_options(int *, const char ***);  /* Command-line options */
-static int sieve_error(const char *, ...);          /* Print error message */
+static int process_options(void);           /* Process command-line options */
+static int sieve_error(const char *, ...);  /* Print error message */
 
 /* Global variables */
+static int num_arguments;       /* Number of args after option processing */
+static const char **arguments;  /* Command-line arguments left after options */
 static const char *prog_name;   /* Name of the program */
 static int opt_factor = 0;      /* Option: factor number instead of sieving */
 static int opt_count = 0;       /* Option: print only the number of primes */
@@ -42,12 +44,14 @@ int main(int argc, const char **argv) {
     char str[BUFSIZ];           /* String to be used as the program argument */
     int i;                      /* Loop index */
 
-    /* Get the name of the program */
+    /* Get the name of the program and the command-line arguments */
     prog_name = *argv;
+    arguments = argv;
+    num_arguments = argc;
 
     /* Process command-line options */
-    op_result = process_options(&argc, &argv);
-    if (op_result == OP_FAIL)
+    op_result = process_options();
+    if (op_result == OP_FAILURE)
         return EXIT_FAILURE;
 
     /* The -u option shouldn't be used without the -f option */
@@ -62,10 +66,10 @@ int main(int argc, const char **argv) {
     }
 
     /* Check whether to get program argument from stdin or the command-line */
-    if ((argc > NUM_ARGS) || (argc > 0 && opt_stdin)) {
+    if ((num_arguments > NUM_ARGS) || (num_arguments && opt_stdin)) {
         /* There are too many arguments -- show error and exit */
         return sieve_error(ERR_TOO_MANY_ARGS);
-    } else if (argc < NUM_ARGS) {
+    } else if (num_arguments < NUM_ARGS) {
         /* There are no command-line arguments */
         if(opt_stdin) {
             /* Try reading from stdin */
@@ -79,7 +83,7 @@ int main(int argc, const char **argv) {
     } else {
         /* Otherwise, there is one command-line argument left--copy it to str */
         for (i = 0; i < BUFSIZ; i++) {
-            str[i] = (*argv)[i];
+            str[i] = (*arguments)[i];
             if (!(*argv)[i])
                 break;
         }
@@ -129,11 +133,11 @@ int main(int argc, const char **argv) {
  * FUNCTION:    process_options
  * DESCRIPTION: Process command-line options for the program
  */
-static int process_options(int *argcp, const char ***argvp) {
+static int process_options(void) {
     char c; /* Command-line argument character */
 
-    while (--*argcp > 0 && **++*argvp == OPT_START) {
-        c = *++**argvp;   /* Read next character following OPT_START */
+    while (--num_arguments > 0 && **++arguments == OPT_START) {
+        c = *++*arguments;   /* Read next character following OPT_START */
         do {
             switch (c) {
                 case OPT_HELP:
@@ -152,20 +156,20 @@ static int process_options(int *argcp, const char ***argvp) {
                     opt_stdin = 1;
                     break;
                 case OPT_END:
-                    ++*argvp;
-                    --*argcp;
-                    return OP_SUCC;
+                    ++arguments;
+                    --num_arguments;
+                    return OP_SUCCESS;
                 case OPT_NULL:
                     (void) sieve_error(ERR_EXPECTED_OPT, OPT_START);
-                    return OP_FAIL;
+                    return OP_FAILURE;
                 default:
                     (void) sieve_error(ERR_ILLEGAL_OPTION, c);
-                    return OP_FAIL;
+                    return OP_FAILURE;
             }
-        } while ((c = *++**argvp));
+        } while ((c = *++*arguments));
     }
 
-    return OP_SUCC;
+    return OP_SUCCESS;
 }
 
 
