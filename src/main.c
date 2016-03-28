@@ -14,12 +14,22 @@
 #include "factor.h"
 #include "main.h"
 
+/* Command-line option processing results */
+#define OP_FAIL 0
+#define OP_SUCC 1
 
-/* Print error message */
-static int sieve_error(const char *, ...);
+/* Static function prototypes */
+static int process_options(int *, const char ***);  /* Command-line options */
+static int sieve_error(const char *, ...);          /* Print error message */
 
-/* Name of the program */
-static const char *prog_name;
+/* Global variables */
+static const char *prog_name;   /* Name of the program */
+static int opt_factor = 0;      /* Option: factor number instead of sieving */
+static int opt_count = 0;       /* Option: print only the number of primes */
+static int opt_unique = 0;      /* Option: ignore divisor multiplicity */
+static int opt_help = 0;        /* Option: print help message */
+static int opt_stdin = 0;       /* Option: read argument from stdin */
+
 
 /*
  * FUNCTION:    main
@@ -27,12 +37,7 @@ static const char *prog_name;
  */
 int main(int argc, const char **argv) {
     unsigned long num;          /* Sieve upper bound OR number to factor */
-    int opt_factor = 0;         /* Option: factor number instead of sieving */
-    int opt_count = 0;          /* Option: print only the number of primes */
-    int opt_unique = 0;         /* Option: ignore divisor multiplicity */
-    int opt_help = 0;           /* Option: print help message */
-    int opt_stdin = 0;          /* Option: read argument from stdin */
-    char c;                     /* Command-line argument character */
+    int op_result;              /* Result from processing options */
     char *endptr;               /* For stroul's error checking */
     char str[BUFSIZ];           /* String to be used as the program argument */
     int i;                      /* Loop index */
@@ -41,38 +46,9 @@ int main(int argc, const char **argv) {
     prog_name = *argv;
 
     /* Process command-line options */
-    while (--argc > 0 && **++argv == OPT_START) {
-        c = *++*argv;   /* Read next character following OPT_START */
-        do {
-            switch (c) {
-                case OPT_HELP:
-                    opt_help = 1;
-                    break;
-                case OPT_FACTOR:
-                    opt_factor = 1;
-                    break;
-                case OPT_COUNT:
-                    opt_count = 1;
-                    break;
-                case OPT_UNIQUE:
-                    opt_unique = 1;
-                    break;
-                case OPT_STDIN:
-                    opt_stdin = 1;
-                    break;
-                case OPT_END:
-                    argv++;
-                    argc--;
-                    goto post_options;
-                case OPT_NULL:
-                    return sieve_error(ERR_EXPECTED_OPT, OPT_START);
-                default:
-                    return sieve_error(ERR_ILLEGAL_OPTION, c);
-            }
-        } while ((c = *++*argv));
-    }
-
-post_options:
+    op_result = process_options(&argc, &argv);
+    if (op_result == OP_FAIL)
+        return EXIT_FAILURE;
 
     /* The -u option shouldn't be used without the -f option */
     if (opt_unique && !opt_factor)
@@ -146,6 +122,50 @@ post_options:
     }
 
     return EXIT_SUCCESS;
+}
+
+
+/*
+ * FUNCTION:    process_options
+ * DESCRIPTION: Process command-line options for the program
+ */
+static int process_options(int *argcp, const char ***argvp) {
+    char c; /* Command-line argument character */
+
+    while (--*argcp > 0 && **++*argvp == OPT_START) {
+        c = *++**argvp;   /* Read next character following OPT_START */
+        do {
+            switch (c) {
+                case OPT_HELP:
+                    opt_help = 1;
+                    break;
+                case OPT_FACTOR:
+                    opt_factor = 1;
+                    break;
+                case OPT_COUNT:
+                    opt_count = 1;
+                    break;
+                case OPT_UNIQUE:
+                    opt_unique = 1;
+                    break;
+                case OPT_STDIN:
+                    opt_stdin = 1;
+                    break;
+                case OPT_END:
+                    ++*argvp;
+                    --*argcp;
+                    return OP_SUCC;
+                case OPT_NULL:
+                    (void) sieve_error(ERR_EXPECTED_OPT, OPT_START);
+                    return OP_FAIL;
+                default:
+                    (void) sieve_error(ERR_ILLEGAL_OPTION, c);
+                    return OP_FAIL;
+            }
+        } while ((c = *++**argvp));
+    }
+
+    return OP_SUCC;
 }
 
 
