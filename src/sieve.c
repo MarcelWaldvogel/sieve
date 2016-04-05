@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include "wheel.h"
 #include "sieve.h"
 
@@ -22,7 +23,7 @@ static const unsigned long numBasePrimes = 6;
 typedef int BitArray;
 
 /* Number of bits in an int */
-#define NBITS               (8 * sizeof(int))
+#define NBITS               (CHAR_BIT * sizeof(int))
 
 /* Clear the kth bit of a bit array */
 #define CLEARBIT(bits, k)   (bits)[(k) / NBITS] &= ~(1 << ((k) % NBITS))
