@@ -20,10 +20,10 @@
 
 #define HELP_MESSAGE        "WheelSieve\t\
 Wheel-based Sieve of Eratosthenes and prime factorization\n\n\
-Usage:\n\t%s [-options] <nonnegative integer>\n\n\
+Usage:\n\
+\t%s [options] <nonnegative integer>\n\n\
 Without any options, this will list all the prime numbers less than or equal\n\
-to the specified nonnegative integer. If no nonnegative integer is specified,\n\
-then it will be read from stdin.\n\n\
+to the specified nonnegative integer.\n\n\
 Options:\n\
 \t-%c\tShow only the number of primes.\n\
 \t-%c\tFactor the given integer. Off by default.\n\
