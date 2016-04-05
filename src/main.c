@@ -84,7 +84,7 @@ int main(int argc, const char **argv) {
         /* Otherwise, there is one command-line argument left--copy it to str */
         for (i = 0; i < BUFSIZ; i++) {
             str[i] = (*arguments)[i];
-            if (!(*argv)[i])
+            if (!(*arguments)[i])
                 break;
         }
     }
