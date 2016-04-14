@@ -19,7 +19,7 @@
 #define OP_FAILURE  0
 #define OP_SUCCESS  1
 
-/* Static function prototypes */
+/* Static ("private") function prototypes */
 static int process_options(void);           /* Process command-line options */
 static int sieve_error(const char *, ...);  /* Print error message */
 static void help_message(void);             /* Print help if using option -h */
@@ -71,7 +71,8 @@ int main(int argc, const char **argv) {
         /* There are too many arguments -- show error and exit */
         return sieve_error(ERR_TOO_MANY_ARGS);
     } else if (num_arguments < NUM_ARGS) {
-        /* There are no command-line arguments */
+        /* There are no command-line arguments. Check first if we should be
+         * reading from stdin */
         if(opt_stdin) {
             /* Try reading from stdin */
             if (!fgets(str, BUFSIZ, stdin))
@@ -136,8 +137,10 @@ int main(int argc, const char **argv) {
 static int process_options(void) {
     char c; /* Command-line argument character */
 
+    /* Loop while there are still command line arguments beginning with '-' */
     while (--num_arguments > 0 && **++arguments == OPT_START) {
         c = *++*arguments;   /* Read next character following OPT_START */
+        /* Process all options in the current command-line argument */
         do {
             switch (c) {
                 case OPT_HELP:
