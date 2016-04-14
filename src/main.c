@@ -99,9 +99,8 @@ int main(int argc, const char **argv) {
     }
 
     /* Look for a minus sign in the argument (this isn't done by strtoul) */
-    for (i = 0; i < BUFSIZ && str[i]; i++)
-        if (str[i] == MINUS)
-            return sieve_error(ERR_CONVERT, str);
+    if (strchr(str, MINUS))
+        return sieve_error(ERR_CONVERT, str);
 
     /* Convert the command-line number to an unsigned long */
     num = strtoul(str, &endptr, BASE);
