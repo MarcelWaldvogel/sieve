@@ -1,7 +1,7 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-03-24
+ * UPDATED:     2016-04-14
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -112,6 +112,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     wheel = newWheel(basePrimes, numBasePrimes);
     if (!wheel) {
         fprintf(stderr, ERR_WHEEL_ALLOCATE);
+        deleteBitArray(&isPrime);
         return 0;
     }
 
