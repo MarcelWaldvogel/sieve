@@ -1,13 +1,14 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-03-27
+ * UPDATED:     2016-04-14
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 #include <errno.h>
 #include <limits.h>
 #include "sieve.h"
@@ -82,11 +83,11 @@ int main(int argc, const char **argv) {
         }
     } else {
         /* Otherwise, there is one command-line argument left--copy it to str */
-        for (i = 0; i < BUFSIZ; i++) {
-            str[i] = (*arguments)[i];
-            if (!(*arguments)[i])
-                break;
-        }
+        (void) strncpy(str, *arguments, BUFSIZ);
+        if (str[BUFSIZ - 1] != '\0')
+            /* The argument string was not null-terminated because it is too
+             * long. Print error and exit */
+            return sieve_error(ERR_TOO_LONG);
     }
 
     /* Strip potential trailing newline */

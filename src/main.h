@@ -1,7 +1,7 @@
 /*
  * FILE:        main.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-03-27
+ * UPDATED:     2016-04-14
  * DESCRIPTION: Defines constants to be used in main.c.
  */
 
@@ -16,6 +16,7 @@
 #define ERR_CONVERT         "sieve: `%s' is not a nonnegative integer.\n"
 #define ERR_TOO_LARGE       "sieve: %s is too large.\n"
 #define ERR_READ_STDIN      "sieve: could not read from stdin.\n"
+#define ERR_TOO_LONG        "sieve: argument too long.\n"
 #define ERR_USAGE_HELP      "For help, run %s -%c.\n"
 
 #define HELP_MESSAGE        "WheelSieve\t\
