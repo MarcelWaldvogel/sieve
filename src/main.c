@@ -22,6 +22,7 @@
 /* Static function prototypes */
 static int process_options(void);           /* Process command-line options */
 static int sieve_error(const char *, ...);  /* Print error message */
+static void help_message(void);             /* Print help if using option -h */
 
 /* Global variables */
 static int num_arguments;       /* Number of args after option processing */
@@ -59,10 +60,9 @@ int main(int argc, const char **argv) {
     if (opt_unique && !opt_factor)
         return sieve_error(ERR_U_WITHOUT_F);
 
-    /* Print help message if necessary */
+    /* Print help message if necessary, then exit */
     if (opt_help) {
-        printf(HELP_MESSAGE, prog_name,
-                OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN, OPT_END);
+        help_message();
         return EXIT_SUCCESS;
     }
 
@@ -186,4 +186,14 @@ static int sieve_error(const char *format, ...) {
     va_end(argptr);
     fprintf(stderr, ERR_USAGE_HELP, prog_name, OPT_HELP);
     return EXIT_FAILURE;
+}
+
+
+/*
+ * FUNCTION:    help_message
+ * DESCRIPTION: Print a message to the user about the usage of this program.
+ */
+static void help_message(void) {
+    printf(HELP_MESSAGE, prog_name,
+            OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN, OPT_END);
 }
