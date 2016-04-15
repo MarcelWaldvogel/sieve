@@ -98,16 +98,6 @@ can be written as
 ```
 bin/sieve -nuf 123
 ```
-To explicitly specify the end of the list of options, type `--` before any
-non-options. Thus, when typing
-```
-bin/sieve -n -- -u 100
-```
-the program will interpret both `-u` and `100` as arguments instead of options
-(it will also print an error message and abort because there are too many
-arguments).
-
 The `-u` option may not be used without the `-f` option.
-
 Any options (i.e., strings prefixed by `-`) not listed above will cause the
 program to print an error message and abort.
