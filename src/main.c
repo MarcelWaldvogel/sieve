@@ -23,7 +23,6 @@
 /* Static ("private") function prototypes */
 static void process_options(int *, const char ***);
 static void sieve_error(const char *, ...);
-static void help_message(void);
 
 /* Global variables */
 static const char *prog_name;   /* Name of the program */
@@ -56,7 +55,8 @@ int main(int argc, const char **argv) {
 
     /* Print help message if necessary, then exit */
     if (opt_help) {
-        help_message();
+        printf(HELP_MESSAGE, prog_name,
+                OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN);
         return EXIT_SUCCESS;
     }
 
@@ -171,14 +171,4 @@ static void sieve_error(const char *format, ...) {
     va_end(argptr);
     fprintf(stderr, ERR_USAGE_HELP, prog_name, OPT_HELP);
     exit(EXIT_FAILURE);
-}
-
-
-/*
- * FUNCTION:    help_message
- * DESCRIPTION: Print a message to the user about the usage of this program.
- */
-static void help_message(void) {
-    printf(HELP_MESSAGE, prog_name,
-            OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN);
 }
