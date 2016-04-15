@@ -1,14 +1,14 @@
 /*
  * FILE:        main.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-14
+ * UPDATED:     2016-04-15
  * DESCRIPTION: Defines constants to be used in main.c.
  */
 
 #ifndef MAIN_STRINGS_H
 #define MAIN_STRINGS_H
 
-#define ERR_ILLEGAL_OPTION  "sieve: illegal option `%c'.\n"
+#define ERR_ILLEGAL_OPTION  "sieve: illegal option `-%c'.\n"
 #define ERR_EXPECTED_OPT    "sieve: expected option after `%c'.\n"
 #define ERR_EXPECTED_ARG    "sieve: expected argument.\n"
 #define ERR_TOO_MANY_ARGS   "sieve: too many arguments.\n"
@@ -30,17 +30,15 @@ Options:\n\
 \t-%c\tFactor the given integer. Off by default.\n\
 \t-%c\tWhen using the factor option, ignore multiplicity.\n\
 \t-%c\tRead the nonnegative integer from stdin instead of from the\n\
-\t\tcommand-line.\n\
-\t-%c\tSpecify end of program options.\n"
+\t\tcommand-line.\n"
 
-#define OPT_START   '-'     /* Command-line options start symbol */
-#define OPT_END     '-'     /* Command-line options end symbol */
 #define OPT_HELP    'h'     /* Option to print help message */
 #define OPT_FACTOR  'f'     /* Option to factor instead of sieve */
 #define OPT_COUNT   'n'     /* Option to print the number of primes */
 #define OPT_UNIQUE  'u'     /* Option to ignore multiplicity */
 #define OPT_STDIN   'i'     /* Option to read argument from stdin */
-#define OPT_NULL    '\0'    /* Empty option */
+#define ALL_OPTS    "hfnui" /* All options of the program */
+
 #define NUM_ARGS    1       /* Expected number of command-line arguments */
 #define BASE        0       /* For stroul - accept decimal, octal, and hex */
 #define COUNT_FMT   "%lu\n" /* Format of count output */

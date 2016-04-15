@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-14
+ * UPDATED:     2016-04-15
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -11,6 +11,7 @@
 #include <string.h>
 #include <errno.h>
 #include <limits.h>
+#include <unistd.h>
 #include "sieve.h"
 #include "factor.h"
 #include "main.h"
@@ -128,40 +129,33 @@ int main(int argc, const char **argv) {
  * DESCRIPTION: Process command-line options for the program
  */
 static void process_options(int *argcp, const char ***argvp) {
-    char c; /* Command-line argument character */
+    int c; /* Command-line argument character */
 
-    /* Loop while there are still command line arguments beginning with '-' */
-    while (--*argcp > 0 && **++*argvp == OPT_START) {
-        c = *++**argvp;   /* Read next character following OPT_START */
-        /* Process all options in the current command-line argument */
-        do {
-            switch (c) {
-                case OPT_HELP:
-                    opt_help = 1;
-                    break;
-                case OPT_FACTOR:
-                    opt_factor = 1;
-                    break;
-                case OPT_COUNT:
-                    opt_count = 1;
-                    break;
-                case OPT_UNIQUE:
-                    opt_unique = 1;
-                    break;
-                case OPT_STDIN:
-                    opt_stdin = 1;
-                    break;
-                case OPT_END:
-                    ++*argvp;
-                    --*argcp;
-                    return;
-                case OPT_NULL:
-                    sieve_error(ERR_EXPECTED_OPT, OPT_START);
-                default:
-                    sieve_error(ERR_ILLEGAL_OPTION, c);
-            }
-        } while ((c = *++**argvp));
+    opterr = 0; /* Reset global option-handling error code */
+    while ((c = getopt(*argcp, (char * const *) *argvp, ALL_OPTS)) != -1) {
+        switch (c) {
+            case OPT_HELP:
+                opt_help = 1;
+                break;
+            case OPT_FACTOR:
+                opt_factor = 1;
+                break;
+            case OPT_COUNT:
+                opt_count = 1;
+                break;
+            case OPT_UNIQUE:
+                opt_unique = 1;
+                break;
+            case OPT_STDIN:
+                opt_stdin = 1;
+                break;
+            default:
+                sieve_error(ERR_ILLEGAL_OPTION, optopt);
+        }
     }
+
+    *argcp -= optind;
+    *argvp += optind;
 }
 
 
@@ -186,5 +180,5 @@ static void sieve_error(const char *format, ...) {
  */
 static void help_message(void) {
     printf(HELP_MESSAGE, prog_name,
-            OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN, OPT_END);
+            OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN);
 }
