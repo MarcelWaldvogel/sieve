@@ -132,12 +132,16 @@ int main(int argc, const char **argv) {
 
 /*
  * FUNCTION:    process_options
- * DESCRIPTION: Process command-line options for the program
+ * DESCRIPTION: Process command-line options for the program.
+ * PARAMETERS:  argcp (int *): Pointer to the number of command-line arguments
+ *              argvp (const char ***): Pointer to the command-line arguments
  */
 static void process_options(int *argcp, const char ***argvp) {
     int c; /* Command-line argument character */
 
     opterr = 0; /* Reset global option-handling error code */
+
+    /* Iterate over all options found by getopt */
     while ((c = getopt(*argcp, (char * const *) *argvp, ALL_OPTS)) != -1) {
         switch (c) {
             case OPT_HELP:
@@ -160,8 +164,8 @@ static void process_options(int *argcp, const char ***argvp) {
         }
     }
 
-    *argcp -= optind;
-    *argvp += optind;
+    *argcp -= optind;   /* Update number of non-option arguments */
+    *argvp += optind;   /* Have main's argv point to first non-option */
 }
 
 
