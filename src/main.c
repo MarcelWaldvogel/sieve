@@ -20,8 +20,8 @@
 #define OP_SUCCESS  1
 
 /* Static ("private") function prototypes */
-static int process_options(int *, const char ***);
-static int sieve_error(const char *, ...);
+static void process_options(int *, const char ***);
+static void sieve_error(const char *, ...);
 static void help_message(void);
 
 /* Global variables */
@@ -39,7 +39,6 @@ static int opt_stdin = 0;       /* Option: read argument from stdin */
  */
 int main(int argc, const char **argv) {
     unsigned long num;          /* Sieve upper bound OR number to factor */
-    int op_result;              /* Result from processing options */
     char *endptr;               /* For stroul's error checking */
     char str[BUFSIZ];           /* String to be used as the program argument */
     int i;                      /* Loop index */
@@ -48,13 +47,11 @@ int main(int argc, const char **argv) {
     prog_name = *argv;
 
     /* Process command-line options */
-    op_result = process_options(&argc, &argv);
-    if (op_result == OP_FAILURE)
-        return EXIT_FAILURE;
+    process_options(&argc, &argv);
 
     /* The -u option shouldn't be used without the -f option */
     if (opt_unique && !opt_factor)
-        return sieve_error(ERR_U_WITHOUT_F);
+        sieve_error(ERR_U_WITHOUT_F);
 
     /* Print help message if necessary, then exit */
     if (opt_help) {
@@ -65,7 +62,7 @@ int main(int argc, const char **argv) {
     /* Check whether to get program argument from stdin or the command-line */
     if ((argc > NUM_ARGS) || (argc && opt_stdin)) {
         /* There are too many arguments -- show error and exit */
-        return sieve_error(ERR_TOO_MANY_ARGS);
+        sieve_error(ERR_TOO_MANY_ARGS);
     } else if (argc < NUM_ARGS) {
         /* There are no command-line arguments. Check first if we should be
          * reading from stdin */
@@ -73,10 +70,10 @@ int main(int argc, const char **argv) {
             /* Try reading from stdin */
             if (!fgets(str, BUFSIZ, stdin))
                 /* If fgets fails, print error and exit */
-                return sieve_error(ERR_READ_STDIN);
+                sieve_error(ERR_READ_STDIN);
         } else {
             /* Not reading from stdin and no command-line arg */
-            return sieve_error(ERR_EXPECTED_ARG);
+            sieve_error(ERR_EXPECTED_ARG);
         }
     } else {
         /* Otherwise, there is one command-line argument left--copy it to str */
@@ -84,7 +81,7 @@ int main(int argc, const char **argv) {
         if (str[BUFSIZ - 1] != '\0')
             /* The argument string was not null-terminated because it is too
              * long. Print error and exit */
-            return sieve_error(ERR_TOO_LONG);
+            sieve_error(ERR_TOO_LONG);
     }
 
     /* Strip potential trailing newline */
@@ -97,16 +94,16 @@ int main(int argc, const char **argv) {
 
     /* Look for a minus sign in the argument (this isn't done by strtoul) */
     if (strchr(str, MINUS))
-        return sieve_error(ERR_CONVERT, str);
+        sieve_error(ERR_CONVERT, str);
 
     /* Convert the command-line number to an unsigned long */
     num = strtoul(str, &endptr, BASE);
 
     /* Check if the argument was successfully converted */
     if (endptr == str || *endptr)
-        return sieve_error(ERR_CONVERT, str);
+        sieve_error(ERR_CONVERT, str);
     else if (errno == ERANGE)
-        return sieve_error(ERR_TOO_LARGE, str);
+        sieve_error(ERR_TOO_LARGE, str);
 
     if (!opt_factor) {
         /* Sieve the primes up to the specified number */
@@ -130,7 +127,7 @@ int main(int argc, const char **argv) {
  * FUNCTION:    process_options
  * DESCRIPTION: Process command-line options for the program
  */
-static int process_options(int *argcp, const char ***argvp) {
+static void process_options(int *argcp, const char ***argvp) {
     char c; /* Command-line argument character */
 
     /* Loop while there are still command line arguments beginning with '-' */
@@ -157,18 +154,14 @@ static int process_options(int *argcp, const char ***argvp) {
                 case OPT_END:
                     ++*argvp;
                     --*argcp;
-                    return OP_SUCCESS;
+                    return;
                 case OPT_NULL:
-                    (void) sieve_error(ERR_EXPECTED_OPT, OPT_START);
-                    return OP_FAILURE;
+                    sieve_error(ERR_EXPECTED_OPT, OPT_START);
                 default:
-                    (void) sieve_error(ERR_ILLEGAL_OPTION, c);
-                    return OP_FAILURE;
+                    sieve_error(ERR_ILLEGAL_OPTION, c);
             }
         } while ((c = *++**argvp));
     }
-
-    return OP_SUCCESS;
 }
 
 
@@ -177,13 +170,13 @@ static int process_options(int *argcp, const char ***argvp) {
  * DESCRIPTION: Print a specialized error message followed by a generic help
  *              message.
  */
-static int sieve_error(const char *format, ...) {
+static void sieve_error(const char *format, ...) {
     va_list argptr;
     va_start(argptr, format);
     vfprintf(stderr, format, argptr);
     va_end(argptr);
     fprintf(stderr, ERR_USAGE_HELP, prog_name, OPT_HELP);
-    return EXIT_FAILURE;
+    exit(EXIT_FAILURE);
 }
 
 
