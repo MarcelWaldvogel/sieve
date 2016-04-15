@@ -85,19 +85,3 @@ To view a brief description of the WheelSieve program, use the `-h` option:
 ```
 bin/sieve -h
 ```
-
-### Remark About Options
-
-The options described above can be used in any order and repeated, and they may
-be combined into one option.
-For example,
-```
-bin/sieve -f -n -u 123
-```
-can be written as
-```
-bin/sieve -nuf 123
-```
-The `-u` option may not be used without the `-f` option.
-Any options (i.e., strings prefixed by `-`) not listed above will cause the
-program to print an error message and abort.
