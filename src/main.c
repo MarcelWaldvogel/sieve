@@ -20,13 +20,11 @@
 #define OP_SUCCESS  1
 
 /* Static ("private") function prototypes */
-static int process_options(void);           /* Process command-line options */
-static int sieve_error(const char *, ...);  /* Print error message */
-static void help_message(void);             /* Print help if using option -h */
+static int process_options(int *, const char ***);
+static int sieve_error(const char *, ...);
+static void help_message(void);
 
 /* Global variables */
-static int num_arguments;       /* Number of args after option processing */
-static const char **arguments;  /* Command-line arguments left after options */
 static const char *prog_name;   /* Name of the program */
 static int opt_factor = 0;      /* Option: factor number instead of sieving */
 static int opt_count = 0;       /* Option: print only the number of primes */
@@ -46,13 +44,11 @@ int main(int argc, const char **argv) {
     char str[BUFSIZ];           /* String to be used as the program argument */
     int i;                      /* Loop index */
 
-    /* Get the name of the program and the command-line arguments */
+    /* Get the name of the program */
     prog_name = *argv;
-    arguments = argv;
-    num_arguments = argc;
 
     /* Process command-line options */
-    op_result = process_options();
+    op_result = process_options(&argc, &argv);
     if (op_result == OP_FAILURE)
         return EXIT_FAILURE;
 
@@ -67,10 +63,10 @@ int main(int argc, const char **argv) {
     }
 
     /* Check whether to get program argument from stdin or the command-line */
-    if ((num_arguments > NUM_ARGS) || (num_arguments && opt_stdin)) {
+    if ((argc > NUM_ARGS) || (argc && opt_stdin)) {
         /* There are too many arguments -- show error and exit */
         return sieve_error(ERR_TOO_MANY_ARGS);
-    } else if (num_arguments < NUM_ARGS) {
+    } else if (argc < NUM_ARGS) {
         /* There are no command-line arguments. Check first if we should be
          * reading from stdin */
         if(opt_stdin) {
@@ -84,7 +80,7 @@ int main(int argc, const char **argv) {
         }
     } else {
         /* Otherwise, there is one command-line argument left--copy it to str */
-        (void) strncpy(str, *arguments, BUFSIZ);
+        (void) strncpy(str, *argv, BUFSIZ);
         if (str[BUFSIZ - 1] != '\0')
             /* The argument string was not null-terminated because it is too
              * long. Print error and exit */
@@ -134,12 +130,12 @@ int main(int argc, const char **argv) {
  * FUNCTION:    process_options
  * DESCRIPTION: Process command-line options for the program
  */
-static int process_options(void) {
+static int process_options(int *argcp, const char ***argvp) {
     char c; /* Command-line argument character */
 
     /* Loop while there are still command line arguments beginning with '-' */
-    while (--num_arguments > 0 && **++arguments == OPT_START) {
-        c = *++*arguments;   /* Read next character following OPT_START */
+    while (--*argcp > 0 && **++*argvp == OPT_START) {
+        c = *++**argvp;   /* Read next character following OPT_START */
         /* Process all options in the current command-line argument */
         do {
             switch (c) {
@@ -159,8 +155,8 @@ static int process_options(void) {
                     opt_stdin = 1;
                     break;
                 case OPT_END:
-                    ++arguments;
-                    --num_arguments;
+                    ++*argvp;
+                    --*argcp;
                     return OP_SUCCESS;
                 case OPT_NULL:
                     (void) sieve_error(ERR_EXPECTED_OPT, OPT_START);
@@ -169,7 +165,7 @@ static int process_options(void) {
                     (void) sieve_error(ERR_ILLEGAL_OPTION, c);
                     return OP_FAILURE;
             }
-        } while ((c = *++*arguments));
+        } while ((c = *++**argvp));
     }
 
     return OP_SUCCESS;
