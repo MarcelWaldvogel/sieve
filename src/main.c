@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <unistd.h>
+
 #include "sieve.h"
 #include "factor.h"
 #include "main.h"
@@ -21,8 +22,8 @@
 #define OP_SUCCESS  1
 
 /* Static ("private") function prototypes */
-static void process_options(int *, const char ***);
-static void sieve_error(const char *, ...);
+static void process_options(int *, const char ***); /* Parse program options */
+static void sieve_error(const char *, ...);         /* Print error and exit */
 
 /* Global variables */
 static const char *prog_name;   /* Name of the program */
@@ -46,7 +47,7 @@ int main(int argc, const char **argv) {
     /* Get the name of the program */
     prog_name = *argv;
 
-    /* Process command-line options */
+    /* Parse command-line options and set the global option flags */
     process_options(&argc, &argv);
 
     /* The -u option shouldn't be used without the -f option */
@@ -106,17 +107,22 @@ int main(int argc, const char **argv) {
     else if (errno == ERANGE)
         sieve_error(ERR_TOO_LARGE, str);
 
+    /* Perform either sieving or factoring */
     if (!opt_factor) {
         /* Sieve the primes up to the specified number */
         if (opt_count)
+            /* Print only the number of primes up to num */
             printf(COUNT_FMT, sieve(num, NULL));
         else
+            /* Print all the primes up to num */
             sieve(num, stdout);
     } else {
         /* Factor the specified number */
         if (opt_count)
+            /* Print the number of factors (with or without multiplicity) */
             printf(COUNT_FMT, factor(num, opt_unique, NULL));
         else
+            /* Print all the prime factors (with or without multiplicity) */
             factor(num, opt_unique, stdout);
     }
 
