@@ -1,7 +1,7 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-14
+ * UPDATED:     2016-04-15
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -13,8 +13,8 @@
 #include "wheel.h"
 #include "sieve.h"
 
-#define ERR_BIT_ALLOCATE    "sieve: could not allocate bit array memory.\n"
-#define ERR_WHEEL_ALLOCATE  "sieve: could not allocate wheel memory.\n"
+#define ERR_BIT_ALLOCATE    "sieve: bit array"
+#define ERR_WHEEL_ALLOCATE  "sieve: wheel"
 #define PRIME_FORMAT        "%lu\n"
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
@@ -102,8 +102,8 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
      * odd integers, starting with 1 in position 0, 3 in position 1, etc. */
     isPrime = newBitArray((max + 1) / 2);
     if (!isPrime) {
-        fprintf(stderr, ERR_BIT_ALLOCATE);
-        return 0;
+        perror(ERR_BIT_ALLOCATE);
+        exit(EXIT_FAILURE);
     }
     setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
     CLEARBIT(isPrime, 0);               /* 1 is not prime */
@@ -111,9 +111,9 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     /* Create the wheel */
     wheel = newWheel(basePrimes, numBasePrimes);
     if (!wheel) {
-        fprintf(stderr, ERR_WHEEL_ALLOCATE);
+        perror(ERR_WHEEL_ALLOCATE);
         deleteBitArray(&isPrime);
-        return 0;
+        exit(EXIT_FAILURE);
     }
 
     /* Initialize variables */
