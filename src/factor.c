@@ -17,7 +17,19 @@
 const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 const unsigned long numBasePrimes = 6;
 
-unsigned long factor(unsigned long num, int unique, FILE *stream) {
+/*
+ * FUNCTION:    factor
+ * DESCRIPTION: Trial division algorithm implemented using wheel factorization.
+ * PARAMETERS:  num (const unsigned long): The number to be factored.
+ *              unique (const int): Flag to determine whether or not to count
+ *              multipicity of prime factors. If unique == 0, then factors are
+ *              listed/counted with multipicity. Otherwise,  prime factors are
+ *              listed/counted only once.
+ *              stream (FILE *): Where to print the prime factors.
+ * RETURNS:     The number of prime factors (with or without multiplicty,
+ *              depending on the `unique' parameter).
+ */
+unsigned long factor(unsigned long num, const int unique, FILE *stream) {
     Wheel *wheel;               /* The wheel used in the algorithm */
     unsigned long index;        /* Track position in loops */
     unsigned long count = 0;    /* The number of divisors */
