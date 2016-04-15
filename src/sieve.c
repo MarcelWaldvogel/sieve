@@ -22,8 +22,8 @@ static const unsigned long numBasePrimes = 6;
 
 typedef int BitArray;
 
-/* Number of bits in an int */
-#define NBITS               (CHAR_BIT * sizeof(int))
+/* Number of bits in an element of a BitArray */
+#define NBITS               (CHAR_BIT * sizeof(BitArray))
 
 /* Clear the kth bit of a bit array */
 #define CLEARBIT(bits, k)   (bits)[(k) / NBITS] &= ~(1 << ((k) % NBITS))
@@ -40,7 +40,7 @@ typedef int BitArray;
  * RETURNS:     A new bit array with at least n bits.
  */
 static BitArray * newBitArray(const unsigned long n) {
-    unsigned long size = (n + sizeof(int) - 1) / sizeof(int);
+    unsigned long size = (n + sizeof(BitArray) - 1) / sizeof(BitArray);
     BitArray *bits = malloc(size);
     return bits; /* Could be NULL if malloc fails */
 }
