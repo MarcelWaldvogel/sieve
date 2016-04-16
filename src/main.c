@@ -17,10 +17,6 @@
 #include "factor.h"
 #include "main.h"
 
-/* Command-line option processing results */
-#define OP_FAILURE  0
-#define OP_SUCCESS  1
-
 /* Static ("private") function prototypes */
 static void process_options(int *, const char ***); /* Parse program options */
 static void sieve_error(const char *, ...);         /* Print error and exit */
