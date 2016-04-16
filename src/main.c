@@ -41,8 +41,8 @@ static int opt_stdin = 0;       /* Option: read argument from stdin */
 int main(int argc, const char **argv) {
     unsigned long num;          /* Sieve upper bound OR number to factor */
     char *endptr;               /* For stroul's error checking */
+    char *nlpos;                /* Position of first newline in the argument */
     char str[BUFSIZ];           /* String to be used as the program argument */
-    int i;                      /* Loop index */
 
     /* Get the name of the program */
     prog_name = *argv;
@@ -87,12 +87,8 @@ int main(int argc, const char **argv) {
     }
 
     /* Strip potential trailing newline */
-    for (i = 0; i < BUFSIZ && str[i]; i++) {
-        if (str[i] == '\n') {
-            str[i] = '\0';
-            break;
-        }
-    }
+    if ((nlpos = strchr(str, '\n')))
+        *nlpos = '\0';
 
     /* Look for a minus sign in the argument (this isn't done by strtoul) */
     if (strchr(str, MINUS))
