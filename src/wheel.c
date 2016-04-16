@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-03-24
+ * UPDATED:     2016-04-15
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
@@ -92,6 +92,12 @@ Wheel * newWheel(const unsigned long *basePrimes,
         if (isCoprime) {
             /* Create a spoke for the current coprime number */
             Spoke *spoke = malloc(sizeof(Spoke));
+            /* Delete the wheel and return NULL if malloc failed */
+            if (!spoke) {
+                deleteWheel(&wheel);
+                return NULL;
+            }
+            /* Assign the current coprime number to this spoke */
             spoke->num = num;
             /* Insert the spoke into the wheel */
             if (!wheel->spoke) {
