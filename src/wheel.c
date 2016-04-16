@@ -53,7 +53,7 @@ struct Spoke {
  * PARAMETERS:  bp (const unsigned long *): The `base primes': A list of a few
  *              known prime numbers used to create the wheel (e.g., 2, 3, 5, 7).
  *              The numbers are assumed to be distinct primes, but no check is
- *              made to ensure that they either prime or distinct.
+ *              made to ensure that they are either prime or distinct.
  *              nbp (const unsigned long): The number of base primes.
  * ERRORS:      If memory could not be allocated for the wheel, a null pointer
  *              is returned.
