@@ -50,20 +50,19 @@ struct Spoke {
  * DESCRIPTION: Creates a new wheel for identifying prime number candidates. The
  *              wheel is dynamically allocated and must be deallocated with the
  *              deleteWheel function.
- * PARAMETERS:  basePrimes (const unsigned long *): A list of a few known prime
- *              numbers used to create the wheel (e.g., 2, 3, 5, 7). The numbers
- *              are assumed to be distinct primes, but no check is made to
- *              ensure that they either prime or distinct.
- *              numBasePrimes (const unsigned long): The number of base primes.
+ * PARAMETERS:  bp (const unsigned long *): The `base primes': A list of a few
+ *              known prime numbers used to create the wheel (e.g., 2, 3, 5, 7).
+ *              The numbers are assumed to be distinct primes, but no check is
+ *              made to ensure that they either prime or distinct.
+ *              nbp (const unsigned long): The number of base primes.
  * ERRORS:      If memory could not be allocated for the wheel, a null pointer
  *              is returned.
  * RETURNS:     A pointer to the new wheel.
  */
-Wheel * newWheel(const unsigned long *basePrimes,
-    const unsigned long numBasePrimes) {
-    unsigned long num;    /* To be checked for coprimeness */
-    unsigned long index;  /* Used to track position in the base primes list */
-    Wheel *wheel;         /* The wheel being created */
+Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
+    unsigned long num;  /* To be checked for coprimeness */
+    unsigned long i;    /* Used to track position in the base primes list */
+    Wheel *wheel;       /* The wheel being created */
 
     /* Allocate memory for the wheel and check if malloc failed */
     wheel = malloc(sizeof(Wheel));
@@ -76,15 +75,15 @@ Wheel * newWheel(const unsigned long *basePrimes,
     wheel->spoke = NULL;
 
     /* Compute the circumference (product of base primes) of the wheel */
-    for (index = 0; index < numBasePrimes; index++)
-        wheel->circumference *= basePrimes[index];
+    for (i = 0; i < nbp; i++)
+        wheel->circumference *= bp[i];
 
     /* Create all the spokes in the wheel */
     for (num = 1; num < wheel->circumference; num++) {
         /* Check if the current number is coprime to all the base primes */
         int isCoprime = 1;
-        for (index = 0; index < numBasePrimes; index++) {
-            if (num % basePrimes[index] == 0) {
+        for (i = 0; i < nbp; i++) {
+            if (num % bp[i] == 0) {
                 isCoprime = 0;
                 break;
             }
