@@ -3,6 +3,7 @@ bin/*
 
 # Test executables
 test/*
+!test/factor_test.sh
 
 # Object files
 obj/*
