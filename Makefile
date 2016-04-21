@@ -66,7 +66,7 @@ directories:
 clean:
 	rm -rf ${BIN}/*
 	rm -rf ${OBJ}/*
-	rm -rf ${TEST}/*
+	rm -rf ${TEST}/wheel_test
 	rm -f *.i
 	rm -f *.s
 	rm -f *.bc
