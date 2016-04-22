@@ -1,7 +1,7 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-15
+ * UPDATED:     2016-04-22
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -16,6 +16,8 @@
 #define ERR_BIT_ALLOCATE    "sieve: bit array"
 #define ERR_WHEEL_ALLOCATE  "sieve: wheel"
 #define PRIME_FORMAT        "%lu\n"
+
+static inline void print_prime(FILE *, const unsigned long);
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
@@ -116,23 +118,25 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         exit(EXIT_FAILURE);
     }
 
-    /* Initialize variables */
-    count = 0;
-    prime = 2;
+    /* Easy case #1 */
+    if (max < 2) {
+        deleteBitArray(&isPrime);
+        deleteWheel(&wheel);
+        return 0;
+    }
 
-    /* Deal with easy cases first */
-    if (max < prime) {
+    /* Now max is guaranteed to be at least 2 */
+    print_prime(stream, 2);
+
+    /* Easy case #2 */
+    if (max == 2) {
         deleteBitArray(&isPrime);
         deleteWheel(&wheel);
-        return count;
-    } /* Now max is guaranteed to be at least 2 */
-    count++;
-    if (stream) fprintf(stream, PRIME_FORMAT, prime);
-    if (max == prime) {
-        deleteBitArray(&isPrime);
-        deleteWheel(&wheel);
-        return count;
-    } /* Now max is guaranteed to be at least 3 */
+        return 1;
+    }
+    
+    /* Now max is guaranteed to be at least 3 */
+    count = 1;
 
     /* Sieve the odd base primes */
     for (index = 1; index < numBasePrimes; index++) {
@@ -140,7 +144,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         if (prime > max)
             break;
         count++;
-        if (stream) fprintf(stream, PRIME_FORMAT, prime);
+        print_prime(stream, prime);
         /* Cross off multiples of the current prime */
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
             CLEARBIT(isPrime, comp / 2);
@@ -150,7 +154,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
         if (GETBIT(isPrime, prime / 2)) {
             count++;
-            if (stream) fprintf(stream, PRIME_FORMAT, prime);
+            print_prime(stream, prime);
             /* Cross off multiples of the current prime */
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
                 CLEARBIT(isPrime, comp / 2);
@@ -161,7 +165,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     for (; prime <= max; prime = nextp(wheel)) {
         if (GETBIT(isPrime, prime / 2)) {
             count++;
-            if (stream) fprintf(stream, PRIME_FORMAT, prime);
+            print_prime(stream, prime);
         }
     }
 
@@ -169,4 +173,16 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     deleteBitArray(&isPrime);
     deleteWheel(&wheel);
     return count;
+}
+
+/*
+ * FUNCTION:    print_prime
+ * DESCRIPTION: Prints a specified number to the given stream if the stream is
+ *              not NULL.
+ * PARAMETERS:  stream (FILE *): Where to print the prime, or NULL
+ *              prime (const unsigned long): The prime to print
+ */
+static inline void print_prime(FILE * stream, const unsigned long prime) {
+    if (stream)
+        fprintf(stream, PRIME_FORMAT, prime);
 }
