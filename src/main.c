@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-20
+ * UPDATED:     2016-04-23
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -16,6 +16,10 @@
 #include "sieve.h"
 #include "factor.h"
 #include "main.h"
+
+#ifdef DEBUG_ON
+#include "debug.h"
+#endif
 
 /*
  * STRUCT:      Options
@@ -94,6 +98,11 @@ int main(int argc, const char **argv) {
     if ((nlpos = strchr(str, '\n')))
         *nlpos = '\0';
 
+    /* Debugging: print the final argument string */
+    #ifdef DEBUG_ON
+        DEBUG_MSG("Argument string: `%s'", str);
+    #endif
+
     /* Look for a minus sign in the argument (this isn't done by strtoul) */
     if (strchr(str, MINUS))
         sieve_error(ERR_CONVERT, str);
@@ -106,6 +115,11 @@ int main(int argc, const char **argv) {
         sieve_error(ERR_CONVERT, str);
     else if (errno == ERANGE)
         sieve_error(ERR_TOO_LARGE, str);
+
+    /* Debugging: print the converted number */
+    #ifdef DEBUG_ON
+        DEBUG_MSG("Converted number: %lu", num);
+    #endif
 
     /* Perform either sieving or factoring */
     if (!ops.factor) {
@@ -151,6 +165,12 @@ static void process_options(int *argcp, const char ***argvp, Options *ops) {
 
     /* Iterate over all options found by getopt */
     while ((c = getopt(*argcp, (char * const *) *argvp, ALL_OPTS)) != -1) {
+        /* Debugging: print current option character being processed */
+        #ifdef DEBUG_ON
+            DEBUG_MSG("Processing option `%c'", (c != '?') ? c : optopt);
+        #endif
+
+        /* Process the option character */
         switch (c) {
             case OPT_HELP:
                 ops->help = 1;
