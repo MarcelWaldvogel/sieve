@@ -8,7 +8,7 @@ TEST=test
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror -pedantic
 OPTIMIZE=-O3
-DEBUG=-g
+DEBUG=-g -D'DEBUG_ON'
 ASSEMBLY=-S -fverbose-asm -masm=intel
 
 # Object files
