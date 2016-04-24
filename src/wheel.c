@@ -1,12 +1,16 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-15
+ * UPDATED:     2016-04-23
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
 #include <stdlib.h>
 #include "wheel.h"
+
+#ifdef DEBUG_ON
+#include "debug.h"
+#endif
 
 typedef struct Spoke Spoke;
 
@@ -63,6 +67,10 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
     unsigned long num;  /* To be checked for coprimeness */
     unsigned long i;    /* Used to track position in the base primes list */
     Wheel *wheel;       /* The wheel being created */
+
+    #ifdef DEBUG_ON
+        DEBUG_MSG("Creating new wheel");
+    #endif
 
     /* Allocate memory for the wheel and check if malloc failed */
     wheel = malloc(sizeof(Wheel));
@@ -127,6 +135,10 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
  */
 void deleteWheel(Wheel **wpp) {
     if (wpp && *wpp) {
+        #ifdef DEBUG_ON
+            DEBUG_MSG("Deleting wheel");
+        #endif
+
         /* Deallocate all the spokes in the wheel */
         while ((*wpp)->numSpokes-- > 0) {
             Spoke *spoke = (*wpp)->spoke;
