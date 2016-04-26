@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-23
+ * UPDATED:     2016-04-26
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
@@ -68,10 +68,6 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
     unsigned long i;    /* Used to track position in the base primes list */
     Wheel *wheel;       /* The wheel being created */
 
-    #ifdef DEBUG_ON
-        DEBUG_MSG("Creating new wheel");
-    #endif
-
     /* Allocate memory for the wheel and check if malloc failed */
     wheel = malloc(sizeof(Wheel));
     if (!wheel)
@@ -123,6 +119,11 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
     /* Go to the first spoke in the wheel */
     wheel->spoke = wheel->spoke->next;
 
+    #ifdef DEBUG_ON
+    DEBUG_MSG("New wheel at %p (circumference: %lu, numSpokes: %lu)",
+            wheel, wheel->circumference, wheel->numSpokes);
+    #endif
+
     return wheel;
 }
 
@@ -136,7 +137,7 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
 void deleteWheel(Wheel **wpp) {
     if (wpp && *wpp) {
         #ifdef DEBUG_ON
-            DEBUG_MSG("Deleting wheel");
+        DEBUG_MSG("Deleting wheel at %p ...", *wpp);
         #endif
 
         /* Deallocate all the spokes in the wheel */
