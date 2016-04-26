@@ -39,8 +39,8 @@ ${TEST}/wheel_test: ${SRC}/${TEST}/wheel_test.c ${SRC}/wheel.c
 	    echo "Creating ${TEST} directory ..."; \
 	    mkdir ${TEST}; \
 	fi;
-	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
-	${CC} ${CFLAGS} ${DEBUG} -o $@ $< ${OBJ}/wheel.o
+	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
+	${CC} ${DEBUG} -o $@ $< ${OBJ}/wheel.o
 
 debug: directories
 	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
