@@ -1,7 +1,7 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-23
+ * UPDATED:     2016-04-26
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -50,7 +50,7 @@ static BitArray * newBitArray(const unsigned long n) {
         DEBUG_MSG("Creating bit array of size %lu", n);
     #endif
 
-    unsigned long size = (n + sizeof(BitArray) - 1) / sizeof(BitArray);
+    size_t size = (n + sizeof(BitArray) - 1) / sizeof(BitArray);
     BitArray *bits = malloc(size);
     return bits; /* Could be NULL if malloc fails */
 }
@@ -81,8 +81,8 @@ static void deleteBitArray(BitArray **bpp) {
  * RETURNS:     Nothing.
  */
 static void setAllBits(BitArray *bits, const unsigned long n) {
-    unsigned long size = (n + sizeof(int) - 1) / sizeof(int);
-    memset(bits, 0xff, size); /* 0xff is a byte of 1s */
+    size_t size = (n + sizeof(BitArray) - 1) / sizeof(BitArray);
+    memset(bits, (1L << CHAR_BIT) - 1, size); /* Fill with bytes of 1s */
 }
 
 /*
