@@ -46,12 +46,15 @@ typedef int BitArray;
  * RETURNS:     A new bit array with at least n bits.
  */
 static BitArray * newBitArray(const unsigned long n) {
-    #ifdef DEBUG_ON
-        DEBUG_MSG("Creating bit array of size %lu", n);
-    #endif
-
     size_t size = (n + sizeof(BitArray) - 1) / sizeof(BitArray);
     BitArray *bits = malloc(size);
+    if (!bits)
+        return NULL; /* malloc failed! */
+
+    #ifdef DEBUG_ON
+    DEBUG_MSG("New bit array at %p", bits);
+    #endif
+
     return bits; /* Could be NULL if malloc fails */
 }
 
@@ -63,11 +66,11 @@ static BitArray * newBitArray(const unsigned long n) {
  * RETURNS:     Nothing.
  */
 static void deleteBitArray(BitArray **bpp) {
-    #ifdef DEBUG_ON
-        DEBUG_MSG("Deleting bit array");
-    #endif
-
     if (bpp && *bpp) {
+        #ifdef DEBUG_ON
+        DEBUG_MSG("Deleting bit array at %p ...", *bpp);
+        #endif
+
         free(*bpp);
         *bpp = NULL;
     }
