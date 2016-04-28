@@ -1,7 +1,7 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-27
+ * UPDATED:     2016-04-28
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -12,10 +12,6 @@
 #include "bitarray.h"
 #include "wheel.h"
 #include "sieve.h"
-
-#ifdef DEBUG_ON
-#include "debug.h"
-#endif
 
 #define ERR_BIT_ALLOCATE    "sieve: bit array"
 #define ERR_WHEEL_ALLOCATE  "sieve: wheel"

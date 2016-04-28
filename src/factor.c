@@ -1,7 +1,7 @@
 /*
  * FILE:        factor.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-23
+ * UPDATED:     2016-04-28
  * DESCRIPTION: Prints out the prime factors of a given positive integer.
  *              Prime factors are computed using trial division with wheel
  *              factorization.
@@ -11,10 +11,6 @@
 #include <stdlib.h>
 #include "wheel.h"
 #include "factor.h"
-
-#ifdef DEBUG_ON
-#include "debug.h"
-#endif
 
 #define ERR_WHEEL_ALLOCATE  "factor: wheel"
 #define PRIME_FORMAT        "%lu\n"
@@ -39,13 +35,6 @@ unsigned long factor(unsigned long num, const int unique, FILE *stream) {
     unsigned long index;        /* Track position in loops */
     unsigned long count = 0;    /* The number of divisors */
     unsigned long prime;        /* A potentially prime number */
-
-    #ifdef DEBUG_ON
-        if (unique)
-            DEBUG_MSG("Factoring %lu, ignoring repeated primes", num);
-        else
-            DEBUG_MSG("Factoring %lu", num);
-    #endif
 
     /* 0 and 1 have no prime factors */
     if (num < 2)
