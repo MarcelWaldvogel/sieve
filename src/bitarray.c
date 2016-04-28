@@ -21,8 +21,7 @@ struct BitArray {
 };
 
 /* Number of bits in an element of a BitArray */
-#define NBITS               (CHAR_BIT * sizeof(int))
-
+#define NBITS (CHAR_BIT * sizeof(int))
 
 /*
  * FUNCTION:    newBitArray
@@ -33,11 +32,16 @@ struct BitArray {
  * RETURNS:     A new bit array with at least n bits.
  */
 BitArray * newBitArray(const unsigned long n) {
-    BitArray *bits = malloc(sizeof(BitArray));
-    if (!bits)
+    /* How many bytes to store */
+    size_t bytes = (n + CHAR_BIT - 1) / CHAR_BIT;
+
+    BitArray *bits = malloc(sizeof(BitArray));  /* Allocate bit array memory */
+    if (!bits)                                  /* Check if malloc failed */
         return NULL;
 
-    bits->size = (n + sizeof(int) - 1) / sizeof(int);
+    /* Compute number of bytes needed to hold enough ints */
+    bits->size = ((bytes + sizeof(int) - 1) / sizeof(int)) * sizeof(int);
+
     bits->array = malloc(bits->size);
     if (!bits->array) {
         deleteBitArray(&bits);
@@ -45,7 +49,7 @@ BitArray * newBitArray(const unsigned long n) {
     }
 
     #ifdef DEBUG_ON
-    DEBUG_MSG("New bit array at %p", bits);
+    DEBUG_MSG("New bit array at %p (bytes: %lu)", bits, bits->size);
     #endif
 
     return bits;
