@@ -1,15 +1,15 @@
 /* 
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-26
+ * UPDATED:     2016-04-27
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <limits.h>
+
+#include "bitarray.h"
 #include "wheel.h"
 #include "sieve.h"
 
@@ -25,68 +25,6 @@ static inline void print_prime(FILE *, const unsigned long);
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
-
-typedef int BitArray;
-
-/* Number of bits in an element of a BitArray */
-#define NBITS               (CHAR_BIT * sizeof(BitArray))
-
-/* Clear the kth bit of a bit array */
-#define CLEARBIT(bits, k)   (bits)[(k) / NBITS] &= ~(1 << ((k) % NBITS))
-
-/* Get the kth bit of a bit array */
-#define GETBIT(bits, k)     ((bits)[(k) / NBITS] & (1 << ((k) % NBITS))) != 0
-
-/*
- * FUNCTION:    newBitArray
- * DESCRIPTION: Allocates memory for a new bit array holding at least the
- *              specified number of bits.
- * ERRORS:      If memory allocation fails, returns NULL.
- * PARAMETERS:  n (const unsigned long): The number of bits to store.
- * RETURNS:     A new bit array with at least n bits.
- */
-static BitArray * newBitArray(const unsigned long n) {
-    size_t size = (n + sizeof(BitArray) - 1) / sizeof(BitArray);
-    BitArray *bits = malloc(size);
-    if (!bits)
-        return NULL; /* malloc failed! */
-
-    #ifdef DEBUG_ON
-    DEBUG_MSG("New bit array at %p", bits);
-    #endif
-
-    return bits; /* Could be NULL if malloc fails */
-}
-
-/*
- * FUNCTION:    deleteBitArray
- * DESCRIPTION: Deallocate memory associated with a bit array.
- * PARAMETERS:  bpp (BitArray **): Pointer to a pointer to the bit array to
- *              delete.
- * RETURNS:     Nothing.
- */
-static void deleteBitArray(BitArray **bpp) {
-    if (bpp && *bpp) {
-        #ifdef DEBUG_ON
-        DEBUG_MSG("Deleting bit array at %p ...", *bpp);
-        #endif
-
-        free(*bpp);
-        *bpp = NULL;
-    }
-}
-
-/*
- * FUNCTION:    setAllBits
- * DESCRIPTION: Sets all bits in the bit array to 1.
- * PARAMETERS:  bits (BitArray *): The bit array to operate on.
- *              n (const unsigned long): The number of bits in the bit array.
- * RETURNS:     Nothing.
- */
-static void setAllBits(BitArray *bits, const unsigned long n) {
-    size_t size = (n + sizeof(BitArray) - 1) / sizeof(BitArray);
-    memset(bits, (1L << CHAR_BIT) - 1, size); /* Fill with bytes of 1s */
-}
 
 /*
  * FUNCTION:    sieve
@@ -122,8 +60,8 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         perror(ERR_BIT_ALLOCATE);
         exit(EXIT_FAILURE);
     }
-    setAllBits(isPrime, (max + 1) / 2); /* Initialize all bits to 1 */
-    CLEARBIT(isPrime, 0);               /* 1 is not prime */
+    setAllBits(isPrime);    /* Initialize all bits to 1 */
+    clearBit(isPrime, 0);   /* 1 is not prime */
 
     /* Create the wheel */
     wheel = newWheel(basePrimes, numBasePrimes);
@@ -162,23 +100,23 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         print_prime(stream, prime);
         /* Cross off multiples of the current prime */
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
-            CLEARBIT(isPrime, comp / 2);
+            clearBit(isPrime, comp / 2);
     }
 
     /* Sieve the remaining primes <= sqrt(max) */
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
-        if (GETBIT(isPrime, prime / 2)) {
+        if (getBit(isPrime, prime / 2)) {
             count++;
             print_prime(stream, prime);
             /* Cross off multiples of the current prime */
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
-                CLEARBIT(isPrime, comp / 2);
+                clearBit(isPrime, comp / 2);
         }
     }
 
     /* Sieve the remaining primes > sqrt(max) */
     for (; prime <= max; prime = nextp(wheel)) {
-        if (GETBIT(isPrime, prime / 2)) {
+        if (getBit(isPrime, prime / 2)) {
             count++;
             print_prime(stream, prime);
         }

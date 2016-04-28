@@ -12,7 +12,7 @@ DEBUG=-g -D'DEBUG_ON'
 ASSEMBLY=-S -fverbose-asm -masm=intel
 
 # Object files
-OBJ_FILES=${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o
+OBJ_FILES=${OBJ}/wheel.o ${OBJ}/sieve.o ${OBJ}/factor.o ${OBJ}/bitarray.o
 
 .PHONY: all assembly clean debug directories force test
 
@@ -24,7 +24,10 @@ ${BIN}/sieve: ${SRC}/main.c ${SRC}/main.h ${OBJ_FILES}
 ${OBJ}/wheel.o: ${SRC}/wheel.c ${SRC}/wheel.h
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
-${OBJ}/sieve.o: ${SRC}/sieve.c ${SRC}/sieve.h ${SRC}/wheel.h
+${OBJ}/bitarray.o: ${SRC}/bitarray.c ${SRC}/bitarray.h
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
+
+${OBJ}/sieve.o: ${SRC}/sieve.c ${SRC}/sieve.h ${SRC}/wheel.h ${SRC}/bitarray.h
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
 ${OBJ}/factor.o: ${SRC}/factor.c ${SRC}/factor.h ${SRC}/wheel.h
@@ -44,12 +47,14 @@ ${TEST}/wheel_test: ${SRC}/${TEST}/wheel_test.c ${SRC}/wheel.c
 
 debug: directories
 	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
+	${CC} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
 	${CC} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
 	${CC} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
 	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ_FILES}
 
 assembly:
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/wheel.c
+	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/bitarray.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/factor.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/sieve.c
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/main.c
