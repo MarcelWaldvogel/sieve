@@ -15,6 +15,6 @@ typedef struct Wheel Wheel;
 
 Wheel * newWheel(const unsigned long *, const unsigned long);
 void deleteWheel(Wheel **);
-unsigned long nextp(Wheel *) __attribute__((nonnull));
+unsigned long nextp(Wheel *) __attribute__((hot, nonnull));
 
 #endif

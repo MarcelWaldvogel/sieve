@@ -15,7 +15,7 @@ typedef struct BitArray BitArray;
 BitArray * newBitArray(const unsigned long);
 void deleteBitArray(BitArray **);
 void setAllBits(BitArray *) __attribute__((nonnull));
-void clearBit(BitArray *, const unsigned long) __attribute__((nonnull));
-int getBit(BitArray *, const unsigned long) __attribute__((nonnull));
+void clearBit(BitArray *, const unsigned long) __attribute__((hot, nonnull));
+int getBit(BitArray *, const unsigned long) __attribute__((hot, nonnull));
 
 #endif
