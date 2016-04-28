@@ -15,6 +15,13 @@
 #include "debug.h"
 #endif
 
+/*
+ * STRUCT:      BitArray
+ * DESCRIPTION: Implementation of bit arrays, where each bit can be individually
+ *              manipulated.
+ * FIELDS:      array (int *): An array of ints which contains the bits.
+ *              size (size_t): The number of bytes in the bit array.
+ */
 struct BitArray {
     int *array;
     size_t size;
