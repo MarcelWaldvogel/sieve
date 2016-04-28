@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-01-09
+ * UPDATED:     2016-04-28
  * DESCRIPTION: Interface for creating wheels for wheel factorization. The
  *              implementation is in the file wheel.c. This file contains just
  *              the struct and function prototypes necessary for the use of
@@ -15,6 +15,6 @@ typedef struct Wheel Wheel;
 
 Wheel * newWheel(const unsigned long *, const unsigned long);
 void deleteWheel(Wheel **);
-unsigned long nextp(Wheel *);
+unsigned long nextp(Wheel *) __attribute__((nonnull));
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-23
+ * UPDATED:     2016-04-28
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -35,7 +35,8 @@ typedef struct {
 
 /* Static ("private") function prototypes */
 static void process_options(int *, const char ***, Options *);
-static void sieve_error(const char *, ...);
+static void sieve_error(const char *, ...)
+    __attribute__((noreturn, format(printf, 1, 2)));
 
 /* Global variables */
 static const char *prog_name;   /* Name of the program */
