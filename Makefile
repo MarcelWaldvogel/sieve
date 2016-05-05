@@ -30,14 +30,14 @@ force: clean all
 test: ${BIN}/wheel_test
 
 ${BIN}/wheel_test: ${SRC}/wheel.c
-	${CC} ${DEBUG} ${TEST} -o $@ $<
+	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o $@ $<
 
 debug: directories
-	${CC} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
-	${CC} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
-	${CC} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
-	${CC} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
-	${CC} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ_FILES}
+	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
+	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
+	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
+	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
+	${CC} ${CFLAGS} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ_FILES}
 
 assembly:
 	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/wheel.c
