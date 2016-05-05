@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-27
+ * UPDATED:     2016-05-05
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
@@ -165,3 +165,62 @@ unsigned long nextp(Wheel *wheel) {
     wheel->spoke = wheel->spoke->next;            /* Move to the next spoke */
     return wheel->spoke->num;
 }
+
+/* Compile with -D'TEST' to enable testing of the wheel */
+#ifdef TEST
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 20 /* Number of prime number candidates to print */
+
+
+/*
+ * FUNCTION:    main
+ * DESCRIPTION: Generates MAX prime number candidates using a wheel created with
+ *              the command-line arguments as the base primes.
+ * PARAMETERS:  argc (int): 1 + the number of command-line arguments
+ *              argv (const char **): array of strings, the first being the
+ *              program name, and the subsequent ones being the command-line
+ *              arguments.
+ */
+int main(int argc, const char **argv) {
+    int i;
+    Wheel *wheel;
+    unsigned long numBasePrimes;
+    unsigned long *basePrimes;
+
+    if (argc == 1) {
+        /* If there are no command-line arguments, print usage message */
+        fprintf(stderr,
+                "Usage: Enter a list of primes: e.g.,\t\n%s 2 3 5\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    /* Allocate memory for the base primes */
+    numBasePrimes = (unsigned long) argc - 1;
+    basePrimes = malloc(numBasePrimes * sizeof(unsigned long));
+
+    /* Print the base primes */
+    printf("The %lu base primes:\n", numBasePrimes);
+    for (i = 1; i < argc; i++) {
+        /* Parse command line arguments as primes (no error checking) */
+        basePrimes[i - 1] = strtoul(argv[i], NULL, 0);
+        printf("Base prime      #%i:\t%3ld\n", i, basePrimes[i - 1]);
+    }
+
+    /* Create the wheel to be tested */
+    wheel = newWheel(basePrimes, numBasePrimes);
+
+    /* Print the prime candidates */
+    printf("The first %i prime candidates:\n", MAX);
+    for (i = 1; i <= MAX; i++)
+        printf("Prime candidate #%i\t%3ld\n", i, nextp(wheel));
+
+    /* Clean up and return */
+    free(basePrimes);
+    deleteWheel(&wheel);
+    return EXIT_SUCCESS;
+}
+
+#endif /* TEST */
