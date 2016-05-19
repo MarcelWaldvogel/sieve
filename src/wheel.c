@@ -121,7 +121,7 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
 
     #ifdef DEBUG_ON
     DEBUG_MSG("New wheel at %p (circum: %lu, spokes: %lu)",
-            wheel, wheel->circumference, wheel->numSpokes);
+            (void *) wheel, wheel->circumference, wheel->numSpokes);
     #endif
 
     return wheel;
@@ -137,7 +137,7 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
 void deleteWheel(Wheel **wpp) {
     if (wpp && *wpp) {
         #ifdef DEBUG_ON
-        DEBUG_MSG("Deleting wheel at %p ...", *wpp);
+        DEBUG_MSG("Deleting wheel at %p ...", (void *) *wpp);
         #endif
 
         /* Deallocate all the spokes in the wheel */
