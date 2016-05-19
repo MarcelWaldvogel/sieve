@@ -174,6 +174,9 @@ unsigned long nextp(Wheel *wheel) {
 
 #define COUNT 20    /* Number of prime number candidates to print at a time */
 
+/* Naive trial division primality tester prototype */
+static unsigned long iscomp(const unsigned long);
+
 /*
  * FUNCTION:    main
  * DESCRIPTION: Generates MAX prime number candidates using a wheel created with
@@ -187,6 +190,8 @@ int main(int argc, const char **argv) {
     int max = COUNT;                /* Number of prime candidates to print */
     int i;                          /* Loop index */
     int c;                          /* User command */
+    unsigned long p;                /* A prime number candidate */
+    unsigned long d;                /* A divisor of a prime number candidate */
     Wheel *wheel;                   /* Wheel being tested */
     unsigned long numBasePrimes;    /* Number of user-specified base primes */
     unsigned long *basePrimes;      /* Array of user-specified base primes */
@@ -207,7 +212,7 @@ int main(int argc, const char **argv) {
     for (i = 1; i < argc; i++) {
         /* Parse command line arguments as primes (no error checking) */
         basePrimes[i - 1] = strtoul(argv[i], NULL, 0);
-        printf("Base prime      #%i:\t%3ld\n", i, basePrimes[i - 1]);
+        printf("Base prime      #%i:\t%4ld\n", i, basePrimes[i - 1]);
     }
 
     /* Create the wheel to be tested */
@@ -215,8 +220,14 @@ int main(int argc, const char **argv) {
 
     /* Print the prime candidates */
     printf("The first %i prime candidates:\n", max);
-    for (i = 1; i <= max; i++)
-        printf("Prime candidate #%i\t%3ld\n", i, nextp(wheel));
+    for (i = 1; i <= max; i++) {
+        p = nextp(wheel);
+        printf("Prime candidate #%i\t%4ld", i, p);
+        if ((d = iscomp(p)))
+            printf(" (divisible by %lu)\n", d);
+        else
+            printf("\n");
+    }
 
     while (1) {
         /* Ask if user wants to see more base primes */
@@ -236,8 +247,14 @@ int main(int argc, const char **argv) {
         }
 
         max += COUNT;
-        for (; i <= max; i++)
-            printf("Prime candidate #%i\t%3ld\n", i, nextp(wheel));
+        for (; i <= max; i++) {
+            p = nextp(wheel);
+            printf("Prime candidate #%i\t%4ld", i, p);
+            if ((d = iscomp(p)))
+                printf(" (divisible by %lu)\n", d);
+            else
+                printf("\n");
+            }
 
         /* Flush remaining characters in stdin */
         if (c != '\n')
@@ -248,6 +265,24 @@ int main(int argc, const char **argv) {
     free(basePrimes);
     deleteWheel(&wheel);
     return EXIT_SUCCESS;
+}
+
+
+/*
+ * FUNCTION:    Naive trial division primality tester
+ * DESCRIPTION: Performs trial division until a prime factor is found or the
+ *              specified number is determined to be prime.
+ * PARAMETERS:  n (const unsigned long): The number to be checked.
+ * RETURNS:     0 if n is prime, otherwise the smallest prime divisor of n.
+ */
+static unsigned long iscomp(const unsigned long n) {
+    unsigned long p;
+    if (n % 2 == 0)
+        return 2;
+    for (p = 3; p * p <= n; p += 2)
+        if (n % p == 0)
+            return p;
+    return 0;
 }
 
 #endif /* TEST */
