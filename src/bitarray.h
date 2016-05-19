@@ -1,7 +1,7 @@
 /*
  * FILE:        bitarray.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-28
+ * UPDATED:     2016-05-19
  * DESCRIPTION: Function prototypes for manipulating bit arrays.
  */
 
@@ -14,8 +14,8 @@ typedef struct BitArray BitArray;
 
 BitArray * newBitArray(const unsigned long);
 void deleteBitArray(BitArray **);
-void setAllBits(BitArray *) __attribute__((nonnull));
-void clearBit(BitArray *, const unsigned long) __attribute__((hot, nonnull));
-int getBit(BitArray *, const unsigned long) __attribute__((hot, nonnull));
+void setAllBits(BitArray *);
+void clearBit(BitArray *, const unsigned long);
+int getBit(BitArray *, const unsigned long);
 
 #endif
