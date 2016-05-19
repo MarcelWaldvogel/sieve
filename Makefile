@@ -27,7 +27,10 @@ ${OBJ}/%.o: ${SRC}/%.c
 
 force: clean all
 
-test: ${BIN}/wheel_test
+test: ${BIN}/bitarray_test ${BIN}/wheel_test
+
+${BIN}/bitarray_test: ${SRC}/bitarray.c
+	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o $@ $<
 
 ${BIN}/wheel_test: ${SRC}/wheel.c
 	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o $@ $<
