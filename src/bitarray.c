@@ -56,7 +56,7 @@ BitArray * newBitArray(const unsigned long n) {
     }
 
     #ifdef DEBUG_ON
-    DEBUG_MSG("New bit array at %p (bytes: %lu)", bits, bits->size);
+    DEBUG_MSG("New bit array at %p (bytes: %lu)", (void *) bits, bits->size);
     #endif
 
     return bits;
@@ -72,7 +72,7 @@ BitArray * newBitArray(const unsigned long n) {
 void deleteBitArray(BitArray **bpp) {
     if (bpp && *bpp) {
         #ifdef DEBUG_ON
-        DEBUG_MSG("Deleting bit array at %p ...", *bpp);
+        DEBUG_MSG("Deleting bit array at %p ...", (void *) *bpp);
         #endif
 
         if ((*bpp)->array)
