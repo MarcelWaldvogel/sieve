@@ -172,8 +172,7 @@ unsigned long nextp(Wheel *wheel) {
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 20 /* Number of prime number candidates to print */
-
+#define COUNT 20    /* Number of prime number candidates to print at a time */
 
 /*
  * FUNCTION:    main
@@ -185,10 +184,12 @@ unsigned long nextp(Wheel *wheel) {
  *              arguments.
  */
 int main(int argc, const char **argv) {
-    int i;
-    Wheel *wheel;
-    unsigned long numBasePrimes;
-    unsigned long *basePrimes;
+    int max = COUNT;                /* Number of prime candidates to print */
+    int i;                          /* Loop index */
+    int c;                          /* User command */
+    Wheel *wheel;                   /* Wheel being tested */
+    unsigned long numBasePrimes;    /* Number of user-specified base primes */
+    unsigned long *basePrimes;      /* Array of user-specified base primes */
 
     if (argc == 1) {
         /* If there are no command-line arguments, print usage message */
@@ -213,9 +214,35 @@ int main(int argc, const char **argv) {
     wheel = newWheel(basePrimes, numBasePrimes);
 
     /* Print the prime candidates */
-    printf("The first %i prime candidates:\n", MAX);
-    for (i = 1; i <= MAX; i++)
+    printf("The first %i prime candidates:\n", max);
+    for (i = 1; i <= max; i++)
         printf("Prime candidate #%i\t%3ld\n", i, nextp(wheel));
+
+    while (1) {
+        /* Ask if user wants to see more base primes */
+        printf("Show %i more prime candidate%s? (Y/n)\t",
+                COUNT, (COUNT > 1) ? "s" : "");
+        c = getchar();
+
+        if (c == EOF) {
+            printf("\n");
+            break;
+        } else if (c == 'n' || c == 'N') {
+            break;
+        } else if (c != '\n' && c != 'Y' && c != 'y') {
+            /* Flush remaining characters in stdin */
+            while ((c = getchar()) != '\n' && c != EOF);
+            continue;
+        }
+
+        max += COUNT;
+        for (; i <= max; i++)
+            printf("Prime candidate #%i\t%3ld\n", i, nextp(wheel));
+
+        /* Flush remaining characters in stdin */
+        if (c != '\n')
+            while ((c = getchar()) != '\n' && c != EOF);
+    }
 
     /* Clean up and return */
     free(basePrimes);
