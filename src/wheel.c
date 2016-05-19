@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-05
+ * UPDATED:     2016-05-19
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
@@ -190,6 +190,7 @@ int main(int argc, const char **argv) {
     int max = COUNT;                /* Number of prime candidates to print */
     int i;                          /* Loop index */
     int c;                          /* User command */
+    int num_primes = 0;             /* Number of truly prime prime candidates */
     unsigned long p;                /* A prime number candidate */
     unsigned long d;                /* A divisor of a prime number candidate */
     Wheel *wheel;                   /* Wheel being tested */
@@ -223,10 +224,12 @@ int main(int argc, const char **argv) {
     for (i = 1; i <= max; i++) {
         p = nextp(wheel);
         printf("Prime candidate #%i\t%4ld", i, p);
-        if ((d = iscomp(p)))
+        if ((d = iscomp(p))) {
             printf(" (divisible by %lu)\n", d);
-        else
+        } else {
+            num_primes++;
             printf("\n");
+        }
     }
 
     while (1) {
@@ -250,16 +253,25 @@ int main(int argc, const char **argv) {
         for (; i <= max; i++) {
             p = nextp(wheel);
             printf("Prime candidate #%i\t%4ld", i, p);
-            if ((d = iscomp(p)))
+            if ((d = iscomp(p))) {
                 printf(" (divisible by %lu)\n", d);
-            else
+            } else {
+                num_primes++;
                 printf("\n");
             }
+        }
 
         /* Flush remaining characters in stdin */
         if (c != '\n')
             while ((c = getchar()) != '\n' && c != EOF);
     }
+
+    /* Print prime statisticts */
+    i--;
+    fprintf(stderr, "Statistics:\n");
+    fprintf(stderr, "\tTotal prime candidates:      \t%d\n", i);
+    fprintf(stderr, "\tTruly prime prime candidates:\t%d (%.2f%%)\n",
+            num_primes, 100.0 * (float) num_primes / (float) i);
 
     /* Clean up and return */
     free(basePrimes);
