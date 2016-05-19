@@ -170,7 +170,6 @@ unsigned long nextp(Wheel *wheel) {
 #ifdef TEST
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #define COUNT 20    /* Number of prime number candidates to print at a time */
 
