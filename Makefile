@@ -2,7 +2,6 @@
 BIN=bin
 OBJ=obj
 SRC=src
-TEST=test
 
 # Compiler options
 CC=gcc
@@ -10,31 +9,32 @@ CFLAGS=-Wall -Wextra -Werror -pedantic
 OPTIMIZE=-O3
 DEBUG=-g -D'DEBUG_ON'
 TEST=-D'TEST'
-ASSEMBLY=-S -fverbose-asm -masm=intel
 
 # Object files
 OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve.o ${OBJ}/factor.o
 
-.PHONY: all assembly clean debug directories force test
+.PHONY: assembly clean debug default directories force test
 
-all: directories ${BIN}/sieve
+# Create the necessary directories, then the main executable
+default: directories ${BIN}/sieve
 
+# Create the main executable from the source and object files
 ${BIN}/sieve: ${SRC}/main.c ${SRC}/main.h ${OBJ_FILES}
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ ${SRC}/main.c ${OBJ_FILES}
 
-${OBJ}/%.o: ${SRC}/%.c
+# Create the object files for all the program components
+${OBJ}/%.o: ${SRC}/%.c ${SRC}/%.h
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
-force: clean all
+# Compile everything from scratch no matter what
+force: clean default
 
-test: ${BIN}/bitarray_test ${BIN}/wheel_test
+# Create testing executables
+test: directories
+	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o ${BIN}/bitarray_test ${SRC}/bitarray.c
+	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o ${BIN}/wheel_test ${SRC}/wheel.c
 
-${BIN}/bitarray_test: ${SRC}/bitarray.c
-	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o $@ $<
-
-${BIN}/wheel_test: ${SRC}/wheel.c
-	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o $@ $<
-
+# Compile with debug messages turned on
 debug: directories
 	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
 	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
@@ -42,13 +42,7 @@ debug: directories
 	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
 	${CC} ${CFLAGS} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ_FILES}
 
-assembly:
-	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/wheel.c
-	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/bitarray.c
-	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/factor.c
-	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/sieve.c
-	${CC} ${OPTIMIZE} ${ASSEMBLY} ${SRC}/main.c
-
+# Create the binary executable and object file directories
 directories:
 	@for dir in ${BIN} ${OBJ}; do \
 	    if [ ! -d $$dir ]; then \
@@ -57,12 +51,9 @@ directories:
 	    fi; \
 	done;
 
+# Remove non-source code
 clean:
 	rm -rf ${BIN}/*
 	rm -rf ${OBJ}/*
-	rm -f *.i
-	rm -f *.s
-	rm -f *.bc
-	rm -f *.o
 	rm -rf core
 	find . -name "*.swp" -type f -delete
