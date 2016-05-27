@@ -1,7 +1,7 @@
-/* 
+/*
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-04-28
+ * UPDATED:     2016-05-27
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -83,7 +83,7 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         deleteWheel(&wheel);
         return 1;
     }
-    
+
     /* Now max is guaranteed to be at least 3 */
     count = 1;
 
