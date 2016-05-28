@@ -1,15 +1,8 @@
 # Executables
 bin/*
 
-# Test executables
-test/*
-!test/factor_test.sh
-
 # Object files
 obj/*
-
-# GCC-generated assembly
-*.s
 
 # Vim temporary files
 *.swp
