@@ -13,7 +13,7 @@ TEST=-D'TEST'
 # Object files
 OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve.o
 
-.PHONY: assembly clean debug default directories force test
+.PHONY: clean debug default directories force test
 
 # Create the necessary directories, then the main executable
 default: directories ${BIN}/sieve
