@@ -11,7 +11,7 @@ DEBUG=-g -D'DEBUG_ON'
 TEST=-D'TEST'
 
 # Object files
-OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve.o ${OBJ}/factor.o
+OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve.o
 
 .PHONY: assembly clean debug default directories force test
 
@@ -39,7 +39,6 @@ debug: directories
 	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/wheel.o -c ${SRC}/wheel.c
 	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/bitarray.o -c ${SRC}/bitarray.c
 	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/sieve.o -c ${SRC}/sieve.c
-	${CC} ${CFLAGS} ${DEBUG} -o ${OBJ}/factor.o -c ${SRC}/factor.c
 	${CC} ${CFLAGS} ${DEBUG} -o ${BIN}/sieve ${SRC}/main.c ${OBJ_FILES}
 
 # Create the binary executable and object file directories

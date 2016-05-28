@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-19
+ * UPDATED:     2016-05-28
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -14,7 +14,6 @@
 #include <unistd.h>
 
 #include "sieve.h"
-#include "factor.h"
 #include "main.h"
 
 /*
@@ -23,10 +22,8 @@
  */
 typedef struct {
     unsigned int count;     /* Print only the number of primes */
-    unsigned int factor;    /* Factor number instead of sieveing */
     unsigned int help;      /* Print help message */
     unsigned int input;     /* Read argument from stdin */
-    unsigned int unique;    /* Ignore divisor multiplicity */
 } Options;
 
 /* Static ("private") function prototypes */
@@ -42,7 +39,7 @@ static const char *prog_name;   /* Name of the program */
  * DESCRIPTION: Driver for the sieve program.
  */
 int main(int argc, const char **argv) {
-    unsigned long num;          /* Sieve upper bound OR number to factor */
+    unsigned long num;          /* Sieve upper bound */
     char *endptr;               /* For stroul's error checking */
     char *nlpos;                /* Position of first newline in the argument */
     char str[BUFSIZ];           /* String to be used as the program argument */
@@ -54,14 +51,9 @@ int main(int argc, const char **argv) {
     /* Parse command-line options and set the global option flags */
     process_options(&argc, &argv, &ops);
 
-    /* The -u option shouldn't be used without the -f option */
-    if (ops.unique && !ops.factor)
-        sieve_error(ERR_U_WITHOUT_F);
-
     /* Print help message if necessary, then exit */
     if (ops.help) {
-        printf(HELP_MESSAGE, prog_name,
-                OPT_COUNT, OPT_FACTOR, OPT_UNIQUE, OPT_STDIN);
+        printf(HELP_MESSAGE, prog_name, OPT_COUNT, OPT_STDIN);
         return EXIT_SUCCESS;
     }
 
@@ -107,23 +99,13 @@ int main(int argc, const char **argv) {
     else if (errno == ERANGE)
         sieve_error(ERR_TOO_LARGE, str);
 
-    /* Perform either sieving or factoring */
-    if (!ops.factor) {
-        /* Sieve the primes up to the specified number */
-        if (ops.count)
-            /* Print only the number of primes up to num */
-            printf(COUNT_FMT, sieve(num, NULL));
-        else
-            /* Print all the primes up to num */
-            sieve(num, stdout);
+    /* Sieve the primes up to the specified number */
+    if (ops.count) {
+        /* Print only the number of primes up to num */
+        printf(COUNT_FMT, sieve(num, NULL));
     } else {
-        /* Factor the specified number */
-        if (ops.count)
-            /* Print the number of factors (with or without multiplicity) */
-            printf(COUNT_FMT, factor(num, ops.unique, NULL));
-        else
-            /* Print all the prime factors (with or without multiplicity) */
-            factor(num, ops.unique, stdout);
+        /* Print all the primes up to num */
+        sieve(num, stdout);
     }
 
     return EXIT_SUCCESS;
@@ -144,10 +126,8 @@ static void process_options(int *argcp, const char ***argvp, Options *ops) {
 
     /* Initialize all options */
     ops->count = 0;
-    ops->factor = 0;
     ops->help = 0;
     ops->input = 0;
-    ops->unique = 0;
 
     /* Iterate over all options found by getopt */
     while ((c = getopt(*argcp, (char * const *) *argvp, ALL_OPTS)) != -1) {
@@ -156,14 +136,8 @@ static void process_options(int *argcp, const char ***argvp, Options *ops) {
             case OPT_HELP:
                 ops->help = 1;
                 break;
-            case OPT_FACTOR:
-                ops->factor = 1;
-                break;
             case OPT_COUNT:
                 ops->count = 1;
-                break;
-            case OPT_UNIQUE:
-                ops->unique = 1;
                 break;
             case OPT_STDIN:
                 ops->input = 1;

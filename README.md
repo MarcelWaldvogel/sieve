@@ -1,7 +1,7 @@
 # WheelSieve
 
-Wheel-based prime number sieve and integer factorization program written in C.
-A Python 3 clone of the sieve is
+Wheel-based prime number sieve written in C.
+A Python 3 clone of this program is
 [PySieve](https://github.com/artemmavrin/pysieve).
 
 ## Usage
@@ -33,33 +33,6 @@ To count the number of prime numbers less than or equal to a specified
 nonnegative integer *N*, use the `-n` option:
 ```
 bin/sieve -n N
-```
-
-### Factoring a Number Into Primes
-
-To list the prime factors of a nonnegative integer *N*, use the `-f` option:
-```
-bin/sieve -f N
-```
-If a prime number divides *N* multiple times, then it will appear in the list as
-many times as it divides *N*. To list each prime only once, use the `-u` option
-together with the `-f` option:
-```
-bin/sieve -f -u N
-```
-
-### Counting the Number of Prime Factors of a Number
-
-To count the number of prime factors of a nonnegative number *N*, use the `-n`
-and `-f` options together:
-```
-bin/sieve -f -n N
-```
-Again, if a given prime number divides *N* multiple times, then it will counted
-as many times as it divides *N*. To count each prime factor only once, use the
-`-u` option together with the `-f` and `-n` options:
-```
-bin/sieve -f -n -u N
 ```
 
 ### Reading From Standard Input
