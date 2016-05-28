@@ -8,20 +8,21 @@
 #ifndef MAIN_STRINGS_H
 #define MAIN_STRINGS_H
 
-#define ERR_ILLEGAL_OPTION  "sieve: illegal option `-%c'.\n"
-#define ERR_EXPECTED_OPT    "sieve: expected option after `%c'.\n"
-#define ERR_EXPECTED_ARG    "sieve: expected argument.\n"
-#define ERR_TOO_MANY_ARGS   "sieve: too many arguments.\n"
-#define ERR_CONVERT         "sieve: `%s' is not a nonnegative integer.\n"
-#define ERR_TOO_LARGE       "sieve: %s is too large.\n"
-#define ERR_READ_STDIN      "sieve: could not read from stdin.\n"
-#define ERR_TOO_LONG        "sieve: argument too long.\n"
-#define ERR_USAGE_HELP      "For help, run %s -%c.\n"
+#define PROGRAM_NAME        "sieve"
+
+#define ERR_ILLEGAL_OPTION  "illegal option `-%c'.\n"
+#define ERR_EXPECTED_ARG    "expected argument.\n"
+#define ERR_TOO_MANY_ARGS   "too many arguments.\n"
+#define ERR_CONVERT         "`%s' is not a nonnegative integer.\n"
+#define ERR_TOO_LARGE       "%s is too large.\n"
+#define ERR_READ_STDIN      "could not read from stdin.\n"
+#define ERR_TOO_LONG        "argument too long.\n"
+#define ERR_USAGE_HELP      "For help, run `" PROGRAM_NAME " -%c'.\n"
 
 #define HELP_MESSAGE        "WheelSieve\t\
 Wheel-based Sieve of Eratosthenes\n\n\
 Usage:\n\
-\t%s [options] <nonnegative integer>\n\n\
+\t" PROGRAM_NAME " [options] <nonnegative integer>\n\n\
 Without any options, this will list all the prime numbers less than or equal\n\
 to the specified nonnegative integer.\n\n\
 Options:\n\
@@ -32,7 +33,7 @@ Options:\n\
 #define OPT_HELP    'h'     /* Option to print help message */
 #define OPT_COUNT   'n'     /* Option to print the number of primes */
 #define OPT_STDIN   'i'     /* Option to read argument from stdin */
-#define ALL_OPTS    "hfnui" /* All options of the program */
+#define ALL_OPTS    "hni"   /* All options of the program */
 
 #define NUM_ARGS    1       /* Expected number of command-line arguments */
 #define BASE        0       /* For stroul - accept decimal, octal, and hex */

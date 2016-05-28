@@ -30,9 +30,6 @@ typedef struct {
 static void process_options(int *, const char ***, Options *);
 static void sieve_error(const char *, ...);
 
-/* Global variables */
-static const char *prog_name;   /* Name of the program */
-
 
 /*
  * FUNCTION:    main
@@ -45,15 +42,12 @@ int main(int argc, const char **argv) {
     char str[BUFSIZ];           /* String to be used as the program argument */
     Options ops;                /* Command-line options */
 
-    /* Get the name of the program */
-    prog_name = *argv;
-
     /* Parse command-line options and set the global option flags */
     process_options(&argc, &argv, &ops);
 
     /* Print help message if necessary, then exit */
     if (ops.help) {
-        printf(HELP_MESSAGE, prog_name, OPT_COUNT, OPT_STDIN);
+        printf(HELP_MESSAGE, OPT_COUNT, OPT_STDIN);
         return EXIT_SUCCESS;
     }
 
@@ -160,8 +154,9 @@ static void process_options(int *argcp, const char ***argvp, Options *ops) {
 static void sieve_error(const char *format, ...) {
     va_list argptr;
     va_start(argptr, format);
+    fprintf(stderr, PROGRAM_NAME ": ");
     vfprintf(stderr, format, argptr);
     va_end(argptr);
-    fprintf(stderr, ERR_USAGE_HELP, prog_name, OPT_HELP);
+    fprintf(stderr, ERR_USAGE_HELP, OPT_HELP);
     exit(EXIT_FAILURE);
 }
