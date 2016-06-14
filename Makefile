@@ -13,6 +13,9 @@ TEST=-D'TEST'
 # Object files
 OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve.o
 
+# Executble directory (on $PATH)
+INSTALL_DIR=/usr/local/bin/
+
 .PHONY: clean debug default directories force test
 
 # Create the necessary directories, then the main executable
@@ -21,6 +24,7 @@ default: directories ${BIN}/sieve
 # Create the main executable from the source and object files
 ${BIN}/sieve: ${SRC}/main.c ${SRC}/main.h ${OBJ_FILES}
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ ${SRC}/main.c ${OBJ_FILES}
+	cp $@ ${INSTALL_DIR}
 
 # Create the object files for all the program components
 ${OBJ}/%.o: ${SRC}/%.c ${SRC}/%.h
@@ -55,4 +59,3 @@ clean:
 	rm -rf ${BIN}/*
 	rm -rf ${OBJ}/*
 	rm -rf core
-	find . -name "*.swp" -type f -delete
