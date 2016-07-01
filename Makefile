@@ -35,7 +35,6 @@ force: clean default
 
 # Create testing executables
 test: directories
-	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o ${BIN}/bitarray_test ${SRC}/bitarray.c
 	${CC} ${CFLAGS} ${DEBUG} ${TEST} -o ${BIN}/wheel_test ${SRC}/wheel.c
 
 # Compile with debug messages turned on
