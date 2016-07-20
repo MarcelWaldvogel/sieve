@@ -1,7 +1,7 @@
 /*
  * FILE:        debug.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-05
+ * UPDATED:     2016-07-20
  * DESCRIPTION: Provides debugging macros. This project's Makefile contains a
  *              `debug' target which, among other things, compiles the source
  *              code with an additional preprocessor macro: DEBUG_ON. All
@@ -35,7 +35,7 @@
     do { \
         fprintf(stderr, "[DEBUG] %s:%d: ", __FILE__, __LINE__); \
         fprintf(stderr, __VA_ARGS__); \
-        fprintf(stderr, "\n"); \
+        putc('\n', stderr); \
     } while (0)
 
 #endif
