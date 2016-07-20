@@ -1,7 +1,7 @@
 /*
  * FILE:        main.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-28
+ * UPDATED:     2016-07-20
  * DESCRIPTION: Defines constants to be used in main.c.
  */
 
@@ -17,6 +17,7 @@
 #define ERR_TOO_LARGE       "%s is too large.\n"
 #define ERR_READ_STDIN      "could not read from stdin.\n"
 #define ERR_TOO_LONG        "argument too long.\n"
+#define ERR_INTERRUPT       "interrupted.\n"
 #define ERR_USAGE_HELP      "For help, run `" PROGRAM_NAME " -%c'.\n"
 
 #define HELP_MESSAGE        "WheelSieve\t\

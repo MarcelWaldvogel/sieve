@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-28
+ * UPDATED:     2016-07-20
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "sieve.h"
 #include "main.h"
@@ -29,7 +30,7 @@ typedef struct {
 /* Static ("private") function prototypes */
 static void process_options(int *, const char ***, Options *);
 static void sieve_error(const char *, ...);
-
+static void interrupt(int);
 
 /*
  * FUNCTION:    main
@@ -41,6 +42,9 @@ int main(int argc, const char **argv) {
     char *nlpos;                /* Position of first newline in the argument */
     char str[BUFSIZ];           /* String to be used as the program argument */
     Options ops;                /* Command-line options */
+
+    /* Set up interrupt handling */
+    signal(SIGINT, &interrupt);
 
     /* Parse command-line options and set the global option flags */
     process_options(&argc, &argv, &ops);
@@ -159,4 +163,16 @@ static void sieve_error(const char *format, ...) {
     va_end(argptr);
     fprintf(stderr, ERR_USAGE_HELP, OPT_HELP);
     exit(EXIT_FAILURE);
+}
+
+
+/*
+ * FUNCTION:    interrupt
+ * DESCRIPTION: Print a message indicating that the program was interrupted.
+ * PARAMETERS:  sig (int): Unused. Needed to make function match the prototype
+ *              required by the `signal' method.
+ */
+static void interrupt(int sig) {
+    (void) sig; /* Ignore the parameter */
+    sieve_error(ERR_INTERRUPT);
 }
