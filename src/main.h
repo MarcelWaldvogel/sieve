@@ -31,10 +31,10 @@ Options:\n\
 \t-%c\tRead the nonnegative integer from stdin instead of from the\n\
 \t\tcommand-line.\n"
 
-#define OPT_HELP    'h'     /* Option to print help message */
-#define OPT_COUNT   'n'     /* Option to print the number of primes */
-#define OPT_STDIN   'i'     /* Option to read argument from stdin */
-#define ALL_OPTS    "hni"   /* All options of the program */
+#define OP_HELP     'h'     /* Option to print help message */
+#define OP_COUNT    'n'     /* Option to print the number of primes */
+#define OP_STDIN    'i'     /* Option to read argument from stdin */
+#define ALL_OPS     "hni"   /* All options of the program */
 
 #define NUM_ARGS    1       /* Expected number of command-line arguments */
 #define BASE        0       /* For stroul - accept decimal, octal, and hex */
