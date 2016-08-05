@@ -1,8 +1,6 @@
 # Sieve
 
 Wheel-based prime number sieve written in C.
-A Python 3 clone of this program is
-[PySieve](https://github.com/artemmavrin/pysieve).
 
 ## Usage
 
