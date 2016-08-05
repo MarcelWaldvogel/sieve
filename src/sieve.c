@@ -56,8 +56,7 @@ static const unsigned long numBasePrimes = 6;
  */
 #ifdef COUNT_PRIMES
 unsigned long sieve_count(const unsigned long max)
-#endif
-#ifdef LIST_PRIMES
+#else
 void sieve_list(const unsigned long max)
 #endif
 {
@@ -94,8 +93,7 @@ void sieve_list(const unsigned long max)
     /* Now max is guaranteed to be at least 2 */
 #ifdef COUNT_PRIMES
     count++;
-#endif
-#ifdef LIST_PRIMES
+#else
     printf(PRIME_FORMAT, 2UL);
 #endif
 
@@ -112,8 +110,7 @@ void sieve_list(const unsigned long max)
             break;
 #ifdef COUNT_PRIMES
         count++;
-#endif
-#ifdef LIST_PRIMES
+#else
         printf(PRIME_FORMAT, prime);
 #endif
         /* Cross off multiples of the current prime */
@@ -126,8 +123,7 @@ void sieve_list(const unsigned long max)
         if (getBit(isPrime, prime / 2)) {
 #ifdef COUNT_PRIMES
             count++;
-#endif
-#ifdef LIST_PRIMES
+#else
             printf(PRIME_FORMAT, prime);
 #endif
             /* Cross off multiples of the current prime */
@@ -141,8 +137,7 @@ void sieve_list(const unsigned long max)
         if (getBit(isPrime, prime / 2)) {
 #ifdef COUNT_PRIMES
             count++;
-#endif
-#ifdef LIST_PRIMES
+#else
             printf(PRIME_FORMAT, prime);
 #endif
         }
