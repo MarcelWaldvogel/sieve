@@ -137,7 +137,7 @@ void sieve_list(const unsigned long max)
     }
 
     /* Sieve the remaining primes > sqrt(max) */
-    for (; prime <= max; prime = nextp(wheel)) {
+    while(prime <= max) {
         if (getBit(isPrime, prime / 2)) {
 #ifdef COUNT_PRIMES
             count++;
@@ -146,6 +146,7 @@ void sieve_list(const unsigned long max)
             printf(PRIME_FORMAT, prime);
 #endif
         }
+        prime = nextp(wheel);
     }
 
 end:
