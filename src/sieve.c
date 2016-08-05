@@ -1,7 +1,7 @@
 /*
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-27
+ * UPDATED:     2016-08-05
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization.
  */
@@ -42,19 +42,19 @@ static const unsigned long numBasePrimes = 6;
  * RETURNS:     The number of primes less than or equal to max.
  */
 unsigned long sieve(const unsigned long max, FILE *stream) {
-    BitArray *isPrime;      /* Bit array of T/F values representing primality */
-    Wheel *wheel;           /* The wheel used in the sieve */
-    unsigned long prime;    /* A prime candidate */
-    unsigned long comp;     /* A necessarily composite number */
-    unsigned long count;    /* The number of primes */
-    unsigned long index;    /* Track position in loops */
+    BitArray *isPrime = NULL;   /* Bit array representing primality */
+    Wheel *wheel = NULL;        /* The wheel used in the sieve */
+    unsigned long count = 0;    /* The number of primes */
+    unsigned long prime;        /* A prime candidate */
+    unsigned long comp;         /* A necessarily composite number */
+    unsigned long index;        /* Track position in loops */
 
     /* Create the sieving array. To save space we only store the primality of
      * odd integers, starting with 1 in position 0, 3 in position 1, etc. */
     isPrime = newBitArray((max + 1) / 2);
     if (!isPrime) {
         perror(ERR_BIT_ALLOCATE);
-        exit(EXIT_FAILURE);
+        goto failure;
     }
     setAllBits(isPrime);    /* Initialize all bits to 1 */
     clearBit(isPrime, 0);   /* 1 is not prime */
@@ -63,29 +63,22 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
     wheel = newWheel(basePrimes, numBasePrimes);
     if (!wheel) {
         perror(ERR_WHEEL_ALLOCATE);
-        deleteBitArray(&isPrime);
-        exit(EXIT_FAILURE);
+        goto failure;
     }
 
     /* Easy case #1 */
-    if (max < 2) {
-        deleteBitArray(&isPrime);
-        deleteWheel(&wheel);
-        return 0;
-    }
+    if (max < 2)
+        goto end;
 
     /* Now max is guaranteed to be at least 2 */
+    count = 1;
     print_prime(stream, 2);
 
     /* Easy case #2 */
-    if (max == 2) {
-        deleteBitArray(&isPrime);
-        deleteWheel(&wheel);
-        return 1;
-    }
+    if (max == 2)
+        goto end;
 
     /* Now max is guaranteed to be at least 3 */
-    count = 1;
 
     /* Sieve the odd base primes */
     for (index = 1; index < numBasePrimes; index++) {
@@ -118,10 +111,16 @@ unsigned long sieve(const unsigned long max, FILE *stream) {
         }
     }
 
+end:
     /* Clean up and return */
     deleteBitArray(&isPrime);
     deleteWheel(&wheel);
     return count;
+
+failure:
+    deleteBitArray(&isPrime);
+    deleteWheel(&wheel);
+    exit(EXIT_FAILURE);
 }
 
 /*
