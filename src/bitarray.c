@@ -1,7 +1,7 @@
 /*
  * FILE:        bitarray.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-19
+ * UPDATED:     2016-08-04
  * DESCRIPTION: Implementation of bit arrays
  */
 
@@ -55,9 +55,9 @@ BitArray * newBitArray(const unsigned long n) {
         return NULL;
     }
 
-    #ifdef DEBUG_ON
+#ifdef DEBUG_ON
     DEBUG_MSG("New bit array at %p (bytes: %lu)", (void *) bits, bits->size);
-    #endif
+#endif
 
     return bits;
 }
@@ -71,9 +71,9 @@ BitArray * newBitArray(const unsigned long n) {
  */
 void deleteBitArray(BitArray **bpp) {
     if (bpp && *bpp) {
-        #ifdef DEBUG_ON
+#ifdef DEBUG_ON
         DEBUG_MSG("Deleting bit array at %p ...", (void *) *bpp);
-        #endif
+#endif
 
         if ((*bpp)->array)
             free((*bpp)->array);

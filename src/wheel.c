@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-05-19
+ * UPDATED:     2016-08-04
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
@@ -119,10 +119,10 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
     /* Go to the first spoke in the wheel */
     wheel->spoke = wheel->spoke->next;
 
-    #ifdef DEBUG_ON
+#ifdef DEBUG_ON
     DEBUG_MSG("New wheel at %p (circum: %lu, spokes: %lu)",
             (void *) wheel, wheel->circumference, wheel->numSpokes);
-    #endif
+#endif
 
     return wheel;
 }
@@ -136,9 +136,9 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
  */
 void deleteWheel(Wheel **wpp) {
     if (wpp && *wpp) {
-        #ifdef DEBUG_ON
+#ifdef DEBUG_ON
         DEBUG_MSG("Deleting wheel at %p ...", (void *) *wpp);
-        #endif
+#endif
 
         /* Deallocate all the spokes in the wheel */
         while ((*wpp)->numSpokes-- > 0) {
