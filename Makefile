@@ -9,9 +9,11 @@ CFLAGS=-Wall -Wextra -Werror -pedantic
 OPTIMIZE=-O3
 DEBUG=-g -D'DEBUG_ON'
 TEST=-D'TEST'
+COUNT=-D'COUNT_PRIMES'
+LIST=-D'LIST_PRIMES'
 
 # Object files
-OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve.o
+OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve_count.o ${OBJ}/sieve_list.o
 
 .PHONY: clean debug default directories force test
 
@@ -23,6 +25,12 @@ ${BIN}/sieve: ${SRC}/main.c ${SRC}/main.h ${OBJ_FILES}
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ ${SRC}/main.c ${OBJ_FILES}
 
 # Create the object files for all the program components
+${OBJ}/sieve_count.o: ${SRC}/sieve.c ${SRC}/sieve.h
+	${CC} ${CFLAGS} ${OPTIMIZE} ${COUNT} -o $@ -c $<
+
+${OBJ}/sieve_list.o: ${SRC}/sieve.c ${SRC}/sieve.h
+	${CC} ${CFLAGS} ${OPTIMIZE} ${LIST} -o $@ -c $<
+
 ${OBJ}/%.o: ${SRC}/%.c ${SRC}/%.h
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 

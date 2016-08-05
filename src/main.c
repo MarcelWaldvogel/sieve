@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-07-20
+ * UPDATED:     2016-08-05
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -13,6 +13,9 @@
 #include <limits.h>
 #include <unistd.h>
 #include <signal.h>
+
+#define COUNT_PRIMES
+#define LIST_PRIMES
 
 #include "sieve.h"
 #include "main.h"
@@ -120,10 +123,10 @@ int main(int argc, const char **argv) {
      */
     if (op_count) {
         /* Print only the number of primes up to num */
-        printf(COUNT_FMT, sieve(num, NULL));
+        printf(COUNT_FMT, sieve_count(num));
     } else {
         /* Print all the primes up to num */
-        sieve(num, stdout);
+        sieve_list(num);
     }
 
     return EXIT_SUCCESS;
