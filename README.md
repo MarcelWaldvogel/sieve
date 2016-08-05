@@ -1,4 +1,4 @@
-# WheelSieve
+# Sieve
 
 Wheel-based prime number sieve written in C.
 A Python 3 clone of this program is
@@ -10,8 +10,8 @@ A Python 3 clone of this program is
 
 To clone this project from GitHub, type the following in a terminal:
 ```
-git clone https://github.com/artemmavrin/wheelsieve.git
-cd wheelsieve
+git clone https://github.com/artemmavrin/sieve.git
+cd sieve
 make
 ```
 This creates the `bin` directory and the executable `bin/sieve` in the current
@@ -54,7 +54,7 @@ Both will count the number of primes less than or equal to 100.
 
 ### Show Help
 
-To view a brief description of the WheelSieve program, use the `-h` option:
+To view a brief description of the program, use the `-h` option:
 ```
 bin/sieve -h
 ```

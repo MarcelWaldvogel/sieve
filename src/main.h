@@ -1,7 +1,7 @@
 /*
  * FILE:        main.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-07-20
+ * UPDATED:     2016-08-05
  * DESCRIPTION: Defines constants to be used in main.c.
  */
 
@@ -20,7 +20,7 @@
 #define ERR_INTERRUPT       "interrupted.\n"
 #define ERR_USAGE_HELP      "For help, run `" PROGRAM_NAME " -%c'.\n"
 
-#define HELP_MESSAGE        "WheelSieve\t\
+#define HELP_MESSAGE        "\
 Wheel-based Sieve of Eratosthenes\n\n\
 Usage:\n\
 \t" PROGRAM_NAME " [options] <nonnegative integer>\n\n\
