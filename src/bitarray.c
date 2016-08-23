@@ -1,7 +1,7 @@
 /*
  * FILE:        bitarray.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-08-04
+ * UPDATED:     2016-08-22
  * DESCRIPTION: Implementation of bit arrays
  */
 
@@ -44,22 +44,24 @@ BitArray * newBitArray(const unsigned long n) {
 
     BitArray *bits = malloc(sizeof(BitArray));  /* Allocate bit array memory */
     if (!bits)                                  /* Check if malloc failed */
-        return NULL;
+        goto failure;
 
     /* Compute number of bytes needed to hold enough ints */
     bits->size = ((bytes + sizeof(int) - 1) / sizeof(int)) * sizeof(int);
 
     bits->array = malloc(bits->size);
-    if (!bits->array) {
-        deleteBitArray(&bits);
-        return NULL;
-    }
+    if (!bits->array)
+        goto failure;
 
 #ifdef DEBUG_ON
     DEBUG_MSG("New bit array at %p (bytes: %lu)", (void *) bits, bits->size);
 #endif
 
     return bits;
+
+failure:
+    deleteBitArray(&bits);
+    return NULL;
 }
 
 /*
