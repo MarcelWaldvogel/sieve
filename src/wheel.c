@@ -1,7 +1,7 @@
 /*
  * FILE:        wheel.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-08-04
+ * UPDATED:     2016-08-22
  * DESCRIPTION: Implementation of wheels for wheel factorization algorithms.
  */
 
@@ -64,14 +64,14 @@ struct Spoke {
  * RETURNS:     A pointer to the new wheel.
  */
 Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
-    unsigned long num;  /* To be checked for coprimeness */
-    unsigned long i;    /* Used to track position in the base primes list */
-    Wheel *wheel;       /* The wheel being created */
+    unsigned long num;      /* To be checked for coprimeness */
+    unsigned long i;        /* Used to track position in the base primes list */
+    Wheel *wheel = NULL;    /* The wheel being created */
 
     /* Allocate memory for the wheel and check if malloc failed */
     wheel = malloc(sizeof(Wheel));
     if (!wheel)
-        return NULL;
+        goto failure;
 
     /* Initialize the fields of the wheel */
     wheel->circumference = 1;
@@ -96,10 +96,8 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
             /* Create a spoke for the current coprime number */
             Spoke *spoke = malloc(sizeof(Spoke));
             /* Delete the wheel and return NULL if malloc failed */
-            if (!spoke) {
-                deleteWheel(&wheel);
-                return NULL;
-            }
+            if (!spoke)
+                goto failure;
             /* Assign the current coprime number to this spoke */
             spoke->num = num;
             /* Insert the spoke into the wheel */
@@ -125,6 +123,10 @@ Wheel * newWheel(const unsigned long *bp, const unsigned long nbp) {
 #endif
 
     return wheel;
+
+failure:
+    deleteWheel(&wheel);
+    return NULL;
 }
 
 /*
