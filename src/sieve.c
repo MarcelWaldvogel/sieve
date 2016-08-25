@@ -146,6 +146,8 @@ end:
     deleteWheel(&wheel);
 #ifdef COUNT_PRIMES
     return count;
+#else
+    return;
 #endif
 
 failure:
