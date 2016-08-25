@@ -1,7 +1,7 @@
 /*
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-08-05
+ * UPDATED:     2016-08-24
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization. This creates one of two object files: if the
  *              macro COUNT_PRIMES is defined, it creates an object file
@@ -29,10 +29,13 @@
 
 #define ERR_BIT_ALLOCATE    "sieve: bit array"
 #define ERR_WHEEL_ALLOCATE  "sieve: wheel"
-#define PRIME_FORMAT        "%lu\n"
 
 static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
+
+#ifndef COUNT_PRIMES
+static void printul(unsigned long);
+#endif
 
 /*
  * FUNCTIONS:   sieve_count/sieve_list
@@ -94,7 +97,7 @@ void sieve_list(const unsigned long max)
 #ifdef COUNT_PRIMES
     count++;
 #else
-    printf(PRIME_FORMAT, 2UL);
+    printul(2UL);
 #endif
 
     /* Easy case #2: only the even prime */
@@ -111,7 +114,7 @@ void sieve_list(const unsigned long max)
 #ifdef COUNT_PRIMES
         count++;
 #else
-        printf(PRIME_FORMAT, prime);
+        printul(prime);
 #endif
         /* Cross off multiples of the current prime */
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
@@ -124,7 +127,7 @@ void sieve_list(const unsigned long max)
 #ifdef COUNT_PRIMES
             count++;
 #else
-            printf(PRIME_FORMAT, prime);
+            printul(prime);
 #endif
             /* Cross off multiples of the current prime */
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
@@ -138,7 +141,7 @@ void sieve_list(const unsigned long max)
 #ifdef COUNT_PRIMES
             count++;
 #else
-            printf(PRIME_FORMAT, prime);
+            printul(prime);
 #endif
         }
         prime = nextp(wheel);
@@ -157,3 +160,27 @@ failure:
     deleteWheel(&wheel);
     exit(EXIT_FAILURE);
 }
+
+#ifndef COUNT_PRIMES
+#define BASE 10
+#define TOCHAR(d) ('0' + (d))
+/*
+ * FUNCTION:    printul
+ * DESCRIPTION: Prints an unsigned long to stdout (in decimal).
+ * PARAMETERS:  n (unsigned long): The number to be printed.
+ * RETURNS:     Nothing.
+ */
+static void printul(unsigned long n) {
+    char digits[BUFSIZ];
+    char *digit = digits;
+    *digit++ = '\0';
+    while (n) {
+        *digit++ = TOCHAR(n % BASE);
+        n /= BASE;
+    }
+    while (*--digit) {
+        putchar(*digit);
+    }
+    putchar('\n');
+}
+#endif
