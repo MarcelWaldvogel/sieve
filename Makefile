@@ -10,7 +10,6 @@ OPTIMIZE=-O3
 DEBUG=-g -D'DEBUG_ON'
 TEST=-D'TEST'
 COUNT=-D'COUNT_PRIMES'
-LIST=-D'LIST_PRIMES'
 
 # Object files
 OBJ_FILES=${OBJ}/wheel.o ${OBJ}/bitarray.o ${OBJ}/sieve_count.o ${OBJ}/sieve_list.o
@@ -29,7 +28,7 @@ ${OBJ}/sieve_count.o: ${SRC}/sieve.c ${SRC}/sieve.h
 	${CC} ${CFLAGS} ${OPTIMIZE} ${COUNT} -o $@ -c $<
 
 ${OBJ}/sieve_list.o: ${SRC}/sieve.c ${SRC}/sieve.h
-	${CC} ${CFLAGS} ${OPTIMIZE} ${LIST} -o $@ -c $<
+	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<
 
 ${OBJ}/%.o: ${SRC}/%.c ${SRC}/%.h
 	${CC} ${CFLAGS} ${OPTIMIZE} -o $@ -c $<

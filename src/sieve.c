@@ -6,19 +6,11 @@
  *              factorization. This creates one of two object files: if the
  *              macro COUNT_PRIMES is defined, it creates an object file
  *              containing the function sieve_count, which returns the number of
- *              primes up to a given number. If the macro LIST_PRIMES is
+ *              primes up to a given number. If the macro COUNT_PRIMES is not
  *              defined, it creates an object file containing the function
  *              sieve_list, which prints the primes up to a given number to
  *              stdout. Exactly one of these two macros must be defined.
  */
-
-/* Ensure that just one of the macros COUNT_PRIMES and LIST_PRIMES is defined */
-#if !defined(COUNT_PRIMES) && !defined(LIST_PRIMES)
-#error "One of the macros COUNT_PRIMES and LIST_PRIMES must be defined."
-#endif
-#if defined COUNT_PRIMES && defined LIST_PRIMES
-#error "Both macros COUNT_PRIMES and LIST_PRIMES cannot be defined."
-#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -34,6 +26,7 @@ static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
 static const unsigned long numBasePrimes = 6;
 
 #ifndef COUNT_PRIMES
+/* Function to print an unsigned long to stdout */
 static void printul(unsigned long);
 #endif
 
@@ -166,7 +159,8 @@ failure:
 #define TOCHAR(d) ('0' + (d))
 /*
  * FUNCTION:    printul
- * DESCRIPTION: Prints an unsigned long to stdout (in decimal).
+ * DESCRIPTION: Prints an unsigned long to stdout (in decimal). This function
+ *              automatically appends a newline at the end.
  * PARAMETERS:  n (unsigned long): The number to be printed.
  * RETURNS:     Nothing.
  */
