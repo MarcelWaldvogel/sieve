@@ -1,7 +1,7 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-08-05
+ * UPDATED:     2016-08-25
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 
@@ -13,9 +13,6 @@
 #include <limits.h>
 #include <unistd.h>
 #include <signal.h>
-
-#define COUNT_PRIMES
-#define LIST_PRIMES
 
 #include "sieve.h"
 #include "main.h"
