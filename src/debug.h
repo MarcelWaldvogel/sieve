@@ -1,7 +1,6 @@
 /*
  * FILE:        debug.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-07-20
  * DESCRIPTION: Provides debugging macros. This project's Makefile contains a
  *              `debug' target which, among other things, compiles the source
  *              code with an additional preprocessor macro: DEBUG_ON. All

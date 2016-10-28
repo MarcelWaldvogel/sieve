@@ -1,7 +1,6 @@
 /*
  * FILE:        sieve.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-08-24
  * DESCRIPTION: Implementation of the sieve of Eratosthenes with wheel
  *              factorization. This creates one of two object files: if the
  *              macro COUNT_PRIMES is defined, it creates an object file

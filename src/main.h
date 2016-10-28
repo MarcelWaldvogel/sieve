@@ -1,7 +1,6 @@
 /*
  * FILE:        main.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-08-05
  * DESCRIPTION: Defines constants to be used in main.c.
  */
 

@@ -1,7 +1,6 @@
 /*
  * FILE:        main.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-08-25
  * DESCRIPTION: Contains the driver for the sieve program.
  */
 

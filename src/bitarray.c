@@ -1,7 +1,6 @@
 /*
  * FILE:        bitarray.c
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-10-28
  * DESCRIPTION: Implementation of bit arrays
  */
 

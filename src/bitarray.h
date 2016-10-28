@@ -1,7 +1,6 @@
 /*
  * FILE:        bitarray.h
  * AUTHOR:      Artem Mavrin
- * UPDATED:     2016-10-28
  * DESCRIPTION: Function prototypes for manipulating bit arrays.
  */
 
