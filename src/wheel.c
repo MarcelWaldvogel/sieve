@@ -22,8 +22,6 @@
  *              num_spokes (unsigned long): The number of spokes in the wheel,
  *              which is the number of integers between 1 and circumference
  *              which are coprime to circumference.
- *              primeCandidate (long): The biggest positive integer coprime
- *              to each base prime computed so far.
  *              spoke (struct spoke *): Pointer to the next spoke in the wheel.
  */
 struct wheel {

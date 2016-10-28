@@ -26,7 +26,7 @@ struct bitarray {
     size_t size;
 };
 
-/* Number of bits in an element of a BitArray */
+/* Number of bits in an element of a bit array */
 #define NBITS (CHAR_BIT * sizeof(int))
 
 /*
