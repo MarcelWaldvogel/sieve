@@ -22,8 +22,8 @@
 #define ERR_BIT_ALLOCATE    "sieve: bit array"
 #define ERR_WHEEL_ALLOCATE  "sieve: wheel"
 
-static const unsigned long basePrimes[] = {2, 3, 5, 7, 11, 13};
-static const unsigned long numBasePrimes = 6;
+static const unsigned long base_primes[] = {2, 3, 5, 7, 11, 13};
+static const unsigned long num_base_primes = 6;
 
 #ifndef COUNT_PRIMES
 /* Function to print an unsigned long to stdout */
@@ -56,27 +56,27 @@ unsigned long sieve_count(const unsigned long max)
 void sieve_list(const unsigned long max)
 #endif
 {
-    BitArray *isPrime = NULL;   /* Bit array representing primality */
-    Wheel *wheel = NULL;        /* The wheel used in the sieve */
+    struct bitarray *is_prime = NULL;   /* Bit array representing primality */
+    struct wheel *wheel = NULL;         /* The wheel used in the sieve */
 #ifdef COUNT_PRIMES
-    unsigned long count = 0;    /* The number of primes */
+    unsigned long count = 0;            /* The number of primes */
 #endif
-    unsigned long prime;        /* A prime candidate */
-    unsigned long comp;         /* A necessarily composite number */
-    unsigned long index;        /* Track position in loops */
+    unsigned long prime;                /* A prime candidate */
+    unsigned long comp;                 /* A necessarily composite number */
+    unsigned long index;                /* Track position in loops */
 
     /* Create the sieving array. To save space we only store the primality of
      * odd integers, starting with 1 in position 0, 3 in position 1, etc. */
-    isPrime = newBitArray((max + 1) / 2);
-    if (!isPrime) {
+    is_prime = new_bitarray((max + 1) / 2);
+    if (!is_prime) {
         perror(ERR_BIT_ALLOCATE);
         goto failure;
     }
-    setAllBits(isPrime);    /* Initialize all bits to 1 */
-    clearBit(isPrime, 0);   /* 1 is not prime */
+    set_all_bits(is_prime); /* Initialize all bits to 1 */
+    clear_bit(is_prime, 0); /* 1 is not prime */
 
     /* Create the wheel */
-    wheel = newWheel(basePrimes, numBasePrimes);
+    wheel = new_wheel(base_primes, num_base_primes);
     if (!wheel) {
         perror(ERR_WHEEL_ALLOCATE);
         goto failure;
@@ -100,8 +100,8 @@ void sieve_list(const unsigned long max)
     /* Now max is guaranteed to be at least 3 */
 
     /* Sieve the odd base primes */
-    for (index = 1; index < numBasePrimes; index++) {
-        prime = basePrimes[index];
+    for (index = 1; index < num_base_primes; index++) {
+        prime = base_primes[index];
         if (prime > max)
             break;
 #ifdef COUNT_PRIMES
@@ -111,12 +111,12 @@ void sieve_list(const unsigned long max)
 #endif
         /* Cross off multiples of the current prime */
         for (comp = prime * prime; comp <= max; comp += 2 * prime)
-            clearBit(isPrime, comp / 2);
+            clear_bit(is_prime, comp / 2);
     }
 
     /* Sieve the remaining primes <= sqrt(max) */
     for (prime = nextp(wheel); prime * prime <= max; prime = nextp(wheel)) {
-        if (getBit(isPrime, prime / 2)) {
+        if (get_bit(is_prime, prime / 2)) {
 #ifdef COUNT_PRIMES
             count++;
 #else
@@ -124,13 +124,13 @@ void sieve_list(const unsigned long max)
 #endif
             /* Cross off multiples of the current prime */
             for (comp = prime * prime; comp <= max; comp += 2 * prime)
-                clearBit(isPrime, comp / 2);
+                clear_bit(is_prime, comp / 2);
         }
     }
 
     /* Sieve the remaining primes > sqrt(max) */
     while(prime <= max) {
-        if (getBit(isPrime, prime / 2)) {
+        if (get_bit(is_prime, prime / 2)) {
 #ifdef COUNT_PRIMES
             count++;
 #else
@@ -142,8 +142,8 @@ void sieve_list(const unsigned long max)
 
 end:
     /* Clean up and return */
-    deleteBitArray(&isPrime);
-    deleteWheel(&wheel);
+    delete_bitarray(&is_prime);
+    delete_wheel(&wheel);
 #ifdef COUNT_PRIMES
     return count;
 #else
@@ -151,8 +151,8 @@ end:
 #endif
 
 failure:
-    deleteBitArray(&isPrime);
-    deleteWheel(&wheel);
+    delete_bitarray(&is_prime);
+    delete_wheel(&wheel);
     exit(EXIT_FAILURE);
 }
 
