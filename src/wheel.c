@@ -174,8 +174,8 @@ static unsigned long iscomp(const unsigned long);
 
 /*
  * FUNCTION:    main
- * DESCRIPTION: Generates MAX prime number candidates using a wheel created with
- *              the command-line arguments as the base primes.
+ * DESCRIPTION: Generates COUNT prime number candidates using a wheel created
+ *              with the command-line arguments as the base primes.
  * PARAMETERS:  argc (int): 1 + the number of command-line arguments
  *              argv (const char **): array of strings, the first being the
  *              program name, and the subsequent ones being the command-line
@@ -194,7 +194,7 @@ int main(int argc, const char **argv) {
 
     if (argc == 1) {
         /* If there are no command-line arguments, print usage message */
-        fprintf(stderr,
+        fprintf(stderr, "Generate prime number candidates using a wheel.\n"
                 "Usage: Enter a list of primes: e.g.,\t\n%s 2 3 5\n", argv[0]);
         return EXIT_FAILURE;
     }
@@ -220,7 +220,7 @@ int main(int argc, const char **argv) {
         p = nextp(wheel);
         printf("Prime candidate #%i\t%4ld", i, p);
         if ((d = iscomp(p))) {
-            printf(" (divisible by %lu)\n", d);
+            printf(" (composite: divisible by %lu)\n", d);
         } else {
             num_primes++;
             printf("\n");
@@ -249,7 +249,7 @@ int main(int argc, const char **argv) {
             p = nextp(wheel);
             printf("Prime candidate #%i\t%4ld", i, p);
             if ((d = iscomp(p))) {
-                printf(" (divisible by %lu)\n", d);
+                printf(" (composite: divisible by %lu)\n", d);
             } else {
                 num_primes++;
                 printf("\n");
@@ -284,6 +284,8 @@ int main(int argc, const char **argv) {
  */
 static unsigned long iscomp(const unsigned long n) {
     unsigned long p;
+    if (n == 2)
+        return 0;
     if (n % 2 == 0)
         return 2;
     for (p = 3; p * p <= n; p += 2)
