@@ -5,11 +5,9 @@
  */
 
 #include <stdlib.h>
-#include "wheel.h"
 
-#ifdef DEBUG_ON
+#include "wheel.h"
 #include "debug.h"
-#endif
 
 /*
  * STRUCT:      wheel
@@ -112,10 +110,8 @@ struct wheel * new_wheel(const unsigned long *bp, const unsigned long nbp) {
     /* Go to the first spoke in the wheel */
     wheel->spoke = wheel->spoke->next;
 
-#ifdef DEBUG_ON
     DEBUG_MSG("New wheel at %p (circum: %lu, spokes: %lu)",
             (void *) wheel, wheel->circumference, wheel->num_spokes);
-#endif
 
     return wheel;
 
@@ -133,9 +129,8 @@ failure:
  */
 void delete_wheel(struct wheel **wpp) {
     if (wpp && *wpp) {
-#ifdef DEBUG_ON
         DEBUG_MSG("Deleting wheel at %p ...", (void *) *wpp);
-#endif
+
         /* Deallocate all the spokes in the wheel */
         while ((*wpp)->num_spokes-- > 0) {
             struct spoke *spoke = (*wpp)->spoke;

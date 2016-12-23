@@ -9,10 +9,7 @@
 #include <limits.h>
 
 #include "bitarray.h"
-
-#ifdef DEBUG_ON
 #include "debug.h"
-#endif
 
 /*
  * STRUCT:      bitarray
@@ -52,9 +49,7 @@ struct bitarray * new_bitarray(const unsigned long n) {
     if (!bits->array)
         goto failure;
 
-#ifdef DEBUG_ON
     DEBUG_MSG("New bit array at %p (bytes: %lu)", (void *) bits, bits->size);
-#endif
 
     return bits;
 
@@ -72,9 +67,8 @@ failure:
  */
 void delete_bitarray(struct bitarray **bpp) {
     if (bpp && *bpp) {
-#ifdef DEBUG_ON
         DEBUG_MSG("Deleting bit array at %p ...", (void *) *bpp);
-#endif
+
         if ((*bpp)->array)
             free((*bpp)->array);
         free(*bpp);

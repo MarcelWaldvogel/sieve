@@ -30,11 +30,15 @@
  * ARGUMENTS:   Variadic arguments like printf (i.e., format string + zero or
  *              more values to format, all comma-separated)
  */
+#ifdef DEBUG_ON
 #define DEBUG_MSG(...) \
     do { \
         fprintf(stderr, "[DEBUG] %s:%d: ", __FILE__, __LINE__); \
         fprintf(stderr, __VA_ARGS__); \
         putc('\n', stderr); \
     } while (0)
+#else
+#define DEBUG_MSG(...)
+#endif
 
 #endif
