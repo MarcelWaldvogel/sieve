@@ -49,7 +49,7 @@ struct bitarray * new_bitarray(const unsigned long n) {
     if (!bits->array)
         goto failure;
 
-    DEBUG_MSG("New bit array at %p (bytes: %lu)", (void *) bits, bits->size);
+    DEBUG_MSG("New bit array at %p (bytes: %zu)", (void *) bits, bits->size);
 
     return bits;
 
