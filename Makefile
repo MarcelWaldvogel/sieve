@@ -4,7 +4,7 @@ OBJ=obj
 SRC=src
 
 # Compiler options
-CFLAGS=-Wall -Wextra -Werror -pedantic
+CFLAGS=-Wall -Wextra -Werror -pedantic -std=c99
 OPTIMIZE=-O3
 DEBUG=-g -D'DEBUG_ON'
 TEST=-D'TEST'
