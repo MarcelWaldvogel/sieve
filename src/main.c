@@ -17,8 +17,16 @@
 #include "main.h"
 
 /* Static ("private") function prototypes */
+static void process_options(int *, const char ***);
 static void sieve_error(const char *, ...);
 static void interrupt(int);
+
+/* Store the command-line options */
+static struct {
+    int count;  /* If 1, count the number of primes instead of listing them */
+    int help;   /* If 1, display help message and exit */
+    int input;  /* If 1, read argument from stdin */
+} options;
 
 /*
  * FUNCTION:    main
@@ -29,57 +37,27 @@ int main(int argc, const char **argv) {
     char *endptr;               /* For stroul's error checking */
     char *nlpos;                /* Position of first newline in the argument */
     char str[BUFSIZ];           /* String to be used as the program argument */
-    int op_count = 0;           /* Option to count the number of primes */
-    int op_help = 0;            /* Option to display help message */
-    int op_stdin = 0;           /* Option to read argument from stdin */
-    int c;                      /* Command-line argument character */
 
     /* Set up interrupt handling */
     signal(SIGINT, &interrupt);
 
-    /*
-     * Parse command-line options
-     */
-    opterr = 0; /* Reset global option-handling error code */
-
-    /* Iterate over all options found by getopt */
-    while ((c = getopt(argc, (char * const *) argv, ALL_OPS)) != -1) {
-        /* Process the option character */
-        switch (c) {
-            case OP_HELP:
-                op_help = 1;
-                break;
-            case OP_COUNT:
-                op_count = 1;
-                break;
-            case OP_STDIN:
-                op_stdin = 1;
-                break;
-            default:
-                sieve_error(ERR_ILLEGAL_OPTION, optopt);
-        }
-    }
-
-    argc -= optind;     /* Update number of non-option arguments */
-    argv += optind;     /* Make argv point to first non-option */
+    /* Process the command-line options */
+    process_options(&argc, &argv);
 
     /* Print help message and exit if necessary */
-    if (op_help) {
+    if (options.help) {
         printf(HELP_MESSAGE, OP_COUNT, OP_STDIN);
         return EXIT_SUCCESS;
     }
 
-    /*
-     * Get the command-line argument
-     */
     /* Check whether to get program argument from stdin or the command-line */
-    if ((argc > NUM_ARGS) || (argc && op_stdin)) {
+    if ((argc > NUM_ARGS) || (argc && options.input)) {
         /* There are too many arguments -- show error and exit */
         sieve_error(ERR_TOO_MANY_ARGS);
     } else if (argc < NUM_ARGS) {
         /* There are no command-line arguments. Check first if we should be
          * reading from stdin */
-        if(op_stdin) {
+        if(options.input) {
             /* Try reading from stdin */
             if (!fgets(str, BUFSIZ, stdin))
                 /* If fgets fails, print error and exit */
@@ -117,7 +95,7 @@ int main(int argc, const char **argv) {
     /*
      * Perform the sieving
      */
-    if (op_count) {
+    if (options.count) {
         /* Print only the number of primes up to num */
         printf(COUNT_FMT, sieve_count(num));
     } else {
@@ -126,6 +104,45 @@ int main(int argc, const char **argv) {
     }
 
     return EXIT_SUCCESS;
+}
+
+
+/*
+ * FUNCTION:    process_options
+ * DESCRIPTION: Iterate over the command-line options (the ones prefixed with
+ *              '-' and set the values of the global options struct.
+ * PARAMETERS:  argcp (int *): Pointer to argc in main.
+                argvp (const char ***): Pointer to argv in main.
+ */
+static void process_options(int *argcp, const char ***argvp) {
+    int c;      /* Command-line argument character */
+    opterr = 0; /* Reset global option-handling error code */
+
+    /* Set default command-line option values */
+    options.count = 0;
+    options.help = 0;
+    options.input = 0;
+
+    /* Iterate over all options found by getopt */
+    while ((c = getopt(*argcp, (char * const *) *argvp, ALL_OPS)) != -1) {
+        /* Process the option character */
+        switch (c) {
+            case OP_HELP:
+                options.help = 1;
+                break;
+            case OP_COUNT:
+                options.count = 1;
+                break;
+            case OP_STDIN:
+                options.input = 1;
+                break;
+            default:
+                sieve_error(ERR_ILLEGAL_OPTION, optopt);
+        }
+    }
+
+    *argcp -= optind;   /* Update number of non-option arguments */
+    *argvp += optind;   /* Make argv point to first non-option */
 }
 
 
