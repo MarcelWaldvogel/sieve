@@ -157,7 +157,7 @@ failure:
 
 #ifndef COUNT_PRIMES
 #define BASE 10
-#define TOCHAR(d) ('0' + (d))
+#define TOCHAR(d) ((char) ('0' + (d)))
 /*
  * FUNCTION:    printul
  * DESCRIPTION: Prints an unsigned long to stdout (in decimal). This function
