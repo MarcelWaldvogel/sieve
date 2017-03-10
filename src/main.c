@@ -9,9 +9,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
-#include <limits.h>
 #include <getopt.h>
-#include <signal.h>
 
 #include "sieve.h"
 #include "main.h"
