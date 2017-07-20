@@ -3,10 +3,3 @@ bin/*
 
 # Object files
 obj/*
-
-# Vim temporary files
-*.swp
-
-# Files created by CLion
-.idea
-CMakeLists.txt
